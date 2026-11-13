@@ -378,24 +378,28 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest) (chunks iter
 // llama.cpp server. It negotiates the loaded model's PCM formats from
 // session.created and waits for session.updated to acknowledge them. The loaded
 // model owns selection; no model-list request occurs. LFM3 uses mono PCM16LE at
-// 16 kHz input and 24 kHz output. Empty output modalities let the model choose
-// between tool calls, text and speech. Explicit audio or text-and-audio output
-// prefills the corresponding speech token; omit modalities for tool calling.
-// The caller owns tools, microphone segmentation, playback and slot admission.
+// 16 kHz input and 24 kHz output. RealtimeOptionAudio.InputFormat selects
+// another input rate from 8 to 192 kHz; the server resamples it. A model with
+// streaming audio input but no audio generation, such as Gemma 4, yields a
+// text-only session with a zero OutputFormat. Empty output modalities let the
+// model choose between tool calls, text and speech. Explicit audio or
+// text-and-audio output prefills the corresponding speech token; omit
+// modalities for tool calling. The caller owns tools, microphone segmentation,
+// playback and slot admission.
 //
 // The runtime supports manual turns, explicit generation, tools and response
 // cancellation. RealtimeOptionAudio.Voice selects one of the voices listed by
-// GetPropsRaw; without it the server uses its --tts-voice or model default.
-// The voice can change only before the first turn. Conversation sessions
-// support neither server VAD, separate transcription streams, microphone
+// GetPropsRaw; without it the server uses its --tts-voice or model default. The
+// voice can change only before the first turn. Conversation sessions support
+// neither server VAD, separate transcription streams, microphone
 // stream-end/activity messages nor playback truncation. Unsupported settings
-// fail locally. Stream microphone
-// chunks, then set Commit to commit without generating or Generate to commit
-// pending audio and request generation. Empty commits and overlapping generation
-// are rejected before wire effects. LFM3 prefetches audio while the user speaks
-// and answers after the turn ends; input and output are not simultaneous. LFM3
-// conversation instructions should request its function-call and interleaved
-// text-and-audio format without forcing an output modality.
+// fail locally. Stream microphone chunks, then set Commit to commit without
+// generating or Generate to commit pending audio and request generation. Empty
+// commits and overlapping generation are rejected before wire effects. LFM3
+// prefetches audio while the user speaks and answers after the turn ends; input
+// and output are not simultaneous. LFM3 conversation instructions should
+// request its function-call and interleaved text-and-audio format without
+// forcing an output modality.
 //
 // Cancel before sending a new user turn while a response is active. Cancel can
 // arrive before response.created; the adapter reserves locally requested
@@ -456,6 +460,12 @@ func (c *Client) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOpti
 			}
 			if len(unsupported) != 0 {
 				return nil, fmt.Errorf("llama.cpp realtime conversation settings: %w", &base.ErrNotSupported{Options: unsupported})
+			}
+			if r := o.InputFormat.SampleRate; r != 0 {
+				if r < minInputRate || r > maxInputRate {
+					return nil, fmt.Errorf("llama.cpp realtime input rate must be between %d and %d Hz: %w", minInputRate, maxInputRate, &base.ErrNotSupported{Options: []string{"input sample rate"}})
+				}
+				setup.Audio.Input.Format = AudioFormat{Type: AudioPCM, Rate: r}
 			}
 			setup.Audio.Output.Voice = o.Voice
 		case genai.Modalities:
@@ -540,18 +550,26 @@ func (c *Client) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOpti
 			if got.ID == "" || len(got.ID) > 256 || got.Type != SessionRealtime {
 				return nil, errors.Join(errors.New("invalid llama.cpp session identity"), ws.Close())
 			}
-			in, err := nativeFormat(got.Audio.Input.Format)
-			if err != nil {
+			if _, err := nativeFormat(got.Audio.Input.Format); err != nil {
 				return nil, errors.Join(err, ws.Close())
 			}
-			out, err := nativeFormat(got.Audio.Output.Format)
-			if err != nil {
-				return nil, errors.Join(err, ws.Close())
+			// A model without audio generation, such as Gemma 4, has no output.
+			var out genai.AudioFormat
+			if got.Audio.Output != (AudioOutput{}) {
+				if out, err = nativeFormat(got.Audio.Output.Format); err != nil {
+					return nil, errors.Join(err, ws.Close())
+				}
+			} else if slices.Contains(setup.OutputModalities, genai.ModalityAudio) || setup.Audio.Output.Voice != "" {
+				return nil, errors.Join(fmt.Errorf("llama.cpp model generates no audio: %w", &base.ErrNotSupported{Options: []string{"audio output"}}), ws.Close())
 			}
-			info = genai.RealtimeSessionInfo{ID: got.ID, InputFormat: in, OutputFormat: out, InputModalities: []genai.Modality{genai.ModalityAudio, genai.ModalityText}, TurnDetection: genai.RealtimeTurnManual}
 			want = &setup
-			want.Audio.Input = AudioInput{Format: got.Audio.Input.Format}
+			in := want.Audio.Input.Format
+			if in == (AudioFormat{}) {
+				in = got.Audio.Input.Format
+			}
+			want.Audio.Input = AudioInput{Format: in}
 			want.Audio.Output.Format = got.Audio.Output.Format
+			info = genai.RealtimeSessionInfo{ID: got.ID, InputFormat: genai.AudioFormat{SampleRate: in.Rate}, OutputFormat: out, InputModalities: []genai.Modality{genai.ModalityAudio, genai.ModalityText}, TurnDetection: genai.RealtimeTurnManual}
 			data, err := json.Marshal(ClientMessage{Type: EventSessionUpdate, Session: want})
 			if err != nil {
 				return nil, errors.Join(err, ws.Close())
@@ -588,7 +606,7 @@ func (c *Client) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOpti
 					ToolChoiceRequired: true,
 					MaxOutputTokens:    true,
 					OutputModalities:   true,
-					VoiceBeforeOutput:  true,
+					VoiceBeforeOutput:  info.OutputFormat != (genai.AudioFormat{}),
 				},
 			}
 			s := newRealtimeSession(ws, &info, names)

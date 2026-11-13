@@ -454,8 +454,11 @@ func realtimeValidateInfo(info *genai.RealtimeSessionInfo) error {
 	if err := info.InputFormat.Validate(); err != nil {
 		return fmt.Errorf("input format: %w", err)
 	}
-	if err := info.OutputFormat.Validate(); err != nil {
-		return fmt.Errorf("output format: %w", err)
+	// A zero output format means the session generates no audio.
+	if info.OutputFormat != (genai.AudioFormat{}) {
+		if err := info.OutputFormat.Validate(); err != nil {
+			return fmt.Errorf("output format: %w", err)
+		}
 	}
 	if len(info.InputModalities) == 0 {
 		return errors.New("input modalities: session states no accepted input")

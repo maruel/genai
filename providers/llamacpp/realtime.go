@@ -16,6 +16,7 @@ import (
 	"math"
 	"net/url"
 	"reflect"
+	"slices"
 	"strconv"
 	"sync"
 	"time"
@@ -98,10 +99,16 @@ func acceptRealtimeTools(want, got ToolList) error {
 func nativeFormat(got AudioFormat) (genai.AudioFormat, error) {
 	f := genai.AudioFormat{SampleRate: got.Rate}
 	if got.Type != AudioPCM || f.Validate() != nil {
-		return genai.AudioFormat{}, errors.New("llama.cpp realtime model must support native PCM audio input and output")
+		return genai.AudioFormat{}, errors.New("llama.cpp realtime audio must be native PCM")
 	}
 	return f, nil
 }
+
+// Input sample rates the server resamples from, in tools/server/server-realtime.cpp.
+const (
+	minInputRate = 8000
+	maxInputRate = 192000
+)
 
 const maxRealtimeTools = 1024
 const maxRealtimeToolHistory = 4096
@@ -788,6 +795,9 @@ func (s *RealtimeSession) updateLocked(u *genai.RealtimeUpdate) (*SessionUpdateM
 		upd.MaxOutputTokens = MaxOutputTokens{Value: *u.MaxOutputTokens}
 	}
 	if u.OutputModalities != nil {
+		if s.info.OutputFormat == (genai.AudioFormat{}) && slices.Contains(*u.OutputModalities, genai.ModalityAudio) {
+			return nil, nil, &base.ErrNotSupported{Options: []string{"audio output"}}
+		}
 		upd.OutputModalities = Modalities(*u.OutputModalities)
 	}
 	if u.Voice != nil {

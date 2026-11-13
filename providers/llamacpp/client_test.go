@@ -221,6 +221,44 @@ func TestClient(t *testing.T) {
 					})
 				}
 			})
+			t.Run("text-only model and requested input rate", func(t *testing.T) {
+				// Gemma 4 consumes streaming audio but generates no audio.
+				textOnly := strings.Replace(nativeSession, `,"output":{"format":{"type":"audio/pcm","rate":24000}}`, "", 1)
+				remote := realtimePeer(t, func(ctx context.Context, ws *websocket.Conn) {
+					realtimetest.Write(t, ctx, ws, textOnly)
+					settings := internaltest.AssertType[map[string]any](t, realtimetest.Read(t, ctx, ws)["session"])
+					audio := internaltest.AssertType[map[string]any](t, settings["audio"])
+					if _, ok := audio["output"]; ok {
+						t.Errorf("audio output requested: %v", audio)
+					}
+					format := internaltest.AssertType[map[string]any](t, internaltest.AssertType[map[string]any](t, audio["input"])["format"])
+					if format["rate"] != float64(48000) {
+						t.Errorf("input format %v", format)
+					}
+					settings["id"] = "local"
+					b, err := json.Marshal(map[string]any{"type": "session.updated", "session": settings})
+					if err != nil {
+						t.Error(err)
+						return
+					}
+					realtimetest.Write(t, ctx, ws, string(b))
+					_, _, _ = ws.Read(ctx)
+				})
+				s, err := realtimeClient(t, remote).ConnectRealtime(t.Context(), &genai.RealtimeOptionAudio{InputFormat: genai.AudioFormat{SampleRate: 48000}}, genai.Modalities{genai.ModalityText})
+				if err != nil {
+					t.Fatal(err)
+				}
+				realtimetest.Close(t, s)
+				if info := s.Info(); info.InputFormat != (genai.AudioFormat{SampleRate: 48000}) || info.OutputFormat != (genai.AudioFormat{}) || info.Capabilities.Update.VoiceBeforeOutput {
+					t.Fatalf("info %+v", info)
+				}
+				audio := genai.Modalities{genai.ModalityAudio}
+				if err := s.Send(t.Context(), genai.RealtimeUpdate{OutputModalities: &audio}); err == nil {
+					t.Fatal("audio output accepted")
+				} else if _, ok := errors.AsType[*base.ErrNotSupported](err); !ok {
+					t.Fatal(err)
+				}
+			})
 			t.Run("discover model-defined native formats", func(t *testing.T) {
 				remote := realtimePeer(t, func(ctx context.Context, ws *websocket.Conn) {
 					frame := strings.ReplaceAll(strings.ReplaceAll(nativeSession, `"rate":16000`, `"rate":8000`), `"rate":24000`, `"rate":48000`)
@@ -423,6 +461,7 @@ func TestClient(t *testing.T) {
 					{"output transcription", &genai.RealtimeOptionAudio{OutputTranscription: true}, []string{"output transcription"}},
 					{"server turns", genai.RealtimeTurnServer, nil},
 					{"output modality", genai.Modalities{genai.ModalityImage}, nil},
+					{"input rate", &genai.RealtimeOptionAudio{InputFormat: genai.AudioFormat{SampleRate: 4000}}, []string{"input sample rate"}},
 				} {
 					t.Run(tc.name, func(t *testing.T) {
 						_, err := c.ConnectRealtime(t.Context(), tc.opt)
@@ -440,6 +479,16 @@ func TestClient(t *testing.T) {
 				}
 				if _, err := c.ConnectRealtime(t.Context(), &llamacpp.RealtimeOption{}, &llamacpp.RealtimeOption{}); err == nil || !strings.Contains(err.Error(), "duplicate realtime option type") {
 					t.Fatal("duplicate options accepted")
+				}
+			})
+			t.Run("audio output from a text-only model", func(t *testing.T) {
+				remote := realtimePeer(t, func(ctx context.Context, ws *websocket.Conn) {
+					realtimetest.Write(t, ctx, ws, strings.Replace(nativeSession, `,"output":{"format":{"type":"audio/pcm","rate":24000}}`, "", 1))
+					_, _, _ = ws.Read(ctx)
+				})
+				_, err := realtimeClient(t, remote).ConnectRealtime(t.Context(), genai.Modalities{genai.ModalityAudio})
+				if _, ok := errors.AsType[*base.ErrNotSupported](err); !ok {
+					t.Fatalf("error = %v, want ErrNotSupported", err)
 				}
 			})
 			t.Run("malformed native formats before setup write", func(t *testing.T) {

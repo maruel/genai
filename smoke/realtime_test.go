@@ -685,7 +685,7 @@ func TestRunRealtime(t *testing.T) {
 
 		t.Run("output format", func(t *testing.T) {
 			f := newFakeRealtimeFactory(t)
-			f.info.OutputFormat = genai.AudioFormat{}
+			f.info.OutputFormat = genai.AudioFormat{SampleRate: -1}
 			if _, err := smoke.RunRealtime(t.Context(), f.open); err == nil || !strings.Contains(err.Error(), "probe setup") {
 				t.Fatalf("err=%v", err)
 			}

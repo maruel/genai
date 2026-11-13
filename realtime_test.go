@@ -29,6 +29,25 @@ func TestRealtimeTurnDetection(t *testing.T) {
 		})
 	})
 }
+
+func TestRealtimeOptionAudio(t *testing.T) {
+	t.Run("Validate", func(t *testing.T) {
+		t.Run("valid", func(t *testing.T) {
+			for _, v := range []genai.RealtimeOptionAudio{{}, {InputFormat: genai.AudioFormat{SampleRate: 48000}}} {
+				if err := v.Validate(); err != nil {
+					t.Fatal(err)
+				}
+			}
+		})
+		t.Run("error", func(t *testing.T) {
+			v := genai.RealtimeOptionAudio{InputFormat: genai.AudioFormat{SampleRate: -1}}
+			if err := v.Validate(); err == nil {
+				t.Fatal("negative input sample rate accepted")
+			}
+		})
+	})
+}
+
 func TestRealtimeOptionTools(t *testing.T) {
 	t.Run("Validate", func(t *testing.T) {
 		tool := genai.ToolDef{Name: "lookup", Description: "Lookup", InputSchemaOverride: genai.JSONSchema(`{"type":"object"}`)}

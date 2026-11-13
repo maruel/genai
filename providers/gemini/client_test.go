@@ -193,13 +193,13 @@ func TestClient(t *testing.T) {
 				}
 				_, _, _ = ws.Read(ctx)
 			})
-			s, err := liveClient(t).ConnectRealtime(t.Context(), &genai.RealtimeOptionAudio{InputTranscription: true, OutputTranscription: true}, &gemini.RealtimeOption{Endpoint: endpoint, InputLanguages: []string{"en-US"}, SessionResumption: true, Compression: &gemini.RealtimeCompression{}}, &genai.RealtimeOptionTools{Tools: []genai.ToolDef{{Name: "lookup", Description: "lookup", InputSchemaOverride: json.RawMessage(`{"type":"object"}`)}}})
+			s, err := liveClient(t).ConnectRealtime(t.Context(), &genai.RealtimeOptionAudio{InputFormat: genai.AudioFormat{SampleRate: 48000}, InputTranscription: true, OutputTranscription: true}, &gemini.RealtimeOption{Endpoint: endpoint, InputLanguages: []string{"en-US"}, SessionResumption: true, Compression: &gemini.RealtimeCompression{}}, &genai.RealtimeOptionTools{Tools: []genai.ToolDef{{Name: "lookup", Description: "lookup", InputSchemaOverride: json.RawMessage(`{"type":"object"}`)}}})
 			if err != nil {
 				t.Fatal(err)
 			}
 			t.Cleanup(func() { _ = s.Close() })
 			info := s.Info()
-			if info.ID != "live-test" || info.InputFormat != (genai.AudioFormat{SampleRate: 16000}) || info.OutputFormat != (genai.AudioFormat{SampleRate: 24000}) || info.TurnDetection != genai.RealtimeTurnServer || info.Capabilities.CancelResponse || !slices.Contains(info.InputModalities, genai.ModalityImage) {
+			if info.ID != "live-test" || info.InputFormat != (genai.AudioFormat{SampleRate: 48000}) || info.OutputFormat != (genai.AudioFormat{SampleRate: 24000}) || info.TurnDetection != genai.RealtimeTurnServer || info.Capabilities.CancelResponse || !slices.Contains(info.InputModalities, genai.ModalityImage) {
 				t.Fatalf("info: %+v", info)
 			}
 			inputs := []genai.RealtimeInput{genai.RealtimeInputContent{Text: "context"}, genai.RealtimeInputContent{Text: "question", Generate: true}, genai.RealtimeInputContent{Audio: []byte{1, 0}}, genai.RealtimeInputContent{Commit: true}}
@@ -221,7 +221,7 @@ func TestClient(t *testing.T) {
 			if internaltest.AssertType[map[string]any](t, turns[0])["role"] != "user" {
 				t.Errorf("text changed role: %v", cc)
 			}
-			if internaltest.AssertType[map[string]any](t, internaltest.AssertType[map[string]any](t, messages[2]["realtimeInput"])["audio"])["mimeType"] != "audio/pcm;rate=16000" {
+			if internaltest.AssertType[map[string]any](t, internaltest.AssertType[map[string]any](t, messages[2]["realtimeInput"])["audio"])["mimeType"] != "audio/pcm;rate=48000" {
 				t.Errorf("audio: %v", messages[2])
 			}
 			if internaltest.AssertType[map[string]any](t, messages[3]["realtimeInput"])["audioStreamEnd"] != true {

@@ -70,7 +70,8 @@ type RealtimeOption interface {
 }
 
 // AudioFormat describes raw mono PCM16LE at SampleRate Hz. genai never
-// resamples; callers convert at the capture and playback boundaries.
+// resamples; callers convert at the capture and playback boundaries or request
+// another input rate with RealtimeOptionAudio.InputFormat.
 type AudioFormat struct {
 	SampleRate int
 }
@@ -106,18 +107,32 @@ type RealtimeOptionInstructions string
 // Validate implements RealtimeOption.
 func (RealtimeOptionInstructions) Validate() error { return nil }
 
-// RealtimeOptionAudio requests voice selection and audio transcripts.
-// Transcription is opt-in and independent of generated text output. A false
-// transcription field requests no transcription but does not promise that the
-// provider sends no transcript events; callers must handle them either way.
+// RealtimeOptionAudio requests voice selection, the input audio format and
+// audio transcripts. Transcription is opt-in and independent of generated text
+// output. A false transcription field requests no transcription but does not
+// promise that the provider sends no transcript events; callers must handle
+// them either way.
 type RealtimeOptionAudio struct {
-	Voice               string
+	Voice string
+	// InputFormat requests the format of RealtimeInputContent.Audio; the
+	// provider resamples it to the model rate. Zero keeps the provider's native
+	// format. A provider that cannot accept the rate returns
+	// base.ErrNotSupported. RealtimeSessionInfo.InputFormat reports the
+	// accepted format.
+	InputFormat         AudioFormat
 	InputTranscription  bool
 	OutputTranscription bool
 }
 
 // Validate implements RealtimeOption.
-func (*RealtimeOptionAudio) Validate() error { return nil }
+func (o *RealtimeOptionAudio) Validate() error {
+	if o.InputFormat != (AudioFormat{}) {
+		if err := o.InputFormat.Validate(); err != nil {
+			return fmt.Errorf("input format: %w", err)
+		}
+	}
+	return nil
+}
 
 // RealtimeOptionTools declares session tools. The application owns their execution.
 type RealtimeOptionTools struct {
@@ -184,12 +199,16 @@ type RealtimeUpdateCapabilities struct {
 	VoiceBeforeOutput  bool
 }
 
-// RealtimeSessionInfo contains the accepted session identity, native formats,
+// RealtimeSessionInfo contains the accepted session identity, audio formats,
 // accepted input kinds, turn mode, and capabilities. IDs are provider-supplied
 // when available; an empty ID means none was supplied.
 type RealtimeSessionInfo struct {
-	ID           string
-	InputFormat  AudioFormat
+	ID string
+	// InputFormat is the accepted format of audio input: the requested
+	// RealtimeOptionAudio.InputFormat or the provider's native format.
+	InputFormat AudioFormat
+	// OutputFormat is the native format of generated audio. It is zero when the
+	// session generates no audio, for a model without audio generation.
 	OutputFormat AudioFormat
 	// InputModalities lists the payload kinds the session encodes: ModalityAudio,
 	// ModalityImage, and ModalityText. It states what the transport accepts.

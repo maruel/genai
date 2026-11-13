@@ -225,7 +225,7 @@ func (s *RealtimeSession) Send(ctx context.Context, in genai.RealtimeInput) erro
 				started = true
 			}
 			if len(v.Audio) != 0 {
-				msgs = append(msgs, LiveClientMessage{RealtimeInput: &LiveRealtimeInput{Audio: &LiveBlob{MIMEType: "audio/pcm;rate=16000", Data: v.Audio}}})
+				msgs = append(msgs, LiveClientMessage{RealtimeInput: &LiveRealtimeInput{Audio: &LiveBlob{MIMEType: "audio/pcm;rate=" + strconv.Itoa(s.info.InputFormat.SampleRate), Data: v.Audio}}})
 			}
 			if v.Commit || (v.Audio != nil && v.Generate) {
 				if s.info.TurnDetection == genai.RealtimeTurnManual {

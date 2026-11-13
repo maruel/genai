@@ -73,6 +73,12 @@ func TestClient(t *testing.T) {
 				t.Fatalf("unsupported option: %+v, %v", s, err)
 			}
 		})
+		t.Run("unsupported input rate", func(t *testing.T) {
+			s, err := realtimeClient(t).ConnectRealtime(t.Context(), &genai.RealtimeOptionAudio{InputFormat: genai.AudioFormat{SampleRate: 48000}})
+			if _, ok := errors.AsType[*base.ErrNotSupported](err); s != nil || !ok {
+				t.Fatalf("unsupported input rate: %+v, %v", s, err)
+			}
+		})
 		t.Run("valid", func(t *testing.T) {
 			t.Run("rate limits", func(t *testing.T) {
 				endpoint := realtimePeer(t, func(ctx context.Context, ws *websocket.Conn) {

@@ -168,6 +168,9 @@ func ConnectRealtimeSession(ctx context.Context, hc *http.Client, model string, 
 				return nil, err
 			}
 		case *genai.RealtimeOptionAudio:
+			if r := o.InputFormat.SampleRate; r != 0 && r != setup.Audio.Input.Format.Rate {
+				return nil, fmt.Errorf("OpenAI realtime input is PCM16 at %d Hz: %w", setup.Audio.Input.Format.Rate, &base.ErrNotSupported{Options: []string{"input sample rate"}})
+			}
 			setup.Audio.Output.Voice.Name = o.Voice
 			outputTranscription = o.OutputTranscription
 			if o.InputTranscription {

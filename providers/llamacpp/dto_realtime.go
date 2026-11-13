@@ -286,8 +286,9 @@ type SessionConfig struct {
 
 // AudioConfig groups input and output audio settings.
 type AudioConfig struct {
-	Input  AudioInput  `json:"input"`
-	Output AudioOutput `json:"output"`
+	Input AudioInput `json:"input"`
+	// Output is absent for a model without audio generation.
+	Output AudioOutput `json:"output,omitzero"`
 }
 
 // AudioInput configures microphone audio.

@@ -316,7 +316,8 @@ func (c *Client) HTTPClient() *http.Client {
 // and HTTP authentication. The model must explicitly support Live; use a bare
 // model ID, such as gemini-3.8-live. No model-list request occurs. The
 // configuration defaults to server VAD, 16 kHz mono PCM input and 24 kHz mono PCM
-// output. Native-audio models output audio only; request transcripts separately.
+// output. RealtimeOptionAudio.InputFormat selects another input rate; Gemini
+// resamples it. Native-audio models output audio only; request transcripts separately.
 //
 // Server VAD detects turn ends and interrupts the current response. Manual
 // detection disables it: send ActivityStart, audio chunks, then ActivityEnd.
@@ -350,6 +351,7 @@ func (c *Client) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOpti
 		GenerationConfig:    LiveGenerationConfig{ResponseModalities: []Modality{ModalityAudio}},
 		RealtimeInputConfig: LiveRealtimeInputConfig{ActivityHandling: LiveActivityInterrupts, TurnCoverage: LiveTurnOnlyActivity},
 	}
+	var inputFormat genai.AudioFormat
 	var providerOpts []genai.RealtimeOption
 	seen := make(map[reflect.Type]struct{}, len(opts))
 	for _, opt := range opts {
@@ -386,6 +388,9 @@ func (c *Client) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOpti
 				return nil, err
 			}
 		case *genai.RealtimeOptionAudio:
+			// Gemini Live resamples input at any rate declared in the blob MIME type:
+			// https://aistudio.google.com/docs/live-api/capabilities
+			inputFormat = o.InputFormat
 			if o.Voice != "" {
 				setup.GenerationConfig.SpeechConfig = &LiveSpeechConfig{VoiceConfig: LiveVoiceConfig{PrebuiltVoiceConfig: LivePrebuiltVoiceConfig{VoiceName: o.Voice}}}
 			}
@@ -465,8 +470,11 @@ func (c *Client) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOpti
 	if err != nil {
 		return nil, err
 	}
+	if inputFormat == (genai.AudioFormat{}) {
+		inputFormat = genai.AudioFormat{SampleRate: 16000}
+	}
 	info := genai.RealtimeSessionInfo{
-		InputFormat:   genai.AudioFormat{SampleRate: 16000},
+		InputFormat:   inputFormat,
 		OutputFormat:  genai.AudioFormat{SampleRate: 24000},
 		TurnDetection: genai.RealtimeTurnServer,
 	}

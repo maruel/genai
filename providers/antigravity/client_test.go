@@ -193,6 +193,17 @@ func TestClient(t *testing.T) {
 				t.Errorf("text = %q, want 42", got)
 			}
 		})
+		t.Run("SystemPrompt", func(t *testing.T) {
+			c := newTestClient(t, "GenSync_SystemPrompt", genai.ProviderOptionModel(testModel))
+			res, err := c.GenSync(t.Context(), genai.Messages{genai.NewTextMessage("Say hello.")},
+				&genai.GenOptionText{SystemPrompt: "Whatever the user says, reply only with the word PINEAPPLE."})
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got := strings.TrimSpace(replyText(&res)); got != "PINEAPPLE" {
+				t.Errorf("text = %q, want PINEAPPLE", got)
+			}
+		})
 		t.Run("DecodeAs", func(t *testing.T) {
 			type answer struct {
 				Color string `json:"color"`
@@ -285,7 +296,7 @@ func TestGenSync(t *testing.T) {
 						ExtraArgs: []string{"--add-dir", "/tmp/x"},
 					},
 					want: []string{
-						"--conversation prev", "--dangerously-skip-permissions", "--effort high",
+						"--agent " + agentName, "--conversation prev", "--dangerously-skip-permissions", "--effort high",
 						"--mode " + string(ModePlan), "--sandbox", "--add-dir /tmp/x",
 					},
 					notWant: []string{"--disable-slash-commands"},
@@ -293,7 +304,7 @@ func TestGenSync(t *testing.T) {
 			} {
 				t.Run(tc.name, func(t *testing.T) {
 					var args []string
-					if _, err := newOutputClient(t, out, &args, &tc.opt).GenSync(t.Context(), tc.msgs, genai.EffortHigh); err != nil {
+					if _, err := newOutputClient(t, out, &args, &tc.opt).GenSync(t.Context(), tc.msgs, genai.EffortHigh, &genai.GenOptionText{SystemPrompt: "sys"}); err != nil {
 						t.Fatal(err)
 					}
 					joined := " " + strings.Join(args, " ") + " "

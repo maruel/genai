@@ -180,6 +180,11 @@ type GenOptionText struct {
 	// TopLogprobs requests to return the top logprobs in the reply.
 	TopLogprobs int64
 	// SystemPrompt is the prompt to use for the system role.
+	//
+	// CLI-based providers pass it through the CLI's own mechanism, such as a
+	// flag, an agent definition, or a profile patch. How much of the CLI's
+	// own prompt it replaces, and how it behaves on a resumed session, differs
+	// per provider; see the provider's package documentation.
 	SystemPrompt string
 
 	// TopK adjusts sampling where only the N first candidates are considered.

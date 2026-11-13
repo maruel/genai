@@ -33,6 +33,21 @@
 // <id> and sends only the last user message.
 // Failed subprocesses also return an AgentError when agy emits a structured
 // AGY_ERROR diagnostic; errors.As can retrieve its status and retryability.
+//
+// # System prompt
+//
+// agy has no system prompt flag. For GenOptionText.SystemPrompt, the provider
+// writes a custom agent to .agents/agents/genai.md in the temporary workspace
+// and selects it with --agent genai. Consequences:
+//
+//   - The prompt replaces agy's whole system prompt, and the agent has no
+//     built-in tools: the agent sets excludeDefaultComponents. A call with a
+//     system prompt cannot edit files, run commands, or search the web.
+//   - agy binds the agent when a conversation starts and ignores --agent when
+//     resuming one. A resumed conversation keeps the system prompt of its first
+//     turn; a different or removed SystemPrompt on a later turn has no effect.
+//   - An --agent flag in ProviderOption.ExtraArgs overrides the generated
+//     agent, and the system prompt is ignored.
 package antigravity
 
 import (
@@ -49,6 +64,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"sync"
@@ -100,7 +116,8 @@ type ProviderOption struct {
 	// "/" reaches the model verbatim.
 	Skills bool
 	// ExtraArgs are appended to the agy command line after the provider's
-	// flags. A repeated flag overrides the earlier value. Flags that select the
+	// flags. A repeated flag overrides the earlier value; --agent overrides the
+	// agent that carries GenOptionText.SystemPrompt. Flags that select the
 	// print mode or the input and output formats are rejected because the
 	// provider owns the protocol.
 	ExtraArgs []string
@@ -184,7 +201,6 @@ type Client struct {
 	binOnce sync.Once
 	binErr  error
 	bin     string
-	exec    genai.Starter
 }
 
 // Close implements io.Closer. It currently does nothing.
@@ -287,8 +303,9 @@ const conversationIDKey = "conversation_id"
 
 // callOpts holds per-call options parsed from the GenOption slice.
 type callOpts struct {
-	jsonSchema genai.JSONSchema
-	effort     Effort
+	jsonSchema   genai.JSONSchema
+	effort       Effort
+	systemPrompt string
 }
 
 type unsupportedCheck struct {
@@ -334,11 +351,11 @@ func parseOpts(opts []genai.GenOption) (callOpts, error) {
 				}
 				co.jsonSchema = s
 			}
+			co.systemPrompt = v.SystemPrompt
 			for _, f := range []unsupportedCheck{
 				{"GenOptionText.MaxTokens", v.MaxTokens != 0},
 				{"GenOptionText.ReplyAsJSON", v.ReplyAsJSON},
 				{"GenOptionText.Stop", len(v.Stop) != 0},
-				{"GenOptionText.SystemPrompt", v.SystemPrompt != ""},
 				{"GenOptionText.Temperature", v.Temperature != 0},
 				{"GenOptionText.TopK", v.TopK != 0},
 				{"GenOptionText.TopLogprobs", v.TopLogprobs != 0},
@@ -378,13 +395,56 @@ func (c *Client) ensureBin() error {
 			bin = "agy"
 		}
 		c.bin = bin
-		s := genai.Starter((&cmdExecutor{bin: bin}).start)
-		if c.starterWrapper != nil {
-			s = c.starterWrapper(s)
-		}
-		c.exec = s
 	})
 	return c.binErr
+}
+
+// agentName names the custom agent that carries GenOptionText.SystemPrompt.
+const agentName = "genai"
+
+// start launches agy in a fresh empty temporary workspace, removed by wait.
+// agy sees no project files and its writes are discarded with the directory.
+// A non-empty systemPrompt is written as the custom agent agentName.
+func (c *Client) start(ctx context.Context, args []string, systemPrompt string) (io.WriteCloser, io.ReadCloser, func() error, error) {
+	dir, err := os.MkdirTemp("", "genai-antigravity-*")
+	if err != nil {
+		return nil, nil, nil, fmt.Errorf("create temp dir: %w", err)
+	}
+	if systemPrompt != "" {
+		if err := writeAgent(dir, systemPrompt); err != nil {
+			return nil, nil, nil, errors.Join(err, os.RemoveAll(dir))
+		}
+	}
+	s := genai.Starter((&cmdExecutor{bin: c.bin, dir: dir}).start)
+	if c.starterWrapper != nil {
+		s = c.starterWrapper(s)
+	}
+	stdin, stdout, wait, err := s(ctx, args)
+	if err != nil {
+		return nil, nil, nil, errors.Join(err, os.RemoveAll(dir))
+	}
+	return stdin, stdout, func() error {
+		return errors.Join(wait(), os.RemoveAll(dir))
+	}, nil
+}
+
+// writeAgent writes the main agent agentName with systemPrompt as its whole
+// system prompt into the workspace dir.
+func writeAgent(dir, systemPrompt string) error {
+	agents := filepath.Join(dir, ".agents", "agents")
+	if err := os.MkdirAll(agents, 0o700); err != nil {
+		return fmt.Errorf("create agents dir: %w", err)
+	}
+	b := []byte("---\nname: " + agentName + "\n" +
+		"description: genai GenOptionText.SystemPrompt\n" +
+		"mainAgent: true\n" +
+		"subagent: false\n" +
+		"excludeDefaultComponents: true\n" +
+		"---\n\n" + systemPrompt + "\n")
+	if err := os.WriteFile(filepath.Join(agents, agentName+".md"), b, 0o600); err != nil {
+		return fmt.Errorf("write agent: %w", err)
+	}
+	return nil
 }
 
 func (c *Client) listModels(ctx context.Context) ([]Model, error) {
@@ -393,7 +453,7 @@ func (c *Client) listModels(ctx context.Context) ([]Model, error) {
 	}
 	// The models subcommand rejects its own --output-format; the global flag
 	// works.
-	stdin, stdout, wait, err := c.exec(ctx, []string{"--output-format", "stream-json", "models"})
+	stdin, stdout, wait, err := c.start(ctx, []string{"--output-format", "stream-json", "models"}, "")
 	if err != nil {
 		return nil, err
 	}
@@ -510,7 +570,7 @@ func (c *Client) run(ctx context.Context, msgs genai.Messages, co *callOpts, onT
 
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
-	stdin, stdout, wait, err := c.exec(ctx, args)
+	stdin, stdout, wait, err := c.start(ctx, args, co.systemPrompt)
 	if err != nil {
 		return res, err
 	}
@@ -560,6 +620,9 @@ func (c *Client) buildArgs(co *callOpts, conversationID string) []string {
 	}
 	if c.model != "" {
 		args = append(args, "--model", c.model)
+	}
+	if co.systemPrompt != "" {
+		args = append(args, "--agent", agentName)
 	}
 	if co.effort != "" {
 		args = append(args, "--effort", string(co.effort))
@@ -676,17 +739,14 @@ func buildResult(r *JSONOutput, text string, u *JSONUsage) genai.Result {
 }
 
 // cmdExecutor is the production executor backed by exec.Cmd.
-type cmdExecutor struct{ bin string }
+type cmdExecutor struct {
+	bin string
+	dir string
+}
 
 func (e *cmdExecutor) start(ctx context.Context, args []string) (io.WriteCloser, io.ReadCloser, func() error, error) {
-	// Fresh empty workspace: agy sees no project files and its writes are
-	// discarded with the directory.
-	dir, err := os.MkdirTemp("", "genai-antigravity-*")
-	if err != nil {
-		return nil, nil, nil, fmt.Errorf("create temp dir: %w", err)
-	}
 	cmd := exec.CommandContext(ctx, e.bin, args...)
-	cmd.Dir = dir
+	cmd.Dir = e.dir
 	var diagnostics agentErrorWriter
 	cmd.Stderr = &diagnostics
 	// A background descendant can retain the stderr pipe after agy exits or
@@ -695,14 +755,14 @@ func (e *cmdExecutor) start(ctx context.Context, args []string) (io.WriteCloser,
 	cmd.WaitDelay = time.Second
 	stdin, err := cmd.StdinPipe()
 	if err != nil {
-		return nil, nil, nil, errors.Join(fmt.Errorf("stdin pipe: %w", err), os.RemoveAll(dir))
+		return nil, nil, nil, fmt.Errorf("stdin pipe: %w", err)
 	}
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
-		return nil, nil, nil, errors.Join(fmt.Errorf("stdout pipe: %w", err), os.RemoveAll(dir))
+		return nil, nil, nil, fmt.Errorf("stdout pipe: %w", err)
 	}
 	if err := cmd.Start(); err != nil {
-		return nil, nil, nil, errors.Join(fmt.Errorf("start agy: %w", err), os.RemoveAll(dir))
+		return nil, nil, nil, fmt.Errorf("start agy: %w", err)
 	}
 	return stdin, stdout, func() error {
 		err := cmd.Wait()
@@ -714,7 +774,7 @@ func (e *cmdExecutor) start(ctx context.Context, args []string) (io.WriteCloser,
 		if err != nil {
 			err = errors.Join(err, diagnostics.finish())
 		}
-		return errors.Join(err, os.RemoveAll(dir))
+		return err
 	}, nil
 }
 

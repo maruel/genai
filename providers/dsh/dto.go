@@ -2,7 +2,7 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
-// Native DeepSeek Harness ACP effort values.
+// Native DeepSeek Harness ACP effort values and profile patch entries.
 //
 // Source: https://github.com/deepseek-ai/deepseek-harness,
 // dsh-v0.2.1-rc.5, commit b830ec950faba0a46dda564be3e2d854afed94f1.
@@ -23,3 +23,24 @@ const (
 	EffortHigh Effort = "high"
 	EffortMax  Effort = "max"
 )
+
+// Patch is one entry of a Cordis patch list passed with --patch. The patch
+// replaces the whole config of the entry with the same ID.
+type Patch struct {
+	ID     string             `json:"id"`
+	Config SystemPromptConfig `json:"config"`
+}
+
+// patchIDSystemPrompt is the ID of the @deepseek-ai/dsh-system-prompt entry.
+const patchIDSystemPrompt = "system-prompt"
+
+// SystemPromptConfig is the @deepseek-ai/dsh-system-prompt plugin config,
+// from packages/core/system-prompt/src/index.ts.
+type SystemPromptConfig struct {
+	// IncludeHarnessIdentity includes the fixed harness identity before the
+	// persona. dsh defaults it to true.
+	IncludeHarnessIdentity bool `json:"includeHarnessIdentity"`
+	// PersonaPrefix is the persona template before first-party guidance. dsh
+	// replaces {{name}} references and fails on unknown or malformed ones.
+	PersonaPrefix string `json:"personaPrefix,omitzero"`
+}

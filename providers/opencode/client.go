@@ -23,6 +23,28 @@
 // always returned inside Reply.Opaque["session_id"]. When the message history
 // contains a previous session ID, it is automatically picked up: session/load
 // is used instead of session/new and only the last user message is sent.
+//
+// # System prompt
+//
+// ACP has no system prompt field. For GenOptionText.SystemPrompt, the provider
+// writes an OpenCode agent file to .opencode/agent/<mode>.md in the temporary
+// working directory and selects that mode. Consequences:
+//
+//   - Without GenOption.Mode, the call runs the agent "genai" instead of
+//     OpenCode's default agent. It has OpenCode's default permissions and
+//     tools, and any "genai" agent from the user's configuration is merged
+//     into it.
+//   - With GenOption.Mode, the file overrides only that agent's prompt and
+//     sets it to a primary agent; its permissions and tools stay. A "/" in the
+//     mode names a nested agent file. A mode that leaves the working
+//     directory, such as one with "..", fails the call.
+//   - The prompt replaces OpenCode's provider prompt. OpenCode still appends
+//     its skills, environment, and instruction files.
+//   - OpenCode trims leading and trailing white space from the prompt.
+//   - OpenCode applies the agent prompt on every request, so a resumed
+//     session uses the system prompt of the latest call.
+//   - The agent file is visible to the agent's tools in its working
+//     directory.
 package opencode
 
 import (
@@ -37,6 +59,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 	"sync"
 
@@ -86,7 +109,9 @@ func (p *ProviderOption) Validate() error {
 // GenOption configures one prompt of a running opencode session.
 type GenOption struct {
 	// Mode selects an OpenCode session mode returned by ACP. An empty value
-	// leaves OpenCode's current mode intact.
+	// leaves OpenCode's current mode intact, unless GenOptionText.SystemPrompt
+	// is set: then the call selects the agent "genai". With a system prompt,
+	// Mode is also a file name; see the package documentation.
 	Mode Mode
 
 	_ struct{}
@@ -213,7 +238,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	if err := c.ensureBin(); err != nil {
 		return nil, err
 	}
-	stdin, stdout, wait, cwd, err := c.start(ctx, []string{"acp"})
+	stdin, stdout, wait, cwd, err := c.start(ctx, []string{"acp"}, &callOpts{})
 	if err != nil {
 		return nil, err
 	}
@@ -260,7 +285,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 	}
 	resumeSessionID := msgutil.ExtractOpaqueID(msgs, acp.SessionIDKey)
 
-	stdin, stdout, wait, cwd, err := c.start(ctx, append([]string{"acp"}, c.opts.ExtraArgs...))
+	stdin, stdout, wait, cwd, err := c.start(ctx, append([]string{"acp"}, c.opts.ExtraArgs...), &co)
 	if err != nil {
 		return genai.Result{}, err
 	}
@@ -272,7 +297,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 	s, err := acp.Handshake(stdin, stdout, acpOptions(cwd), acp.SessionRequest{
 		Model:           c.model,
 		Effort:          string(co.effort),
-		Mode:            string(co.mode),
+		Mode:            string(co.sessionMode()),
 		ResumeSessionID: resumeSessionID,
 	})
 	if err != nil {
@@ -310,7 +335,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 		finalErr error
 	)
 	seq := func(yield func(genai.Reply) bool) {
-		stdin, stdout, wait, cwd, startErr := c.start(ctx, append([]string{"acp"}, c.opts.ExtraArgs...))
+		stdin, stdout, wait, cwd, startErr := c.start(ctx, append([]string{"acp"}, c.opts.ExtraArgs...), &co)
 		if startErr != nil {
 			finalErr = startErr
 			return
@@ -323,7 +348,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 		s, hsErr := acp.Handshake(stdin, stdout, acpOptions(cwd), acp.SessionRequest{
 			Model:           c.model,
 			Effort:          string(co.effort),
-			Mode:            string(co.mode),
+			Mode:            string(co.sessionMode()),
 			ResumeSessionID: resumeSessionID,
 		})
 		if hsErr != nil {
@@ -373,11 +398,17 @@ func (c *Client) ensureBin() error {
 }
 
 // start launches the ACP subprocess in a fresh temporary directory and returns
-// the ACP session working directory.
-func (c *Client) start(ctx context.Context, args []string) (io.WriteCloser, io.ReadCloser, func() error, string, error) {
+// the ACP session working directory. It writes the agent carrying
+// co.systemPrompt there.
+func (c *Client) start(ctx context.Context, args []string, co *callOpts) (io.WriteCloser, io.ReadCloser, func() error, string, error) {
 	dir, err := os.MkdirTemp("", "genai-opencode-*")
 	if err != nil {
 		return nil, nil, nil, "", fmt.Errorf("create temp dir: %w", err)
+	}
+	if co.systemPrompt != "" {
+		if err := writeAgent(dir, co.sessionMode(), co.systemPrompt); err != nil {
+			return nil, nil, nil, "", errors.Join(err, os.RemoveAll(dir))
+		}
 	}
 	s := cli.NewStarter(c.bin, dir)
 	if c.starterWrapper != nil {
@@ -392,10 +423,39 @@ func (c *Client) start(ctx context.Context, args []string) (io.WriteCloser, io.R
 	}, dir, nil
 }
 
+// agentName names the agent that carries GenOptionText.SystemPrompt when no
+// GenOption.Mode is set.
+const agentName Mode = "genai"
+
+// writeAgent writes the primary agent mode with systemPrompt as its prompt
+// into the working directory dir. The file overrides only the prompt and mode
+// of an existing agent with that name.
+func writeAgent(dir string, mode Mode, systemPrompt string) (err error) {
+	// mode comes from the caller and may contain path separators; the root
+	// confines the write to dir.
+	root, err := os.OpenRoot(dir)
+	if err != nil {
+		return err
+	}
+	defer func() { err = errors.Join(err, root.Close()) }()
+	name := filepath.Join(".opencode", "agent", filepath.FromSlash(string(mode))+".md")
+	if err := root.MkdirAll(filepath.Dir(name), 0o700); err != nil {
+		return fmt.Errorf("create agent dir: %w", err)
+	}
+	// The front matter keeps a prompt that starts with "---" from being parsed
+	// as front matter.
+	b := []byte("---\nmode: primary\n---\n\n" + systemPrompt + "\n")
+	if err := root.WriteFile(name, b, 0o600); err != nil {
+		return fmt.Errorf("write agent: %w", err)
+	}
+	return nil
+}
+
 // callOpts holds the settings of one call.
 type callOpts struct {
-	effort Effort
-	mode   Mode
+	effort       Effort
+	mode         Mode
+	systemPrompt string
 }
 
 // parseOpts collects per-call generation settings.
@@ -434,6 +494,7 @@ func parseOpts(opts []genai.GenOption) (callOpts, error) {
 			}
 		case genai.ReasoningOutput:
 		case *genai.GenOptionText:
+			co.systemPrompt = v.SystemPrompt
 			if v.Temperature != 0 {
 				unsupported = append(unsupported, "GenOptionText.Temperature")
 			}
@@ -445,9 +506,6 @@ func parseOpts(opts []genai.GenOption) (callOpts, error) {
 			}
 			if v.TopLogprobs != 0 {
 				unsupported = append(unsupported, "GenOptionText.TopLogprobs")
-			}
-			if v.SystemPrompt != "" {
-				unsupported = append(unsupported, "GenOptionText.SystemPrompt")
 			}
 			if v.TopK != 0 {
 				unsupported = append(unsupported, "GenOptionText.TopK")
@@ -469,6 +527,15 @@ func parseOpts(opts []genai.GenOption) (callOpts, error) {
 		return co, &base.ErrNotSupported{Options: unsupported}
 	}
 	return co, nil
+}
+
+// sessionMode returns the mode to select: GenOption.Mode, or agentName for a
+// system prompt without a mode.
+func (co *callOpts) sessionMode() Mode {
+	if co.mode == "" && co.systemPrompt != "" {
+		return agentName
+	}
+	return co.mode
 }
 
 // wrapACP adds the provider name to an error from the shared ACP engine.

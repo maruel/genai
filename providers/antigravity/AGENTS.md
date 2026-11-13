@@ -56,7 +56,7 @@ sequenceDiagram
     end
 ```
 
-A provider driving it would support a system prompt, custom tools, a response schema, thinking deltas, and
+A provider driving it would support custom tools, a response schema, thinking deltas, and
 policies that disable built-in tools, with DTOs generated from the protos. Costs: API key billing,
 extracting the binary from the PyPI wheel, and a WebSocket transport that `subprocessrecord` does not record.
 

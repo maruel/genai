@@ -148,6 +148,28 @@ func TestClient(t *testing.T) {
 				t.Errorf("FinishReason: got %q, want %q", res.Usage.FinishReason, genai.FinishedStop)
 			}
 		})
+		t.Run("SystemPrompt", func(t *testing.T) {
+			for _, tc := range []struct {
+				name string
+				mode Mode
+			}{
+				{"GenSync_SystemPrompt", ""},
+				{"GenSync_SystemPrompt_plan", "plan"},
+			} {
+				t.Run(tc.name, func(t *testing.T) {
+					c := newTestClient(t, tc.name, genai.ProviderOptionModel("opencode/big-pickle"))
+					res, err := c.GenSync(t.Context(), genai.Messages{genai.NewTextMessage("Say hello.")},
+						&genai.GenOptionText{SystemPrompt: "Whatever the user says, reply only with the word PINEAPPLE."},
+						&GenOption{Mode: tc.mode})
+					if err != nil {
+						t.Fatal(err)
+					}
+					if got := strings.TrimSpace(res.String()); got != "PINEAPPLE" {
+						t.Errorf("text = %q, want PINEAPPLE", got)
+					}
+				})
+			}
+		})
 		t.Run("session_id_always_in_opaque", func(t *testing.T) {
 			t.Setenv("OPENCODE_CONFIG_CONTENT", `{"model":"opencode/big-pickle"}`)
 			c := newTestClient(t, "GenSync_hello_nomodel")
@@ -404,6 +426,24 @@ func TestParseOpts(t *testing.T) {
 	}
 }
 
+func TestWriteAgent(t *testing.T) {
+	t.Run("error", func(t *testing.T) {
+		dir := t.TempDir()
+		if err := writeAgent(filepath.Join(dir, "work"), "x", "sys"); err == nil {
+			t.Error("missing dir: expected error")
+		}
+		if err := os.Mkdir(filepath.Join(dir, "work"), 0o700); err != nil {
+			t.Fatal(err)
+		}
+		if err := writeAgent(filepath.Join(dir, "work"), "../../../escape", "sys"); err == nil {
+			t.Error("escaping mode: expected error")
+		}
+		if _, err := os.Stat(filepath.Join(dir, "escape.md")); !errors.Is(err, os.ErrNotExist) {
+			t.Errorf("escaping mode wrote outside the working directory: %v", err)
+		}
+	})
+}
+
 func TestGenOption(t *testing.T) {
 	t.Run("error", func(t *testing.T) {
 		if err := (&GenOption{Mode: "   "}).Validate(); err == nil {
@@ -414,7 +454,7 @@ func TestGenOption(t *testing.T) {
 		_, err := parseOpts([]genai.GenOption{
 			genai.GenOptionSeed(1),
 			&genai.GenOptionText{
-				Temperature: 0.5, TopP: 0.5, MaxTokens: 10, TopLogprobs: 2, SystemPrompt: "sys",
+				Temperature: 0.5, TopP: 0.5, MaxTokens: 10, TopLogprobs: 2,
 				TopK: 2, Stop: []string{"stop"}, ReplyAsJSON: true, DecodeAs: &struct{}{},
 			},
 			&genai.GenOptionTools{},
@@ -431,7 +471,7 @@ func TestGenOption(t *testing.T) {
 		want := []string{
 			"GenOptionSeed",
 			"GenOptionText.Temperature", "GenOptionText.TopP", "GenOptionText.MaxTokens", "GenOptionText.TopLogprobs",
-			"GenOptionText.SystemPrompt", "GenOptionText.TopK", "GenOptionText.Stop", "GenOptionText.ReplyAsJSON",
+			"GenOptionText.TopK", "GenOptionText.Stop", "GenOptionText.ReplyAsJSON",
 			"GenOptionText.DecodeAs",
 			"GenOptionTools", "GenOptionWeb", "GenOptionPollInterval", "GenOptionAudio", "GenOptionImage", "GenOptionVideo",
 		}

@@ -186,6 +186,17 @@ func TestClient(t *testing.T) {
 					t.Errorf("context usage: got %d/%d, want 7496/1000000", res.Usage.ContextTokens, res.Usage.ContextWindow)
 				}
 			})
+			t.Run("SystemPrompt", func(t *testing.T) {
+				c := newTestClient(t, "GenSync_SystemPrompt", genai.ProviderOptionModel("deepseek-official/deepseek-v4-flash"))
+				res, err := c.GenSync(t.Context(), genai.Messages{genai.NewTextMessage("Say hello.")},
+					&genai.GenOptionText{SystemPrompt: "Whatever the user says, reply only with the word PINEAPPLE."})
+				if err != nil {
+					t.Fatal(err)
+				}
+				if got := strings.TrimSpace(res.String()); got != "PINEAPPLE" {
+					t.Errorf("text = %q, want PINEAPPLE", got)
+				}
+			})
 			t.Run("session_id_always_in_opaque", func(t *testing.T) {
 				c := newTestClient(t, "GenSync_hello_nomodel")
 				msgs := genai.Messages{genai.NewTextMessage("hello")}
@@ -550,7 +561,7 @@ func TestGenOption(t *testing.T) {
 		_, err := parseOpts([]genai.GenOption{
 			genai.GenOptionSeed(1),
 			&genai.GenOptionText{
-				Temperature: 0.5, TopP: 0.5, MaxTokens: 10, TopLogprobs: 2, SystemPrompt: "sys",
+				Temperature: 0.5, TopP: 0.5, MaxTokens: 10, TopLogprobs: 2,
 				TopK: 2, Stop: []string{"stop"}, ReplyAsJSON: true, DecodeAs: &struct{}{},
 			},
 			&genai.GenOptionTools{},
@@ -567,7 +578,7 @@ func TestGenOption(t *testing.T) {
 		want := []string{
 			"GenOptionSeed",
 			"GenOptionText.Temperature", "GenOptionText.TopP", "GenOptionText.MaxTokens", "GenOptionText.TopLogprobs",
-			"GenOptionText.SystemPrompt", "GenOptionText.TopK", "GenOptionText.Stop", "GenOptionText.ReplyAsJSON",
+			"GenOptionText.TopK", "GenOptionText.Stop", "GenOptionText.ReplyAsJSON",
 			"GenOptionText.DecodeAs",
 			"GenOptionTools", "GenOptionWeb", "GenOptionPollInterval", "GenOptionAudio", "GenOptionImage", "GenOptionVideo",
 		}

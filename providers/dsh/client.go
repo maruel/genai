@@ -36,6 +36,25 @@
 // always returned inside Reply.Opaque["session_id"]. When the message history
 // contains a previous session ID, it is automatically picked up: session/resume
 // is used instead of session/new and only the last user message is sent.
+//
+// # System prompt
+//
+// ACP has no system prompt field. For GenOptionText.SystemPrompt, the provider
+// writes the profile patch genai.patch.yml to the temporary working directory
+// and passes it with --patch. Consequences:
+//
+//   - The prompt replaces only dsh's harness identity and persona. dsh still
+//     appends its first-party guidance and runtime context, and the agent
+//     keeps its tools.
+//   - dsh treats {{name}} in the prompt as a template variable, such as
+//     {{model}}. An unknown or malformed reference fails the call; dsh has no
+//     escape syntax. A lone "{{" without a later "}}" stays literal.
+//   - dsh reads launcher flags such as --patch only before the first app
+//     argument. A leading --patch in ProviderOption.ExtraArgs applies after
+//     the provider's patch; one that targets the system-prompt entry replaces
+//     the system prompt.
+//   - The patch file is visible to the agent's tools in its working
+//     directory.
 package dsh
 
 import (
@@ -50,6 +69,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 	"sync"
 
@@ -84,7 +104,8 @@ type ProviderOption struct {
 	// DangerouslySkipPermissions approves every permission request the agent
 	// makes, such as file edits and shell commands.
 	DangerouslySkipPermissions bool
-	// ExtraArgs are appended to the `dsh --profile acp` command line.
+	// ExtraArgs are appended to the `dsh --profile acp` command line, after the
+	// --patch that carries GenOptionText.SystemPrompt.
 	ExtraArgs []string
 
 	_ struct{}
@@ -204,7 +225,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	if err := c.ensureBin(); err != nil {
 		return nil, err
 	}
-	stdin, stdout, wait, cwd, err := c.start(ctx, c.args())
+	stdin, stdout, wait, cwd, err := c.start(ctx, "")
 	if err != nil {
 		return nil, err
 	}
@@ -255,7 +276,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 	}
 	req := c.sessionRequest(msgs, co)
 
-	stdin, stdout, wait, cwd, err := c.start(ctx, c.args())
+	stdin, stdout, wait, cwd, err := c.start(ctx, co.systemPrompt)
 	if err != nil {
 		return genai.Result{}, err
 	}
@@ -300,7 +321,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 		finalErr error
 	)
 	seq := func(yield func(genai.Reply) bool) {
-		stdin, stdout, wait, cwd, startErr := c.start(ctx, c.args())
+		stdin, stdout, wait, cwd, startErr := c.start(ctx, co.systemPrompt)
 		if startErr != nil {
 			finalErr = startErr
 			return
@@ -358,17 +379,25 @@ func (c *Client) ensureBin() error {
 }
 
 // start launches the ACP subprocess in a fresh temporary directory and returns
-// the ACP session working directory.
-func (c *Client) start(ctx context.Context, args []string) (io.WriteCloser, io.ReadCloser, func() error, string, error) {
+// the ACP session working directory. A non-empty systemPrompt is written there
+// as a profile patch.
+func (c *Client) start(ctx context.Context, systemPrompt string) (io.WriteCloser, io.ReadCloser, func() error, string, error) {
 	dir, err := os.MkdirTemp("", "genai-dsh-*")
 	if err != nil {
 		return nil, nil, nil, "", fmt.Errorf("create temp dir: %w", err)
+	}
+	patch := ""
+	if systemPrompt != "" {
+		patch = filepath.Join(dir, "genai.patch.yml")
+		if err := writePatch(patch, systemPrompt); err != nil {
+			return nil, nil, nil, "", errors.Join(err, os.RemoveAll(dir))
+		}
 	}
 	s := cli.NewStarter(c.bin, dir)
 	if c.starterWrapper != nil {
 		s = c.starterWrapper(s)
 	}
-	stdin, stdout, wait, err := s(ctx, args)
+	stdin, stdout, wait, err := s(ctx, c.args(patch))
 	if err != nil {
 		return nil, nil, nil, "", errors.Join(err, os.RemoveAll(dir))
 	}
@@ -377,9 +406,30 @@ func (c *Client) start(ctx context.Context, args []string) (io.WriteCloser, io.R
 	}, dir, nil
 }
 
-// args returns the command-line arguments for the ACP profile.
-func (c *Client) args() []string {
-	return append([]string{"--profile", "acp"}, c.opts.ExtraArgs...)
+// args returns the command-line arguments for the ACP profile. A non-empty
+// patch adds that profile patch file.
+func (c *Client) args(patch string) []string {
+	args := []string{"--profile", "acp"}
+	if patch != "" {
+		args = append(args, "--patch", patch)
+	}
+	return append(args, c.opts.ExtraArgs...)
+}
+
+// writePatch writes the profile patch that sets systemPrompt to path. The patch
+// list is JSON, which the YAML patch loader accepts.
+func writePatch(path, systemPrompt string) error {
+	b, err := json.Marshal([]Patch{{
+		ID:     patchIDSystemPrompt,
+		Config: SystemPromptConfig{PersonaPrefix: systemPrompt},
+	}})
+	if err != nil {
+		return err
+	}
+	if err := os.WriteFile(path, b, 0o600); err != nil {
+		return fmt.Errorf("write patch: %w", err)
+	}
+	return nil
 }
 
 // sessionRequest builds the handshake settings for a call.
@@ -393,7 +443,8 @@ func (c *Client) sessionRequest(msgs genai.Messages, co callOpts) acp.SessionReq
 
 // callOpts holds the settings of one call.
 type callOpts struct {
-	effort Effort
+	effort       Effort
+	systemPrompt string
 }
 
 // parseOpts collects per-call generation settings.
@@ -424,6 +475,7 @@ func parseOpts(opts []genai.GenOption) (callOpts, error) {
 			}
 		case genai.ReasoningOutput:
 		case *genai.GenOptionText:
+			co.systemPrompt = v.SystemPrompt
 			if v.Temperature != 0 {
 				unsupported = append(unsupported, "GenOptionText.Temperature")
 			}
@@ -435,9 +487,6 @@ func parseOpts(opts []genai.GenOption) (callOpts, error) {
 			}
 			if v.TopLogprobs != 0 {
 				unsupported = append(unsupported, "GenOptionText.TopLogprobs")
-			}
-			if v.SystemPrompt != "" {
-				unsupported = append(unsupported, "GenOptionText.SystemPrompt")
 			}
 			if v.TopK != 0 {
 				unsupported = append(unsupported, "GenOptionText.TopK")

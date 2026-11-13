@@ -134,6 +134,17 @@ func TestClient(t *testing.T) {
 				t.Errorf("FinishReason: got %q, want %q", res.Usage.FinishReason, genai.FinishedStop)
 			}
 		})
+		t.Run("SystemPrompt", func(t *testing.T) {
+			c := newTestClient(t, "GenSync_SystemPrompt", genai.ProviderOptionModel("google/gemini-3.1-flash-lite-preview"))
+			res, err := c.GenSync(t.Context(), genai.Messages{genai.NewTextMessage("Say hello.")},
+				&genai.GenOptionText{SystemPrompt: "Whatever the user says, reply only with the word PINEAPPLE."})
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got := strings.TrimSpace(res.String()); got != "PINEAPPLE" {
+				t.Errorf("text = %q, want PINEAPPLE", got)
+			}
+		})
 	})
 
 	t.Run("gen_stream", func(t *testing.T) {
@@ -336,11 +347,11 @@ func TestProviderOption(t *testing.T) {
 			{
 				"options",
 				ProviderOption{Skills: true, ExtraArgs: []string{"--no-tools"}},
-				[]string{"--mode", "rpc", "--no-session", "--no-tools"},
+				[]string{"--mode", "rpc", "--no-session", "--no-tools", "--system-prompt", "/tmp/sys.md"},
 			},
 		} {
 			t.Run(tc.name, func(t *testing.T) {
-				if got := tc.p.args(); !slices.Equal(got, tc.want) {
+				if got := tc.p.args("/tmp/sys.md"); !slices.Equal(got, tc.want) {
 					t.Errorf("args = %q, want %q", got, tc.want)
 				}
 			})
@@ -386,27 +397,22 @@ func TestParseOpts(t *testing.T) {
 				if err != nil {
 					t.Fatal(err)
 				}
-				if string(got) != tc.want {
-					t.Errorf("native effort = %q, want %q", string(got), tc.want)
+				if string(got.effort) != tc.want {
+					t.Errorf("native effort = %q, want %q", got.effort, tc.want)
 				}
 			})
 		}
 	})
 
 	t.Run("valid", func(t *testing.T) {
-		got, err := parseOpts([]genai.GenOption{genai.EffortLow})
-		if err != nil || got != ThinkingLow {
-			t.Errorf("effort = %q, err = %v, want low", got, err)
+		got, err := parseOpts([]genai.GenOption{genai.EffortLow, &genai.GenOptionText{SystemPrompt: "x"}})
+		if want := (callOpts{effort: ThinkingLow, systemPrompt: "x"}); err != nil || got != want {
+			t.Errorf("parseOpts = %+v, err = %v, want %+v", got, err, want)
 		}
 	})
 	t.Run("error", func(t *testing.T) {
 		if _, err := parseOpts([]genai.GenOption{genai.EffortLevel("turbo")}); err == nil {
 			t.Error("expected error")
-		}
-		if _, err := parseOpts([]genai.GenOption{&genai.GenOptionText{SystemPrompt: "x"}}); err == nil {
-			t.Error("expected ErrNotSupported")
-		} else if _, ok := errors.AsType[*base.ErrNotSupported](err); !ok {
-			t.Errorf("err = %v, want ErrNotSupported", err)
 		}
 	})
 }
@@ -436,7 +442,7 @@ func TestGenOption(t *testing.T) {
 		_, err := parseOpts([]genai.GenOption{
 			genai.GenOptionSeed(1),
 			&genai.GenOptionText{
-				Temperature: 0.5, TopP: 0.5, MaxTokens: 10, TopLogprobs: 2, SystemPrompt: "sys",
+				Temperature: 0.5, TopP: 0.5, MaxTokens: 10, TopLogprobs: 2,
 				TopK: 2, Stop: []string{"stop"}, ReplyAsJSON: true, DecodeAs: &struct{}{},
 			},
 			&genai.GenOptionTools{},
@@ -453,7 +459,7 @@ func TestGenOption(t *testing.T) {
 		want := []string{
 			"GenOptionSeed",
 			"GenOptionText.Temperature", "GenOptionText.TopP", "GenOptionText.MaxTokens", "GenOptionText.TopLogprobs",
-			"GenOptionText.SystemPrompt", "GenOptionText.TopK", "GenOptionText.Stop", "GenOptionText.ReplyAsJSON",
+			"GenOptionText.TopK", "GenOptionText.Stop", "GenOptionText.ReplyAsJSON",
 			"GenOptionText.DecodeAs",
 			"GenOptionTools", "GenOptionWeb", "GenOptionPollInterval", "GenOptionAudio", "GenOptionImage", "GenOptionVideo",
 		}

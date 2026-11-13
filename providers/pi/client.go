@@ -23,6 +23,23 @@
 // Each GenSync or GenStream call launches a fresh subprocess. Pi supports
 // multi-turn within a single process, but we spawn fresh for simplicity
 // (matching the codex/opencode pattern).
+//
+// # System prompt
+//
+// GenOptionText.SystemPrompt is passed with --system-prompt. Pi reads that
+// flag's value as a file when it names an existing path, so the provider
+// writes the prompt to system-prompt.md in the temporary working directory and
+// passes that path. Consequences:
+//
+//   - The prompt replaces only Pi's preamble: its tool list, rules, and
+//     documentation pointers. Pi still appends --append-system-prompt text,
+//     project context, skills, and the working directory, and the agent keeps
+//     its tools.
+//   - The per-call prompt overrides a --system-prompt in
+//     ProviderOption.ExtraArgs, which becomes the default for calls without
+//     one.
+//   - The prompt file is visible to the agent's tools in its working
+//     directory.
 package pi
 
 import (
@@ -39,12 +56,14 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 	"sync"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
+	"github.com/maruel/genai/internal/cli"
 	"github.com/maruel/genai/internal/msgutil"
 	"github.com/maruel/genai/scoreboard"
 )
@@ -73,7 +92,9 @@ type ProviderOption struct {
 	// passes --no-skills.
 	Skills bool
 	// ExtraArgs are appended to the pi command line after the provider's
-	// flags. --mode is rejected because the provider owns the RPC protocol.
+	// flags, except the --system-prompt carrying GenOptionText.SystemPrompt,
+	// which comes last so it takes precedence. --mode is rejected because the
+	// provider owns the RPC protocol.
 	ExtraArgs []string
 
 	_ struct{}
@@ -84,52 +105,65 @@ func (p *ProviderOption) Validate() error {
 	return msgutil.CheckExtraArgs(p.ExtraArgs, "mode")
 }
 
-// args returns the pi command line.
-func (p *ProviderOption) args() []string {
+// args returns the pi command line. A non-empty systemPromptFile replaces
+// pi's default system prompt, including one set in ExtraArgs: pi keeps the
+// last --system-prompt.
+func (p *ProviderOption) args(systemPromptFile string) []string {
 	args := []string{"--mode", "rpc", "--no-session"}
 	if !p.Skills {
 		args = append(args, "--no-skills")
 	}
-	return append(args, p.ExtraArgs...)
+	args = append(args, p.ExtraArgs...)
+	if systemPromptFile != "" {
+		args = append(args, "--system-prompt", systemPromptFile)
+	}
+	return args
 }
 
-// parseOpts returns the per-call thinking level.
+// callOpts holds the settings of one call.
+type callOpts struct {
+	effort       ThinkingLevel
+	systemPrompt string
+}
+
+// parseOpts collects per-call settings.
 //
-// It returns a *base.ErrNotSupported alongside the level when an option is
+// It returns a *base.ErrNotSupported alongside the settings when an option is
 // ignored, so the call can proceed.
-func parseOpts(opts []genai.GenOption) (ThinkingLevel, error) {
+func parseOpts(opts []genai.GenOption) (callOpts, error) {
+	var co callOpts
 	if err := base.CheckDuplicateGenOptions(opts); err != nil {
-		return "", err
+		return co, err
 	}
-	var effort ThinkingLevel
 	var unsupported []string
 	for _, opt := range opts {
 		if err := opt.Validate(); err != nil {
-			return "", err
+			return co, err
 		}
 		switch v := opt.(type) {
 		case genai.EffortLevel:
 			switch v {
 			case "":
 			case genai.EffortOff:
-				effort = ThinkingOff
+				co.effort = ThinkingOff
 			case genai.EffortMinimal:
-				effort = ThinkingMinimal
+				co.effort = ThinkingMinimal
 			case genai.EffortLow:
-				effort = ThinkingLow
+				co.effort = ThinkingLow
 			case genai.EffortMedium:
-				effort = ThinkingMedium
+				co.effort = ThinkingMedium
 			case genai.EffortHigh:
-				effort = ThinkingHigh
+				co.effort = ThinkingHigh
 			case genai.EffortXHigh:
-				effort = ThinkingXHigh
+				co.effort = ThinkingXHigh
 			case genai.EffortMax:
-				effort = ThinkingMax
+				co.effort = ThinkingMax
 			default:
-				return "", &base.ErrNotSupported{Options: []string{"EffortLevel"}}
+				return callOpts{}, &base.ErrNotSupported{Options: []string{"EffortLevel"}}
 			}
 		case genai.ReasoningOutput:
 		case *genai.GenOptionText:
+			co.systemPrompt = v.SystemPrompt
 			if v.Temperature != 0 {
 				unsupported = append(unsupported, "GenOptionText.Temperature")
 			}
@@ -141,9 +175,6 @@ func parseOpts(opts []genai.GenOption) (ThinkingLevel, error) {
 			}
 			if v.TopLogprobs != 0 {
 				unsupported = append(unsupported, "GenOptionText.TopLogprobs")
-			}
-			if v.SystemPrompt != "" {
-				unsupported = append(unsupported, "GenOptionText.SystemPrompt")
 			}
 			if v.TopK != 0 {
 				unsupported = append(unsupported, "GenOptionText.TopK")
@@ -162,40 +193,14 @@ func parseOpts(opts []genai.GenOption) (ThinkingLevel, error) {
 		}
 	}
 	if len(unsupported) != 0 {
-		return effort, &base.ErrNotSupported{Options: unsupported}
+		return co, &base.ErrNotSupported{Options: unsupported}
 	}
-	return effort, nil
+	return co, nil
 }
 
 // commandDiscriminator is a command without parameters or a correlation ID.
 type commandDiscriminator struct {
 	Type EventType `json:"type"`
-}
-
-// cmdExecutor is the production executor backed by exec.Cmd.
-type cmdExecutor struct{ bin string }
-
-func (e *cmdExecutor) start(ctx context.Context, args []string) (io.WriteCloser, io.ReadCloser, func() error, error) {
-	dir, err := os.MkdirTemp("", "genai-pi-*")
-	if err != nil {
-		return nil, nil, nil, fmt.Errorf("create temp dir: %w", err)
-	}
-	cmd := exec.CommandContext(ctx, e.bin, args...)
-	cmd.Dir = dir
-	stdin, err := cmd.StdinPipe()
-	if err != nil {
-		return nil, nil, nil, errors.Join(fmt.Errorf("stdin pipe: %w", err), os.RemoveAll(dir))
-	}
-	stdout, err := cmd.StdoutPipe()
-	if err != nil {
-		return nil, nil, nil, errors.Join(fmt.Errorf("stdout pipe: %w", err), os.RemoveAll(dir))
-	}
-	if err := cmd.Start(); err != nil {
-		return nil, nil, nil, errors.Join(fmt.Errorf("start pi: %w", err), os.RemoveAll(dir))
-	}
-	return stdin, stdout, func() error {
-		return errors.Join(cmd.Wait(), os.RemoveAll(dir))
-	}, nil
 }
 
 // newScanner wraps an io.Reader in a bufio.Scanner sized for large JSONL
@@ -262,7 +267,6 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 type Client struct {
 	base.NotImplemented
 
-	exec           genai.Starter
 	starterWrapper genai.ProviderOptionStarterWrapper
 	bin            string
 	model          string
@@ -320,7 +324,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	if err := c.ensureBin(); err != nil {
 		return nil, err
 	}
-	stdin, stdout, wait, err := c.exec(ctx, c.opts.args())
+	stdin, stdout, wait, err := c.start(ctx, "")
 	if err != nil {
 		return nil, err
 	}
@@ -350,7 +354,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 
 // GenSync implements genai.Provider.
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (r genai.Result, err error) {
-	effort, optsErr := parseOpts(opts)
+	co, optsErr := parseOpts(opts)
 	if optsErr != nil {
 		if _, ok := errors.AsType[*base.ErrNotSupported](optsErr); !ok {
 			return genai.Result{}, optsErr
@@ -369,7 +373,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 		return genai.Result{}, err
 	}
 
-	stdin, stdout, wait, err := c.exec(ctx, c.opts.args())
+	stdin, stdout, wait, err := c.start(ctx, co.systemPrompt)
 	if err != nil {
 		return genai.Result{}, err
 	}
@@ -382,7 +386,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 	if err := c.setupModel(stdin, sc); err != nil {
 		return genai.Result{}, err
 	}
-	if err := setThinking(stdin, sc, effort); err != nil {
+	if err := setThinking(stdin, sc, co.effort); err != nil {
 		return genai.Result{}, err
 	}
 	if err := sendPrompt(stdin, &userMsg); err != nil {
@@ -393,7 +397,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 
 // GenStream implements genai.Provider.
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
-	effort, optsErr := parseOpts(opts)
+	co, optsErr := parseOpts(opts)
 	if optsErr != nil {
 		if _, ok := errors.AsType[*base.ErrNotSupported](optsErr); !ok {
 			return yieldNothing, errFinish(optsErr)
@@ -412,7 +416,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 		finalErr error
 	)
 	seq := func(yield func(genai.Reply) bool) {
-		stdin, stdout, wait, startErr := c.exec(ctx, c.opts.args())
+		stdin, stdout, wait, startErr := c.start(ctx, co.systemPrompt)
 		if startErr != nil {
 			finalErr = startErr
 			return
@@ -427,7 +431,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 			finalErr = setupErr
 			return
 		}
-		if err := setThinking(stdin, sc, effort); err != nil {
+		if err := setThinking(stdin, sc, co.effort); err != nil {
 			finalErr = err
 			return
 		}
@@ -861,11 +865,34 @@ func (c *Client) ensureBin() error {
 			bin = "pi"
 		}
 		c.bin = bin
-		s := genai.Starter((&cmdExecutor{bin: bin}).start)
-		if c.starterWrapper != nil {
-			s = c.starterWrapper(s)
-		}
-		c.exec = s
 	})
 	return c.binErr
+}
+
+// start launches pi in a fresh temporary working directory, removed by wait.
+// A non-empty systemPrompt is written there and replaces pi's default system
+// prompt.
+func (c *Client) start(ctx context.Context, systemPrompt string) (io.WriteCloser, io.ReadCloser, func() error, error) {
+	dir, err := os.MkdirTemp("", "genai-pi-*")
+	if err != nil {
+		return nil, nil, nil, fmt.Errorf("create temp dir: %w", err)
+	}
+	file := ""
+	if systemPrompt != "" {
+		file = filepath.Join(dir, "system-prompt.md")
+		if err := os.WriteFile(file, []byte(systemPrompt), 0o600); err != nil {
+			return nil, nil, nil, errors.Join(fmt.Errorf("write system prompt: %w", err), os.RemoveAll(dir))
+		}
+	}
+	s := cli.NewStarter(c.bin, dir)
+	if c.starterWrapper != nil {
+		s = c.starterWrapper(s)
+	}
+	stdin, stdout, wait, err := s(ctx, c.opts.args(file))
+	if err != nil {
+		return nil, nil, nil, errors.Join(err, os.RemoveAll(dir))
+	}
+	return stdin, stdout, func() error {
+		return errors.Join(wait(), os.RemoveAll(dir))
+	}, nil
 }

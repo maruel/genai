@@ -136,6 +136,36 @@ func TestHandshake(t *testing.T) {
 			t.Errorf("approval = %s, sandbox = %q, want never and danger-full-access", params.ApprovalPolicy, params.Sandbox)
 		}
 	})
+	t.Run("bare", func(t *testing.T) {
+		responses := strings.Join([]string{
+			`{"id":1,"result":{}}`,
+			`{"id":2,"result":{"data":[]}}`,
+			`{"id":3,"result":{"thread":{"id":"thread"}}}`,
+		}, "\n")
+		var out bytes.Buffer
+		co := callOpts{systemPrompt: "Be terse.", bare: true}
+		if _, err := handshake(&out, bufio.NewScanner(strings.NewReader(responses)), "model", "", &co); err != nil {
+			t.Fatal(err)
+		}
+		lines := strings.Split(strings.TrimSpace(out.String()), "\n")
+		var req JSONRPCRequest
+		if err := json.Unmarshal([]byte(lines[3]), &req); err != nil {
+			t.Fatal(err)
+		}
+		var params ThreadStartParams
+		if err := json.Unmarshal(req.Params, &params); err != nil {
+			t.Fatal(err)
+		}
+		if params.DeveloperInstructions != "" {
+			t.Errorf("developerInstructions = %q, want empty", params.DeveloperInstructions)
+		}
+		if got := string(params.Config["instructions"]); got != `"Be terse."` {
+			t.Errorf("config.instructions = %s", got)
+		}
+		if got := string(params.Config["features.shell_tool"]); got != "false" {
+			t.Errorf("config.features.shell_tool = %s", got)
+		}
+	})
 }
 
 func TestInitAndListModels(t *testing.T) {

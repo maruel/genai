@@ -22,6 +22,25 @@
 // always returned inside Reply.Opaque["thread_id"]. When the message history
 // contains a previous thread ID, it is automatically picked up: thread/resume
 // is used instead of thread/start and only the last user message is sent.
+//
+// # System prompt
+//
+// GenOptionText.SystemPrompt is sent as the thread's developer instructions,
+// on top of Codex's own base instructions.
+//
+// # Bare
+//
+// genai.ProviderOptionBare sends config overrides with thread/start and
+// thread/resume that disable built-in tools, sub-agents, skills, plugins,
+// apps, memories, MCP servers, web search, AGENTS.md, and the environment,
+// permissions, and collaboration instructions. GenOptionText.SystemPrompt
+// replaces the base instructions, which are empty when it is unset.
+// DangerouslySkipPermissions and ExtraArgs still apply. What remains:
+//
+//   - A model whose catalog entry forces code mode, such as gpt-6-luna, keeps
+//     the exec and wait tools. exec nests the tools the catalog lists, such as
+//     apply_patch, clock, and the MCP resource tools.
+//   - Threads persist under $CODEX_HOME.
 package codex
 
 import (
@@ -35,6 +54,7 @@ import (
 	"fmt"
 	"io"
 	"iter"
+	"maps"
 	"net/http"
 	"os"
 	"os/exec"
@@ -91,6 +111,7 @@ type callOpts struct {
 	systemPrompt    string
 	effort          ReasoningEffort
 	skipPermissions bool
+	bare            bool
 }
 
 // parseOpts collects the call settings from the process settings p and opts.
@@ -239,6 +260,8 @@ func newScanner(r io.Reader) *bufio.Scanner {
 //     luna, terra, or astra model that `model/list` returns.
 //   - *ProviderOption — process settings.
 //   - genai.ProviderOptionStarterWrapper — intercepts subprocess creation.
+//   - genai.ProviderOptionBare — runs codex as a plain model; see the package
+//     documentation.
 func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	c := &Client{}
 	var marker genai.ProviderOptionModel
@@ -261,6 +284,8 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 			c.opts = *v
 		case genai.ProviderOptionStarterWrapper:
 			c.starterWrapper = v
+		case genai.ProviderOptionBare:
+			c.bare = true
 		default:
 			return nil, fmt.Errorf("unsupported provider option %T", opt)
 		}
@@ -286,6 +311,7 @@ type Client struct {
 	bin            string
 	model          string
 	opts           ProviderOption
+	bare           bool
 	binOnce        sync.Once
 	binErr         error
 }
@@ -371,6 +397,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 		return genai.Result{}, err
 	}
 	co, optsErr := parseOpts(&c.opts, opts)
+	co.bare = c.bare
 	if optsErr != nil {
 		if _, ok := errors.AsType[*base.ErrNotSupported](optsErr); !ok {
 			return genai.Result{}, optsErr
@@ -415,6 +442,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 		return yieldNothing, errFinish(err)
 	}
 	co, optsErr := parseOpts(&c.opts, opts)
+	co.bare = c.bare
 	if optsErr != nil {
 		if _, ok := errors.AsType[*base.ErrNotSupported](optsErr); !ok {
 			return yieldNothing, errFinish(optsErr)
@@ -641,6 +669,39 @@ func initAndListModels(stdin io.Writer, sc *bufio.Scanner) ([]ModelInfo, int64, 
 	}
 }
 
+// bareConfig holds the config overrides that strip codex's agent harness. Keys
+// are dotted paths, as with `codex -c`.
+var bareConfig = map[string]json.RawMessage{
+	"agents.enabled":                                json.RawMessage("false"),
+	"features.apply_patch_freeform":                 json.RawMessage("false"),
+	"features.apps":                                 json.RawMessage("false"),
+	"features.code_mode":                            json.RawMessage("false"),
+	"features.default_mode_request_user_input":      json.RawMessage("false"),
+	"features.goals":                                json.RawMessage("false"),
+	"features.image_generation":                     json.RawMessage("false"),
+	"features.js_repl":                              json.RawMessage("false"),
+	"features.memories":                             json.RawMessage("false"),
+	"features.multi_agent":                          json.RawMessage("false"),
+	"features.multi_agent_v2":                       json.RawMessage("false"),
+	"features.plugins":                              json.RawMessage("false"),
+	"features.request_permissions_tool":             json.RawMessage("false"),
+	"features.shell_tool":                           json.RawMessage("false"),
+	"features.sleep_tool":                           json.RawMessage("false"),
+	"features.tool_search":                          json.RawMessage("false"),
+	"features.unified_exec":                         json.RawMessage("false"),
+	"features.view_image":                           json.RawMessage("false"),
+	"include_apps_instructions":                     json.RawMessage("false"),
+	"include_collaboration_mode_instructions":       json.RawMessage("false"),
+	"include_environment_context":                   json.RawMessage("false"),
+	"include_permissions_instructions":              json.RawMessage("false"),
+	"mcp_servers":                                   json.RawMessage("{}"),
+	"project_doc_max_bytes":                         json.RawMessage("0"),
+	"skills.bundled.enabled":                        json.RawMessage("false"),
+	"skills.include_instructions":                   json.RawMessage("false"),
+	"tools.experimental_request_user_input.enabled": json.RawMessage("false"),
+	"web_search":                                    json.RawMessage(`"disabled"`),
+}
+
 // handshake performs the JSON-RPC initialize → initialized → model/list →
 // thread/start (or thread/resume) sequence. Returns the thread ID.
 func handshake(stdin io.Writer, sc *bufio.Scanner, mdl, resumeThreadID string, co *callOpts) (string, error) {
@@ -653,6 +714,19 @@ func handshake(stdin io.Writer, sc *bufio.Scanner, mdl, resumeThreadID string, c
 	if co.skipPermissions {
 		approval, sandbox = json.RawMessage(`"never"`), SandboxModeDangerFullAccess
 	}
+	developer := co.systemPrompt
+	var config map[string]json.RawMessage
+	if co.bare {
+		// The system prompt replaces the base instructions instead.
+		developer = ""
+		instructions, err := json.Marshal(co.systemPrompt)
+		if err != nil {
+			return "", err
+		}
+		config = make(map[string]json.RawMessage, len(bareConfig)+1)
+		maps.Copy(config, bareConfig)
+		config["instructions"] = instructions
+	}
 
 	// Send thread/start or thread/resume.
 	var threadReq JSONRPCRequest
@@ -661,7 +735,8 @@ func handshake(stdin io.Writer, sc *bufio.Scanner, mdl, resumeThreadID string, c
 			ThreadID:              resumeThreadID,
 			ApprovalPolicy:        approval,
 			Sandbox:               sandbox,
-			DeveloperInstructions: co.systemPrompt,
+			DeveloperInstructions: developer,
+			Config:                config,
 		})
 		if err != nil {
 			return "", fmt.Errorf("marshal thread/resume params: %w", err)
@@ -677,7 +752,8 @@ func handshake(stdin io.Writer, sc *bufio.Scanner, mdl, resumeThreadID string, c
 			Model:                 mdl,
 			ApprovalPolicy:        approval,
 			Sandbox:               sandbox,
-			DeveloperInstructions: co.systemPrompt,
+			DeveloperInstructions: developer,
+			Config:                config,
 		})
 		if err != nil {
 			return "", fmt.Errorf("marshal thread/start params: %w", err)

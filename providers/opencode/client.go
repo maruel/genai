@@ -44,6 +44,21 @@
 //     JSONC comments fail the call.
 //   - OpenCode applies the agent prompt on every request, so a resumed
 //     session uses the system prompt of the latest call.
+//
+// # Bare
+//
+// genai.ProviderOptionBare selects the same agent, denies it every tool
+// permission, which hides all tools including MCP tools and the skills
+// section, and sets OPENCODE_PURE, OPENCODE_DISABLE_CLAUDE_CODE, and
+// OPENCODE_DISABLE_EXTERNAL_SKILLS to skip external plugins, Claude Code
+// instruction files and skills, and external skills. What remains:
+//
+//   - Without GenOptionText.SystemPrompt, OpenCode's provider prompt: an agent
+//     without a prompt falls back to it.
+//   - OpenCode's environment section and its global AGENTS.md in its
+//     configuration directory.
+//   - Configured MCP servers still start; only their tools are hidden.
+//   - Default plugins, such as provider authentication, still load.
 package opencode
 
 import (
@@ -127,6 +142,7 @@ type Client struct {
 	base.NotImplemented
 
 	starterWrapper genai.ProviderOptionStarterWrapper
+	bare           bool
 	bin            string
 	model          string
 	opts           ProviderOption
@@ -146,6 +162,9 @@ type Client struct {
 //     "openai/" luna, terra, or astra model. They use the ChatGPT
 //     subscription when OpenCode is logged in with it.
 //   - *ProviderOption — process settings.
+//   - genai.ProviderOptionBare — denies every tool and disables external
+//     plugins, Claude Code files, and external skills. See the package
+//     documentation.
 //   - genai.ProviderOptionStarterWrapper — intercepts subprocess creation.
 func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	c := &Client{}
@@ -167,6 +186,8 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 			}
 		case *ProviderOption:
 			c.opts = *v
+		case genai.ProviderOptionBare:
+			c.bare = true
 		case genai.ProviderOptionStarterWrapper:
 			c.starterWrapper = v
 		default:
@@ -294,7 +315,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 	s, err := acp.Handshake(stdin, stdout, acpOptions(cwd), acp.SessionRequest{
 		Model:           c.model,
 		Effort:          string(co.effort),
-		Mode:            string(co.sessionMode()),
+		Mode:            string(c.sessionMode(&co)),
 		ResumeSessionID: resumeSessionID,
 	})
 	if err != nil {
@@ -345,7 +366,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 		s, hsErr := acp.Handshake(stdin, stdout, acpOptions(cwd), acp.SessionRequest{
 			Model:           c.model,
 			Effort:          string(co.effort),
-			Mode:            string(co.sessionMode()),
+			Mode:            string(c.sessionMode(&co)),
 			ResumeSessionID: resumeSessionID,
 		})
 		if hsErr != nil {
@@ -395,16 +416,19 @@ func (c *Client) ensureBin() error {
 }
 
 // start launches the ACP subprocess in a fresh temporary directory and returns
-// the ACP session working directory. A system prompt in co defines its agent
-// through configContentEnv.
+// the ACP session working directory. A system prompt in co or bare mode
+// defines the session agent through configContentEnv.
 func (c *Client) start(ctx context.Context, args []string, co *callOpts) (io.WriteCloser, io.ReadCloser, func() error, string, error) {
 	var env []string
-	if co.systemPrompt != "" {
-		content, err := configContent(os.Getenv(configContentEnv), co.sessionMode(), co.systemPrompt)
+	if c.customAgent(co) {
+		content, err := configContent(os.Getenv(configContentEnv), c.sessionMode(co), co.systemPrompt, c.bare)
 		if err != nil {
 			return nil, nil, nil, "", err
 		}
 		env = []string{configContentEnv + "=" + content}
+	}
+	if c.bare {
+		env = append(env, bareEnv...)
 	}
 	dir, err := os.MkdirTemp("", "genai-opencode-*")
 	if err != nil {
@@ -431,10 +455,20 @@ const agentName Mode = "genai"
 // configuration, merged after the global and project configuration.
 const configContentEnv = "OPENCODE_CONFIG_CONTENT"
 
+// bareEnv disables external plugins, Claude Code instruction files and skills,
+// and other external skills.
+var bareEnv = []string{
+	"OPENCODE_DISABLE_CLAUDE_CODE=1",
+	"OPENCODE_DISABLE_EXTERNAL_SKILLS=1",
+	"OPENCODE_PURE=1",
+}
+
 // configContent returns inline OpenCode configuration that makes mode a primary
-// agent with systemPrompt as its prompt. It adds the agent to existing, the
-// caller's inline configuration, which must be empty or a JSON object.
-func configContent(existing string, mode Mode, systemPrompt string) (string, error) {
+// agent. A non-empty systemPrompt becomes its prompt; bare denies every tool
+// permission, which hides all tools from the model. It adds the agent to
+// existing, the caller's inline configuration, which must be empty or a JSON
+// object.
+func configContent(existing string, mode Mode, systemPrompt string, bare bool) (string, error) {
 	// The caller's configuration is opaque; only the agent entry is edited.
 	cfg := map[string]any{}
 	if existing != "" {
@@ -455,7 +489,12 @@ func configContent(existing string, mode Mode, systemPrompt string) (string, err
 		}
 	}
 	agent["mode"] = "primary"
-	agent["prompt"] = systemPrompt
+	if systemPrompt != "" {
+		agent["prompt"] = systemPrompt
+	}
+	if bare {
+		agent["permission"] = map[string]string{"*": "deny"}
+	}
 	agents[string(mode)] = agent
 	cfg["agent"] = agents
 	b, err := json.Marshal(cfg)
@@ -540,10 +579,16 @@ func parseOpts(opts []genai.GenOption) (callOpts, error) {
 	return co, nil
 }
 
+// customAgent reports whether a call defines the session agent in
+// configContentEnv.
+func (c *Client) customAgent(co *callOpts) bool {
+	return co.systemPrompt != "" || c.bare
+}
+
 // sessionMode returns the mode to select: GenOption.Mode, or agentName for a
-// system prompt without a mode.
-func (co *callOpts) sessionMode() Mode {
-	if co.mode == "" && co.systemPrompt != "" {
+// custom agent without a mode.
+func (c *Client) sessionMode(co *callOpts) Mode {
+	if co.mode == "" && c.customAgent(co) {
 		return agentName
 	}
 	return co.mode

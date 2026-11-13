@@ -204,6 +204,19 @@ func TestClient(t *testing.T) {
 				t.Errorf("text = %q, want PINEAPPLE", got)
 			}
 		})
+		t.Run("Bare", func(t *testing.T) {
+			c := newTestClient(t, "GenSync_Bare", genai.ProviderOptionModel(testModel), genai.ProviderOptionBare{})
+			res, err := c.GenSync(t.Context(), genai.Messages{genai.NewTextMessage("Say hello. Reply with one word.")})
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got := replyText(&res); !strings.Contains(strings.ToLower(got), "hello") {
+				t.Errorf("text = %q, want hello", got)
+			}
+			if res.Usage.InputTokens > 1000 {
+				t.Errorf("InputTokens = %d, want under 1000 without agy's default prompt", res.Usage.InputTokens)
+			}
+		})
 		t.Run("DecodeAs", func(t *testing.T) {
 			type answer struct {
 				Color string `json:"color"`

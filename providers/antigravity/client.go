@@ -40,14 +40,25 @@
 // writes a custom agent to .agents/agents/genai.md in the temporary workspace
 // and selects it with --agent genai. Consequences:
 //
-//   - The prompt replaces agy's whole system prompt, and the agent has no
-//     built-in tools: the agent sets excludeDefaultComponents. A call with a
-//     system prompt cannot edit files, run commands, or search the web.
+//   - The prompt replaces the default agent's own prompt. agy keeps its default
+//     prompt sections and built-in tools; genai.ProviderOptionBare removes
+//     them.
 //   - agy binds the agent when a conversation starts and ignores --agent when
 //     resuming one. A resumed conversation keeps the system prompt of its first
 //     turn; a different or removed SystemPrompt on a later turn has no effect.
 //   - An --agent flag in ProviderOption.ExtraArgs overrides the generated
 //     agent, and the system prompt is ignored.
+//
+// # Bare
+//
+// genai.ProviderOptionBare always selects the generated agent and sets its
+// excludeDefaultComponents, with an empty prompt when GenOptionText.SystemPrompt
+// is unset. agy then drops its default prompt sections, built-in tools, and
+// global rules such as ~/.gemini/AGENTS.md. What remains:
+//
+//   - The manage_task tool, which agy grants every custom agent.
+//   - agy persists every conversation under ~/.gemini/antigravity-cli.
+//   - Like the system prompt, bare mode binds when a conversation starts.
 package antigravity
 
 import (
@@ -151,6 +162,9 @@ func (p *ProviderOption) Validate() error {
 //     gemini flash-low, flash-medium, or pro-high model that `agy models`
 //     lists.
 //   - *ProviderOption — process settings.
+//   - genai.ProviderOptionBare — runs a custom agent without agy's default
+//     prompt sections, built-in tools, or global rules. See the package
+//     documentation.
 //   - genai.ProviderOptionStarterWrapper — intercepts subprocess creation.
 func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	if err := base.CheckDuplicateProviderOptions(opts); err != nil {
@@ -172,6 +186,8 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 			}
 		case *ProviderOption:
 			c.opts = *v
+		case genai.ProviderOptionBare:
+			c.bare = true
 		case genai.ProviderOptionStarterWrapper:
 			c.starterWrapper = v
 		default:
@@ -195,6 +211,7 @@ type Client struct {
 	base.NotImplemented
 
 	starterWrapper genai.ProviderOptionStarterWrapper
+	bare           bool
 	model          string
 	opts           ProviderOption
 
@@ -404,14 +421,14 @@ const agentName = "genai"
 
 // start launches agy in a fresh empty temporary workspace, removed by wait.
 // agy sees no project files and its writes are discarded with the directory.
-// A non-empty systemPrompt is written as the custom agent agentName.
-func (c *Client) start(ctx context.Context, args []string, systemPrompt string) (io.WriteCloser, io.ReadCloser, func() error, error) {
+// A non-nil agent is written as the custom agent agentName.
+func (c *Client) start(ctx context.Context, args []string, agent []byte) (io.WriteCloser, io.ReadCloser, func() error, error) {
 	dir, err := os.MkdirTemp("", "genai-antigravity-*")
 	if err != nil {
 		return nil, nil, nil, fmt.Errorf("create temp dir: %w", err)
 	}
-	if systemPrompt != "" {
-		if err := writeAgent(dir, systemPrompt); err != nil {
+	if agent != nil {
+		if err := writeAgent(dir, agent); err != nil {
 			return nil, nil, nil, errors.Join(err, os.RemoveAll(dir))
 		}
 	}
@@ -428,19 +445,35 @@ func (c *Client) start(ctx context.Context, args []string, systemPrompt string) 
 	}, nil
 }
 
-// writeAgent writes the main agent agentName with systemPrompt as its whole
-// system prompt into the workspace dir.
-func writeAgent(dir, systemPrompt string) error {
+// customAgent reports whether a call selects the custom agent agentName.
+func (c *Client) customAgent(co *callOpts) bool {
+	return co.systemPrompt != "" || c.bare
+}
+
+// agent returns the custom agent definition for a call, or nil when the call
+// uses agy's default agent.
+func (c *Client) agent(co *callOpts) []byte {
+	if !c.customAgent(co) {
+		return nil
+	}
+	b := []byte("---\nname: " + agentName + "\n" +
+		"description: genai\n" +
+		"mainAgent: true\n" +
+		"subagent: false\n")
+	if c.bare {
+		b = append(b, "excludeDefaultComponents: true\n"...)
+	}
+	b = append(b, "---\n\n"...)
+	return append(b, co.systemPrompt+"\n"...)
+}
+
+// writeAgent writes the agent definition b as agentName into the workspace
+// dir.
+func writeAgent(dir string, b []byte) error {
 	agents := filepath.Join(dir, ".agents", "agents")
 	if err := os.MkdirAll(agents, 0o700); err != nil {
 		return fmt.Errorf("create agents dir: %w", err)
 	}
-	b := []byte("---\nname: " + agentName + "\n" +
-		"description: genai GenOptionText.SystemPrompt\n" +
-		"mainAgent: true\n" +
-		"subagent: false\n" +
-		"excludeDefaultComponents: true\n" +
-		"---\n\n" + systemPrompt + "\n")
 	if err := os.WriteFile(filepath.Join(agents, agentName+".md"), b, 0o600); err != nil {
 		return fmt.Errorf("write agent: %w", err)
 	}
@@ -453,7 +486,7 @@ func (c *Client) listModels(ctx context.Context) ([]Model, error) {
 	}
 	// The models subcommand rejects its own --output-format; the global flag
 	// works.
-	stdin, stdout, wait, err := c.start(ctx, []string{"--output-format", "stream-json", "models"}, "")
+	stdin, stdout, wait, err := c.start(ctx, []string{"--output-format", "stream-json", "models"}, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -570,7 +603,7 @@ func (c *Client) run(ctx context.Context, msgs genai.Messages, co *callOpts, onT
 
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
-	stdin, stdout, wait, err := c.start(ctx, args, co.systemPrompt)
+	stdin, stdout, wait, err := c.start(ctx, args, c.agent(co))
 	if err != nil {
 		return res, err
 	}
@@ -621,7 +654,7 @@ func (c *Client) buildArgs(co *callOpts, conversationID string) []string {
 	if c.model != "" {
 		args = append(args, "--model", c.model)
 	}
-	if co.systemPrompt != "" {
+	if c.customAgent(co) {
 		args = append(args, "--agent", agentName)
 	}
 	if co.effort != "" {

@@ -116,6 +116,8 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 			modalities = genai.Modalities(v)
 		case genai.ProviderOptionPreloadedModels:
 			preloadedModels = []genai.Model(v)
+		case genai.ProviderOptionBare:
+			// No agent harness to strip.
 		case genai.ProviderOptionTransportWrapper:
 			wrapper = v
 		default:

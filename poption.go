@@ -151,3 +151,20 @@ const (
 	// it can find.
 	ModelSOTA ProviderOptionModel = "SOTA"
 )
+
+// ProviderOptionBare runs a CLI-based provider as a plain model rather than as
+// a coding agent.
+//
+// The CLI loads no instruction files, skills, plugins, MCP servers, hooks, or
+// memories, exposes no built-in tools, and its own system prompt is replaced
+// by GenOptionText.SystemPrompt, or dropped when there is none. Options the
+// caller sets explicitly, such as tools or ExtraArgs, still apply. Each CLI
+// provider's package documentation lists what its CLI cannot strip.
+//
+// HTTP providers have no agent harness and accept it as a no-op.
+type ProviderOptionBare struct{}
+
+// Validate implements Validatable.
+func (ProviderOptionBare) Validate() error {
+	return nil
+}

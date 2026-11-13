@@ -53,6 +53,17 @@ func TestBuildArgs(t *testing.T) {
 		}
 		check("--system-prompt", "Be helpful")
 	})
+	t.Run("bare", func(t *testing.T) {
+		c, err := New(t.Context(), genai.ProviderOptionBare{})
+		if err != nil {
+			t.Fatal(err)
+		}
+		internaltest.CleanupCloser(t, c)
+		args := c.buildArgs(&callOpts{}, "", false)
+		if i := slices.Index(args, "--system-prompt"); i < 0 || args[i+1] != "" {
+			t.Errorf("want --system-prompt \"\": %v", args)
+		}
+	})
 }
 
 func TestHandleControlRequest(t *testing.T) {

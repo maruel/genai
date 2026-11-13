@@ -28,6 +28,16 @@
 // ProviderOption.SessionPersistence before the first call. When the message
 // history contains a previous session ID, --resume <id> is passed and only the
 // last user message is sent.
+//
+// # Bare
+//
+// The safe defaults already disable tools, MCP servers other than explicit
+// ones, skills, and user settings, which carry user hooks, plugins, and
+// ~/.claude/CLAUDE.md. genai.ProviderOptionBare also replaces Claude Code's
+// default system prompt with GenOptionText.SystemPrompt, or with an empty one
+// when unset. ProviderOption capabilities the caller enables still apply. The
+// CLI's --bare flag is not used: it restricts authentication to
+// ANTHROPIC_API_KEY, which excludes subscription logins.
 package claudecode
 
 import (
@@ -325,6 +335,8 @@ func newScanner(r io.Reader) *bufio.Scanner {
 //     "haiku", "sonnet", and "opus", which the CLI resolves to its latest
 //     models.
 //   - *ProviderOption — process settings.
+//   - genai.ProviderOptionBare — replaces Claude Code's default system prompt.
+//     See the package documentation.
 //   - genai.ProviderOptionStarterWrapper — intercepts subprocess creation.
 func New(_ context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	c := &Client{}
@@ -349,6 +361,8 @@ func New(_ context.Context, opts ...genai.ProviderOption) (*Client, error) {
 			}
 		case *ProviderOption:
 			c.opts = *v
+		case genai.ProviderOptionBare:
+			c.bare = true
 		case genai.ProviderOptionStarterWrapper:
 			c.starterWrapper = v
 		default:
@@ -364,6 +378,7 @@ type Client struct {
 
 	exec           genai.Starter
 	starterWrapper genai.ProviderOptionStarterWrapper
+	bare           bool
 	bin            string
 	model          string
 	opts           ProviderOption
@@ -782,8 +797,8 @@ func (c *Client) buildArgs(co *callOpts, sessionID string, stream bool) []string
 		args = append(args, "--effort", string(co.effort))
 	}
 
-	// Optional system prompt.
-	if co.systemPrompt != "" {
+	// Optional system prompt. Bare mode always replaces the default one.
+	if co.systemPrompt != "" || c.bare {
 		args = append(args, "--system-prompt", co.systemPrompt)
 	}
 

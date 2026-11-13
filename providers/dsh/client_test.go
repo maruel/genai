@@ -197,6 +197,16 @@ func TestClient(t *testing.T) {
 					t.Errorf("text = %q, want PINEAPPLE", got)
 				}
 			})
+			t.Run("Bare", func(t *testing.T) {
+				c := newTestClient(t, "GenSync_Bare", genai.ProviderOptionModel("deepseek-official/deepseek-v4-flash"), genai.ProviderOptionBare{})
+				res, err := c.GenSync(t.Context(), genai.Messages{genai.NewTextMessage("List the names of the tools you can call, comma separated, or reply NONE.")})
+				if err != nil {
+					t.Fatal(err)
+				}
+				if got := strings.TrimSpace(res.String()); got != "NONE" {
+					t.Errorf("text = %q, want NONE", got)
+				}
+			})
 			t.Run("session_id_always_in_opaque", func(t *testing.T) {
 				c := newTestClient(t, "GenSync_hello_nomodel")
 				msgs := genai.Messages{genai.NewTextMessage("hello")}

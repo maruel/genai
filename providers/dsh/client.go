@@ -55,6 +55,16 @@
 //     the system prompt.
 //   - The patch file is visible to the agent's tools in its working
 //     directory.
+//
+// # Bare
+//
+// genai.ProviderOptionBare adds profile patches that disable every built-in
+// tool, instruction file loading (agent-instructions), skills, and MCP
+// resources, and that drop the harness identity and optional runtime context.
+// What remains:
+//
+//   - dsh's first-party guidance, which its configuration cannot remove.
+//   - dsh still persists sessions under $DSH_HOME.
 package dsh
 
 import (
@@ -121,6 +131,7 @@ type Client struct {
 	base.NotImplemented
 
 	starterWrapper genai.ProviderOptionStarterWrapper
+	bare           bool
 	bin            string
 	model          string
 	modelRoute     string
@@ -140,6 +151,9 @@ type Client struct {
 //     genai.ModelGood select "deepseek-official/deepseek-flash";
 //     genai.ModelSOTA selects "deepseek-official/deepseek-v4-pro".
 //   - *ProviderOption — process settings.
+//   - genai.ProviderOptionBare — disables dsh's tools, instruction files,
+//     skills, MCP resources, harness identity, and runtime context. See the
+//     package documentation.
 //   - genai.ProviderOptionStarterWrapper — intercepts subprocess creation.
 func New(_ context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	c := &Client{}
@@ -167,6 +181,8 @@ func New(_ context.Context, opts ...genai.ProviderOption) (*Client, error) {
 			c.modelRoute = route
 		case *ProviderOption:
 			c.opts = *v
+		case genai.ProviderOptionBare:
+			c.bare = true
 		case genai.ProviderOptionStarterWrapper:
 			c.starterWrapper = v
 		default:
@@ -379,17 +395,17 @@ func (c *Client) ensureBin() error {
 }
 
 // start launches the ACP subprocess in a fresh temporary directory and returns
-// the ACP session working directory. A non-empty systemPrompt is written there
-// as a profile patch.
+// the ACP session working directory. The profile patches for systemPrompt and
+// bare mode are written there.
 func (c *Client) start(ctx context.Context, systemPrompt string) (io.WriteCloser, io.ReadCloser, func() error, string, error) {
 	dir, err := os.MkdirTemp("", "genai-dsh-*")
 	if err != nil {
 		return nil, nil, nil, "", fmt.Errorf("create temp dir: %w", err)
 	}
 	patch := ""
-	if systemPrompt != "" {
+	if p := c.patches(systemPrompt); len(p) != 0 {
 		patch = filepath.Join(dir, "genai.patch.yml")
-		if err := writePatch(patch, systemPrompt); err != nil {
+		if err := writePatch(patch, p); err != nil {
 			return nil, nil, nil, "", errors.Join(err, os.RemoveAll(dir))
 		}
 	}
@@ -416,13 +432,57 @@ func (c *Client) args(patch string) []string {
 	return append(args, c.opts.ExtraArgs...)
 }
 
-// writePatch writes the profile patch that sets systemPrompt to path. The patch
-// list is JSON, which the YAML patch loader accepts.
-func writePatch(path, systemPrompt string) error {
-	b, err := json.Marshal([]Patch{{
-		ID:     patchIDSystemPrompt,
-		Config: SystemPromptConfig{PersonaPrefix: systemPrompt},
-	}})
+// bareDisabled lists the acp profile entries that bare mode disables: every
+// built-in tool, instruction file loading, skills, and MCP resources. The IDs
+// come from `dsh --profile acp --dump-config` at the release pinned in
+// AGENTS.md. dsh rejects a patch for a missing ID ("patch: entry ... not
+// found"), so a release that renames an entry fails bare calls until this
+// list is updated.
+var bareDisabled = []string{
+	"agent-instructions",
+	"mcp-resources",
+	"skill",
+	"skill-filesystem",
+	"tool-bash",
+	"tool-fs",
+	"tool-fs-search",
+	"tool-goal",
+	"tool-jobs",
+	"tool-pwsh",
+	"tool-skill",
+	"tool-subagent",
+	"tool-subagent-control",
+	"tool-subagent-fork",
+	"tool-todo",
+	"tool-web",
+	"tool-workflow",
+	"tool-working-directory",
+}
+
+// patches returns the profile patches for systemPrompt and bare mode.
+func (c *Client) patches(systemPrompt string) []Patch {
+	if systemPrompt == "" && !c.bare {
+		return nil
+	}
+	out := []Patch{{
+		ID: patchIDSystemPrompt,
+		Config: &SystemPromptConfig{
+			IncludeRuntimeContext: !c.bare,
+			PersonaPrefix:         systemPrompt,
+		},
+	}}
+	if c.bare {
+		for _, id := range bareDisabled {
+			out = append(out, Patch{ID: id, Disabled: true})
+		}
+	}
+	return out
+}
+
+// writePatch writes the profile patch list p to path. The patch list is JSON,
+// which the YAML patch loader accepts.
+func writePatch(path string, p []Patch) error {
+	b, err := json.Marshal(p)
 	if err != nil {
 		return err
 	}

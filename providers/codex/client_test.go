@@ -324,6 +324,21 @@ func TestClient(t *testing.T) {
 				t.Errorf("context usage: got %d/%d, want 15098/475000", res.Usage.ContextTokens, res.Usage.ContextWindow)
 			}
 		})
+		t.Run("Bare", func(t *testing.T) {
+			c := newTestClient(t, "GenSync_Bare", genai.ProviderOptionModel("gpt-6-luna"), genai.ProviderOptionBare{})
+			msgs := genai.Messages{genai.NewTextMessage("say hello")}
+			res, err := c.GenSync(t.Context(), msgs, &genai.GenOptionText{SystemPrompt: "You are a helpful assistant."})
+			if err != nil {
+				t.Fatalf("GenSync: %v", err)
+			}
+			// The default harness costs about 18000 input tokens.
+			if res.Usage.InputTokens == 0 || res.Usage.InputTokens > 5000 {
+				t.Errorf("InputTokens = %d, want 1..5000", res.Usage.InputTokens)
+			}
+			if !strings.Contains(strings.ToLower(res.String()), "hello") {
+				t.Errorf("reply = %q, want hello", res.String())
+			}
+		})
 		t.Run("thread_id_always_in_opaque", func(t *testing.T) {
 			c := newTestClient(t, "GenSync_hello")
 			msgs := genai.Messages{genai.NewTextMessage("hello")}

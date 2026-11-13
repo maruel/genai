@@ -24,11 +24,13 @@ const (
 	EffortMax  Effort = "max"
 )
 
-// Patch is one entry of a Cordis patch list passed with --patch. The patch
-// replaces the whole config of the entry with the same ID.
+// Patch is one entry of a Cordis patch list passed with --patch. It targets
+// the profile entry with the same ID. A non-nil Config replaces that entry's
+// whole config.
 type Patch struct {
-	ID     string             `json:"id"`
-	Config SystemPromptConfig `json:"config"`
+	ID       string              `json:"id"`
+	Disabled bool                `json:"disabled,omitzero"`
+	Config   *SystemPromptConfig `json:"config,omitzero"`
 }
 
 // patchIDSystemPrompt is the ID of the @deepseek-ai/dsh-system-prompt entry.
@@ -40,6 +42,9 @@ type SystemPromptConfig struct {
 	// IncludeHarnessIdentity includes the fixed harness identity before the
 	// persona. dsh defaults it to true.
 	IncludeHarnessIdentity bool `json:"includeHarnessIdentity"`
+	// IncludeRuntimeContext includes optional runtime-context snapshots in the
+	// model history. dsh defaults it to true.
+	IncludeRuntimeContext bool `json:"includeRuntimeContext"`
 	// PersonaPrefix is the persona template before first-party guidance. dsh
 	// replaces {{name}} references and fails on unknown or malformed ones.
 	PersonaPrefix string `json:"personaPrefix,omitzero"`

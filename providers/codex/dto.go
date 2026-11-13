@@ -12,7 +12,8 @@
 // Source: https://github.com/openai/codex
 // Turn lineage, MCP app UI, sub-agent settings, attachment and prediction events,
 // and gateway OAuth notifications follow upstream commit
-// 0ada5d8806cdad498230d5b1b2924091e04c8feb.
+// 0ada5d8806cdad498230d5b1b2924091e04c8feb. ThreadItemTimes follows tag
+// rust-v0.167.0.
 
 package codex
 
@@ -1286,10 +1287,23 @@ type AgentMessageDeltaNotification struct {
 	Delta    string `json:"delta"`
 }
 
+// ThreadItemTimes holds the lifecycle times codex flattens into every
+// ThreadItem payload.
+type ThreadItemTimes struct {
+	// StartedAt is the Unix timestamp in milliseconds when the item started,
+	// if recorded.
+	StartedAt base.TimeMS `json:"startedAtMs,omitzero"`
+	// CompletedAt is the Unix timestamp in milliseconds when the item
+	// completed, if recorded.
+	CompletedAt base.TimeMS `json:"completedAtMs,omitzero"`
+}
+
 // Per-item-type structs.
 
 // AgentMessageItem is an agent text response item.
 type AgentMessageItem struct {
+	ThreadItemTimes
+
 	ID             string                   `json:"id"`
 	Type           ItemType                 `json:"type"`
 	Text           string                   `json:"text,omitzero"`
@@ -1313,6 +1327,8 @@ type AsyncUserInputQuestion struct {
 
 // FunctionCallOutputItem is a client-provided tool output in thread history.
 type FunctionCallOutputItem struct {
+	ThreadItemTimes
+
 	ID        string          `json:"id"`
 	Type      ItemType        `json:"type"`
 	Name      string          `json:"name"`
@@ -1322,6 +1338,8 @@ type FunctionCallOutputItem struct {
 
 // PlanItem is an agent plan item.
 type PlanItem struct {
+	ThreadItemTimes
+
 	ID   string   `json:"id"`
 	Type ItemType `json:"type"`
 	Text string   `json:"text,omitzero"`
@@ -1329,6 +1347,8 @@ type PlanItem struct {
 
 // ReasoningItem is an agent reasoning/thinking item.
 type ReasoningItem struct {
+	ThreadItemTimes
+
 	ID      string   `json:"id"`
 	Type    ItemType `json:"type"`
 	Summary []string `json:"summary,omitzero"`
@@ -1339,6 +1359,8 @@ type ReasoningItem struct {
 // Source indicates the origin: "agent" (default), "userShell",
 // "unifiedExecStartup", or "unifiedExecInteraction".
 type CommandExecutionItem struct {
+	ThreadItemTimes
+
 	ID               string                 `json:"id"`
 	Type             ItemType               `json:"type"`
 	PluginID         string                 `json:"pluginId,omitzero"`
@@ -1356,6 +1378,8 @@ type CommandExecutionItem struct {
 
 // FileChangeItem is a file creation/modification/deletion item.
 type FileChangeItem struct {
+	ThreadItemTimes
+
 	ID      string             `json:"id"`
 	Type    ItemType           `json:"type"`
 	Changes []FileUpdateChange `json:"changes,omitzero"`
@@ -1364,6 +1388,8 @@ type FileChangeItem struct {
 
 // McpToolCallItem is an MCP tool call item.
 type McpToolCallItem struct {
+	ThreadItemTimes
+
 	ID                string                `json:"id"`
 	Type              ItemType              `json:"type"`
 	Server            string                `json:"server,omitzero"`
@@ -1406,6 +1432,8 @@ type McpToolCallAppContext struct {
 
 // DynamicToolCallItem is a dynamically registered tool call item.
 type DynamicToolCallItem struct {
+	ThreadItemTimes
+
 	ID           string                             `json:"id"`
 	Type         ItemType                           `json:"type"`
 	Namespace    string                             `json:"namespace,omitzero"`
@@ -1419,6 +1447,8 @@ type DynamicToolCallItem struct {
 
 // CollabAgentToolCallItem is a collaborative multi-agent tool call item.
 type CollabAgentToolCallItem struct {
+	ThreadItemTimes
+
 	ID                string                      `json:"id"`
 	Type              ItemType                    `json:"type"`
 	Tool              CollabAgentTool             `json:"tool,omitzero"`
@@ -1448,6 +1478,8 @@ const (
 
 // SubAgentActivityItem reports a sub-agent lifecycle activity.
 type SubAgentActivityItem struct {
+	ThreadItemTimes
+
 	ID            string               `json:"id"`
 	Type          ItemType             `json:"type"`
 	Kind          SubAgentActivityKind `json:"kind,omitzero"`
@@ -1480,6 +1512,8 @@ type MemoryCitationEntry struct {
 
 // WebSearchItem is a web search item.
 type WebSearchItem struct {
+	ThreadItemTimes
+
 	ID      string            `json:"id"`
 	Type    ItemType          `json:"type"`
 	Query   string            `json:"query,omitzero"`
@@ -1489,6 +1523,8 @@ type WebSearchItem struct {
 
 // ImageViewItem is an image viewing item.
 type ImageViewItem struct {
+	ThreadItemTimes
+
 	ID   string   `json:"id"`
 	Type ItemType `json:"type"`
 	Path string   `json:"path,omitzero"`
@@ -1496,6 +1532,8 @@ type ImageViewItem struct {
 
 // SleepItem is an interruptible sleep tool item.
 type SleepItem struct {
+	ThreadItemTimes
+
 	ID       string          `json:"id"`
 	Type     ItemType        `json:"type"`
 	Duration base.DurationMS `json:"durationMs,omitzero"`
@@ -1503,6 +1541,8 @@ type SleepItem struct {
 
 // ImageGenerationItem is an image generation item.
 type ImageGenerationItem struct {
+	ThreadItemTimes
+
 	ID                    string                 `json:"id"`
 	Type                  ItemType               `json:"type"`
 	Status                string                 `json:"status,omitzero"`
@@ -1522,6 +1562,8 @@ type ImageGenerationFailure struct {
 
 // HookPromptItem is a hook execution prompt item.
 type HookPromptItem struct {
+	ThreadItemTimes
+
 	ID        string               `json:"id"`
 	Type      ItemType             `json:"type"`
 	Fragments []HookPromptFragment `json:"fragments,omitzero"`
@@ -1529,6 +1571,8 @@ type HookPromptItem struct {
 
 // EnteredReviewModeItem signals the agent entered review mode.
 type EnteredReviewModeItem struct {
+	ThreadItemTimes
+
 	ID     string   `json:"id"`
 	Type   ItemType `json:"type"`
 	Review string   `json:"review,omitzero"`
@@ -1536,6 +1580,8 @@ type EnteredReviewModeItem struct {
 
 // ExitedReviewModeItem signals the agent exited review mode.
 type ExitedReviewModeItem struct {
+	ThreadItemTimes
+
 	ID     string   `json:"id"`
 	Type   ItemType `json:"type"`
 	Review string   `json:"review,omitzero"`
@@ -1543,6 +1589,8 @@ type ExitedReviewModeItem struct {
 
 // ContextCompactionThreadItem signals a context window compaction.
 type ContextCompactionThreadItem struct {
+	ThreadItemTimes
+
 	ID   string   `json:"id"`
 	Type ItemType `json:"type"`
 }
@@ -1555,6 +1603,8 @@ type HookPromptFragment struct {
 
 // UserMessageItem is a user-submitted message item.
 type UserMessageItem struct {
+	ThreadItemTimes
+
 	ID       string      `json:"id"`
 	Type     ItemType    `json:"type"`
 	ClientID *string     `json:"clientId,omitzero"`

@@ -170,6 +170,16 @@ func TestClient(t *testing.T) {
 				})
 			}
 		})
+		t.Run("Bare", func(t *testing.T) {
+			c := newTestClient(t, "GenSync_Bare", genai.ProviderOptionModel("openai/gpt-6-luna"), genai.ProviderOptionBare{})
+			res, err := c.GenSync(t.Context(), genai.Messages{genai.NewTextMessage("List the names of the tools you can call, comma separated, or reply NONE.")})
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got := strings.TrimSpace(res.String()); got != "NONE" {
+				t.Errorf("text = %q, want NONE", got)
+			}
+		})
 		t.Run("session_id_always_in_opaque", func(t *testing.T) {
 			t.Setenv("OPENCODE_CONFIG_CONTENT", `{"model":"opencode/big-pickle"}`)
 			c := newTestClient(t, "GenSync_hello_nomodel")
@@ -431,17 +441,22 @@ func TestConfigContent(t *testing.T) {
 		for _, tc := range []struct {
 			name     string
 			existing string
+			prompt   string
+			bare     bool
 			want     string
 		}{
-			{"empty", "", `{"agent":{"plan":{"mode":"primary","prompt":"sys"}}}`},
+			{"empty", "", "sys", false, `{"agent":{"plan":{"mode":"primary","prompt":"sys"}}}`},
 			{
 				"merge",
 				`{"model":"m","agent":{"plan":{"temperature":0.5},"build":{}}}`,
+				"sys",
+				false,
 				`{"agent":{"build":{},"plan":{"mode":"primary","prompt":"sys","temperature":0.5}},"model":"m"}`,
 			},
+			{"bare", "", "", true, `{"agent":{"plan":{"mode":"primary","permission":{"*":"deny"}}}}`},
 		} {
 			t.Run(tc.name, func(t *testing.T) {
-				got, err := configContent(tc.existing, "plan", "sys")
+				got, err := configContent(tc.existing, "plan", tc.prompt, tc.bare)
 				if err != nil {
 					t.Fatal(err)
 				}
@@ -453,7 +468,7 @@ func TestConfigContent(t *testing.T) {
 	})
 	t.Run("error", func(t *testing.T) {
 		for _, existing := range []string{`{"model":"m",}`, `[]`, `{"agent":[]}`, `{"agent":{"plan":"x"}}`} {
-			if _, err := configContent(existing, "plan", "sys"); err == nil {
+			if _, err := configContent(existing, "plan", "sys", false); err == nil {
 				t.Errorf("%s: expected error", existing)
 			}
 		}

@@ -341,17 +341,30 @@ func TestProviderOption(t *testing.T) {
 	t.Run("args", func(t *testing.T) {
 		for _, tc := range []struct {
 			name string
-			p    ProviderOption
+			opts []genai.ProviderOption
 			want []string
 		}{
 			{
 				"options",
-				ProviderOption{Skills: true, ExtraArgs: []string{"--no-tools"}},
-				[]string{"--mode", "rpc", "--no-session", "--no-tools", "--system-prompt", "/tmp/sys.md"},
+				[]genai.ProviderOption{&ProviderOption{Skills: true, ExtraArgs: []string{"--no-themes"}}},
+				[]string{"--mode", "rpc", "--no-session", "--no-themes", "--system-prompt", "/tmp/sys.md"},
+			},
+			{
+				"bare",
+				[]genai.ProviderOption{genai.ProviderOptionBare{}},
+				[]string{
+					"--mode", "rpc", "--no-session", "--no-skills",
+					"--no-context-files", "--no-extensions", "--no-mcp", "--no-prompt-templates", "--no-tools",
+					"--system-prompt", "/tmp/sys.md",
+				},
 			},
 		} {
 			t.Run(tc.name, func(t *testing.T) {
-				if got := tc.p.args("/tmp/sys.md"); !slices.Equal(got, tc.want) {
+				c, err := New(t.Context(), tc.opts...)
+				if err != nil {
+					t.Fatal(err)
+				}
+				if got := c.args("/tmp/sys.md"); !slices.Equal(got, tc.want) {
 					t.Errorf("args = %q, want %q", got, tc.want)
 				}
 			})

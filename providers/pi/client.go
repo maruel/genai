@@ -40,6 +40,16 @@
 //     one.
 //   - The prompt file is visible to the agent's tools in its working
 //     directory.
+//
+// # Bare
+//
+// genai.ProviderOptionBare passes --no-context-files, --no-extensions,
+// --no-mcp, --no-prompt-templates, --no-skills, and --no-tools. ProviderOption
+// Skills and ExtraArgs still apply. What remains:
+//
+//   - Without GenOptionText.SystemPrompt, Pi keeps its default preamble: an
+//     empty --system-prompt does not replace it.
+//   - Pi always appends the working directory to the system prompt.
 package pi
 
 import (
@@ -103,21 +113,6 @@ type ProviderOption struct {
 // Validate implements genai.ProviderOption.
 func (p *ProviderOption) Validate() error {
 	return msgutil.CheckExtraArgs(p.ExtraArgs, "mode")
-}
-
-// args returns the pi command line. A non-empty systemPromptFile replaces
-// pi's default system prompt, including one set in ExtraArgs: pi keeps the
-// last --system-prompt.
-func (p *ProviderOption) args(systemPromptFile string) []string {
-	args := []string{"--mode", "rpc", "--no-session"}
-	if !p.Skills {
-		args = append(args, "--no-skills")
-	}
-	args = append(args, p.ExtraArgs...)
-	if systemPromptFile != "" {
-		args = append(args, "--system-prompt", systemPromptFile)
-	}
-	return args
 }
 
 // callOpts holds the settings of one call.
@@ -211,6 +206,20 @@ func newScanner(r io.Reader) *bufio.Scanner {
 	return sc
 }
 
+// Client is a genai provider that delegates to the local `pi` CLI.
+type Client struct {
+	base.NotImplemented
+
+	starterWrapper genai.ProviderOptionStarterWrapper
+	bare           bool
+	bin            string
+	model          string
+	opts           ProviderOption
+
+	binOnce sync.Once
+	binErr  error
+}
+
 // New creates a Client for the `pi` CLI.
 //
 // The binary is located lazily on the first call to GenSync, GenStream, or
@@ -224,6 +233,9 @@ func newScanner(r io.Reader) *bufio.Scanner {
 //     "openai-codex/" luna, terra, or astra model, which bills the ChatGPT
 //     subscription.
 //   - *ProviderOption — process settings.
+//   - genai.ProviderOptionBare — runs pi without tools, extensions, MCP,
+//     skills, prompt templates, or context files. See the package
+//     documentation.
 //   - genai.ProviderOptionStarterWrapper — intercepts subprocess creation.
 func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	c := &Client{}
@@ -245,6 +257,8 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 			}
 		case *ProviderOption:
 			c.opts = *v
+		case genai.ProviderOptionBare:
+			c.bare = true
 		case genai.ProviderOptionStarterWrapper:
 			c.starterWrapper = v
 		default:
@@ -261,19 +275,6 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 		}
 	}
 	return c, nil
-}
-
-// Client is a genai provider that delegates to the local `pi` CLI.
-type Client struct {
-	base.NotImplemented
-
-	starterWrapper genai.ProviderOptionStarterWrapper
-	bin            string
-	model          string
-	opts           ProviderOption
-
-	binOnce sync.Once
-	binErr  error
 }
 
 // Close implements io.Closer. It currently does nothing.
@@ -853,6 +854,24 @@ var (
 	_ genai.Model        = (*Model)(nil)
 )
 
+// args returns the pi command line. A non-empty systemPromptFile replaces
+// pi's default system prompt, including one set in ExtraArgs: pi keeps the
+// last --system-prompt.
+func (c *Client) args(systemPromptFile string) []string {
+	args := []string{"--mode", "rpc", "--no-session"}
+	if !c.opts.Skills {
+		args = append(args, "--no-skills")
+	}
+	if c.bare {
+		args = append(args, "--no-context-files", "--no-extensions", "--no-mcp", "--no-prompt-templates", "--no-tools")
+	}
+	args = append(args, c.opts.ExtraArgs...)
+	if systemPromptFile != "" {
+		args = append(args, "--system-prompt", systemPromptFile)
+	}
+	return args
+}
+
 // ensureBin locates the pi binary on first call. Safe for concurrent use.
 func (c *Client) ensureBin() error {
 	c.binOnce.Do(func() {
@@ -888,7 +907,7 @@ func (c *Client) start(ctx context.Context, systemPrompt string) (io.WriteCloser
 	if c.starterWrapper != nil {
 		s = c.starterWrapper(s)
 	}
-	stdin, stdout, wait, err := s(ctx, c.opts.args(file))
+	stdin, stdout, wait, err := s(ctx, c.args(file))
 	if err != nil {
 		return nil, nil, nil, errors.Join(err, os.RemoveAll(dir))
 	}

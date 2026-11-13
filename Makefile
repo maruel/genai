@@ -36,9 +36,9 @@ verify: custom-gcl
 	@uv run --locked python scripts/update_agents_file_index.py --check
 	@uv run --locked python -m unittest discover -s providers/claudecode -p 'test_*.py'
 
-# Apply every autofix, then refresh the generated file index. Does not
-# re-check; run verify for that.
+# Order matters: the index refresh runs last so it matches the fixed tree.
 fix: custom-gcl
+	@go mod tidy
 	@./custom-gcl run --show-stats=false ./... --fix
 	@go tool golangci-lint fmt
 	@uv run --locked ruff check --quiet --fix .

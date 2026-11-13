@@ -4,8 +4,9 @@
 
 // Speech generation and server property wire types.
 // Sourced from ggml-org/llama.cpp v1.0.0, commit
-// b1b770d90d94cad9e9ea5b993bdbc383a522fb28, tools/server/server-context.cpp
-// and tools/server/server-schema.cpp.
+// b1b770d90d94cad9e9ea5b993bdbc383a522fb28, tools/server/server-chat.cpp
+// (convert_speech_to_tts), tools/server/server-context.cpp and
+// tools/server/server-schema.cpp.
 
 package llamacpp
 
@@ -15,23 +16,25 @@ import (
 	"math"
 )
 
-// SpeechFormat selects the audio container returned by /tts.
+// SpeechFormat selects the audio container returned by /v1/audio/speech.
 type SpeechFormat string
 
 // Supported speech output formats.
 const (
-	// SpeechPCM is headerless little-endian float32 mono PCM.
+	// SpeechPCM is headerless little-endian signed 16-bit mono PCM.
 	SpeechPCM SpeechFormat = "pcm"
-	// SpeechPCM16 is headerless little-endian signed 16-bit mono PCM.
-	SpeechPCM16 SpeechFormat = "pcm16"
-	SpeechWAV   SpeechFormat = "wav"
+	SpeechWAV SpeechFormat = "wav"
 )
 
-// SpeechRequest generates speech with the server's loaded audio generation model.
-// Output is at the model's native sample rate. WAV is the default. Stream
-// requests deliver audio as it becomes available.
+// SpeechRequest generates speech with the server's loaded audio generation
+// model through the OpenAI-compatible /v1/audio/speech endpoint, which forwards
+// the llama.cpp /tts options. Output is at the model's native sample rate, not
+// resampled to 24 kHz. WAV is the default. Stream requests deliver audio as it
+// becomes available.
 type SpeechRequest struct {
-	Input          string       `json:"input"`
+	Input string `json:"input"`
+	// Voice is one of the voices listed by GET /props. OpenAI voice names are
+	// not mapped.
 	Voice          string       `json:"voice,omitzero"`
 	Lang           string       `json:"lang,omitzero"`
 	ResponseFormat SpeechFormat `json:"response_format,omitzero"`
@@ -61,10 +64,8 @@ func (s *SpeechRequest) Validate() error {
 	if s.Input == "" {
 		return errors.New("input is required")
 	}
-	switch s.ResponseFormat {
-	case "", SpeechPCM, SpeechPCM16, SpeechWAV:
-	default:
-		return errors.New("response_format must be wav, pcm or pcm16")
+	if s.ResponseFormat != "" && s.ResponseFormat != SpeechPCM && s.ResponseFormat != SpeechWAV {
+		return errors.New("response_format must be wav or pcm")
 	}
 	if s.Voice != "" && len(s.SpeakerRef) != 0 {
 		return errors.New("voice and speaker reference cannot be combined")

@@ -790,6 +790,12 @@ func (s *RealtimeSession) updateLocked(u *genai.RealtimeUpdate) (*SessionUpdateM
 	if u.OutputModalities != nil {
 		upd.OutputModalities = Modalities(*u.OutputModalities)
 	}
+	if u.Voice != nil {
+		if s.started {
+			return nil, nil, errors.New("llama.cpp session voice can only change before the first turn")
+		}
+		upd.Audio.Output.Voice = *u.Voice
+	}
 	return &SessionUpdateMessage{Type: EventSessionUpdate, Session: upd}, names, nil
 }
 

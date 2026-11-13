@@ -341,12 +341,13 @@ func TestRealtimeSessionUpdate(t *testing.T) {
 	if err := s.Send(t.Context(), genai.RealtimeUpdate{Instructions: &instr}); err == nil {
 		t.Fatal("late instructions update accepted")
 	}
+	voice := "female"
+	if err := s.Send(t.Context(), genai.RealtimeUpdate{Voice: &voice}); err == nil {
+		t.Fatal("late voice update accepted")
+	}
 	manual := genai.RealtimeTurnManual
-	voice := "marin"
-	for _, u := range []genai.RealtimeUpdate{{TurnDetection: &manual}, {Voice: &voice}} {
-		if err := s.Send(t.Context(), u); err == nil {
-			t.Fatalf("unsupported update accepted: %+v", u)
-		}
+	if err := s.Send(t.Context(), genai.RealtimeUpdate{TurnDetection: &manual}); err == nil {
+		t.Fatal("unsupported turn detection update accepted")
 	}
 	none := genai.ToolCallNone
 	tokens := int64(128)

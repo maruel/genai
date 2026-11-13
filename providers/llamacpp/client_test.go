@@ -11,6 +11,7 @@ import (
 	"context"
 	"crypto/rand"
 	"encoding/base64"
+	"encoding/binary"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -31,6 +32,8 @@ import (
 	"time"
 
 	"github.com/coder/websocket"
+	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
+	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 
 	"github.com/maruel/roundtrippers"
 
@@ -126,7 +129,7 @@ func TestClient(t *testing.T) {
 					t.Fatalf("setup changed the caller's modalities: %v", modalities)
 				}
 				info := s.Info()
-				want := genai.RealtimeSessionInfo{ID: "local", InputFormat: genai.AudioFormat{SampleRate: 16000}, OutputFormat: genai.AudioFormat{SampleRate: 24000}, InputModalities: []genai.Modality{genai.ModalityAudio, genai.ModalityText}, TurnDetection: genai.RealtimeTurnManual, Capabilities: genai.RealtimeCapabilities{AudioCommit: true, CancelResponse: true, ToolResults: true, Update: genai.RealtimeUpdateCapabilities{Instructions: true, Tools: true, ToolChoice: true, ToolChoiceRequired: true, MaxOutputTokens: true, OutputModalities: true}}}
+				want := genai.RealtimeSessionInfo{ID: "local", InputFormat: genai.AudioFormat{SampleRate: 16000}, OutputFormat: genai.AudioFormat{SampleRate: 24000}, InputModalities: []genai.Modality{genai.ModalityAudio, genai.ModalityText}, TurnDetection: genai.RealtimeTurnManual, Capabilities: genai.RealtimeCapabilities{AudioCommit: true, CancelResponse: true, ToolResults: true, Update: genai.RealtimeUpdateCapabilities{Instructions: true, Tools: true, ToolChoice: true, ToolChoiceRequired: true, MaxOutputTokens: true, OutputModalities: true, VoiceBeforeOutput: true}}}
 				if !reflect.DeepEqual(info, want) {
 					t.Fatalf("info %+v, want %+v", info, want)
 				}
@@ -184,6 +187,39 @@ func TestClient(t *testing.T) {
 				}
 				realtimetest.Receive(t, s, genai.RealtimeEventGenerationDone)
 				realtimetest.Receive(t, s, genai.RealtimeEventTurnDone)
+			})
+			t.Run("voice", func(t *testing.T) {
+				// The server reports its --tts-voice default when the client
+				// requests none, and the requested voice otherwise.
+				for _, tc := range []struct{ name, want, server string }{
+					{"server default", "", "male"},
+					{"requested", "female", "female"},
+				} {
+					t.Run(tc.name, func(t *testing.T) {
+						remote := realtimePeer(t, func(ctx context.Context, ws *websocket.Conn) {
+							realtimetest.Write(t, ctx, ws, nativeSession)
+							settings := internaltest.AssertType[map[string]any](t, realtimetest.Read(t, ctx, ws)["session"])
+							out := internaltest.AssertType[map[string]any](t, internaltest.AssertType[map[string]any](t, settings["audio"])["output"])
+							if v, _ := out["voice"].(string); v != tc.want {
+								t.Errorf("requested voice %q, want %q", v, tc.want)
+							}
+							out["voice"] = tc.server
+							settings["id"] = "local"
+							b, err := json.Marshal(map[string]any{"type": "session.updated", "session": settings})
+							if err != nil {
+								t.Error(err)
+								return
+							}
+							realtimetest.Write(t, ctx, ws, string(b))
+							_, _, _ = ws.Read(ctx)
+						})
+						s, err := realtimeClient(t, remote).ConnectRealtime(t.Context(), &genai.RealtimeOptionAudio{Voice: tc.want})
+						if err != nil {
+							t.Fatal(err)
+						}
+						realtimetest.Close(t, s)
+					})
+				}
 			})
 			t.Run("discover model-defined native formats", func(t *testing.T) {
 				remote := realtimePeer(t, func(ctx context.Context, ws *websocket.Conn) {
@@ -383,7 +419,6 @@ func TestClient(t *testing.T) {
 					opt     genai.RealtimeOption
 					options []string
 				}{
-					{"voice", &genai.RealtimeOptionAudio{Voice: "voice"}, []string{"voice selection"}},
 					{"input transcription", &genai.RealtimeOptionAudio{InputTranscription: true}, []string{"input transcription"}},
 					{"output transcription", &genai.RealtimeOptionAudio{OutputTranscription: true}, []string{"output transcription"}},
 					{"server turns", genai.RealtimeTurnServer, nil},
@@ -782,7 +817,7 @@ func TestClient(t *testing.T) {
 
 	t.Run("SpeechRaw", func(t *testing.T) {
 		c, err := llamacpp.New(t.Context(), genai.ProviderOptionTransportWrapper(func(h http.RoundTripper) http.RoundTripper {
-			return testRecorder.Record(t, &roundtrippers.Header{Header: http.Header{"Authorization": {"Bearer " + apiKey}}, Transport: h})
+			return testRecorder.Record(t, &roundtrippers.Header{Header: http.Header{"Authorization": {"Bearer " + apiKey}}, Transport: h}, recorder.WithHook(trimSpeechAudio, recorder.AfterCaptureHook))
 		}), genai.ProviderOptionRemote(s.lazyStartModel(t, scoreboard.Model{Model: "LiquidAI/LFM3-Audio-2B-GGUF:Q4_K_M"})), genai.ProviderOptionModel("tts"))
 		if err != nil {
 			t.Fatal(err)
@@ -809,7 +844,7 @@ func TestClient(t *testing.T) {
 					}
 					// Native metadata is available before the first audio read.
 					headers = resp.Header
-					if headers.Get("Content-Type") != "audio/pcm;rate=24000;encoding=float;bits=32" && headers.Get("Content-Type") != "audio/pcm;rate=24000" {
+					if headers.Get("Content-Type") != "audio/pcm;rate=24000;encoding=signed-int;bits=16" {
 						t.Fatalf("native PCM metadata %q", headers.Get("Content-Type"))
 					}
 					_, err = io.Copy(&out, resp.Body)
@@ -832,7 +867,7 @@ func TestClient(t *testing.T) {
 				if format == llamacpp.SpeechPCM && !strings.Contains(headers.Get("Content-Type"), "rate=24000") {
 					t.Fatalf("PCM content type: %q", headers.Get("Content-Type"))
 				}
-				if format == llamacpp.SpeechPCM && out.Len()%4 != 0 {
+				if format == llamacpp.SpeechPCM && out.Len()%2 != 0 {
 					t.Fatal("unaligned PCM")
 				}
 			})
@@ -1094,6 +1129,33 @@ func (l *lazyServer) lazyStartModel(t testing.TB, model scoreboard.Model) string
 		}
 	})
 	return u
+}
+
+// trimSpeechAudio keeps the first 100 ms of generated audio so the cassette
+// stays small. In record mode the recorder returns the captured interaction to
+// the client, so recording and playback see the same bytes, including the WAV
+// that the reference audio subtest sends back.
+func trimSpeechAudio(i *cassette.Interaction) error {
+	const keep = 4800 // 24 kHz, 16-bit mono.
+	b := i.Response.Body
+	switch ct := i.Response.Headers.Get("Content-Type"); {
+	case ct == "audio/wav":
+		// llama-server writes a canonical 44-byte header.
+		if len(b) < 44 || b[36:40] != "data" {
+			return errors.New("unexpected WAV header")
+		}
+		h := []byte(b[:min(len(b), 44+keep)])
+		binary.LittleEndian.PutUint32(h[4:], uint32(len(h)-8))
+		binary.LittleEndian.PutUint32(h[40:], uint32(len(h)-44))
+		b = string(h)
+	case strings.HasPrefix(ct, "audio/pcm"):
+		b = b[:min(len(b), keep)]
+	default:
+		return nil
+	}
+	i.Response.Body = b
+	i.Response.ContentLength = int64(len(b))
+	return nil
 }
 
 func startServerTest(t testing.TB, ctx context.Context, exe, model, apiKey string, embedding bool) *llamacppsrv.Server {

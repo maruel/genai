@@ -29,7 +29,8 @@
 //
 // # Speech generation
 //
-// [Client.SpeechRaw] writes WAV or float32 PCM audio from /tts to an io.Writer.
+// [Client.SpeechRaw] writes WAV or 16-bit PCM audio from /v1/audio/speech to an
+// io.Writer.
 // [Client.SpeechStreamRaw] exposes native response headers and streamed audio.
 // Load an audio generation model and projector in llama-server. Discover predefined
 // voices with [Client.GetPropsRaw]; voice cloning requires a compatible voice encoder.
@@ -383,10 +384,12 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest) (chunks iter
 // The caller owns tools, microphone segmentation, playback and slot admission.
 //
 // The runtime supports manual turns, explicit generation, tools and response
-// cancellation. Conversation sessions support neither server VAD, voice
-// selection, separate transcription streams, microphone stream-end/activity
-// messages nor playback truncation. RealtimeOptionAudio is accepted when all
-// fields are unset. Unsupported settings fail locally. Stream microphone
+// cancellation. RealtimeOptionAudio.Voice selects one of the voices listed by
+// GetPropsRaw; without it the server uses its --tts-voice or model default.
+// The voice can change only before the first turn. Conversation sessions
+// support neither server VAD, separate transcription streams, microphone
+// stream-end/activity messages nor playback truncation. Unsupported settings
+// fail locally. Stream microphone
 // chunks, then set Commit to commit without generating or Generate to commit
 // pending audio and request generation. Empty commits and overlapping generation
 // are rejected before wire effects. LFM3 prefetches audio while the user speaks
@@ -419,7 +422,7 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest) (chunks iter
 // and may be reported as completed.
 //
 // Protocol source:
-// https://github.com/ggml-org/llama.cpp/blob/8642541b255bfb5dc39cd351a178be09013a55d6/tools/server/README.md#realtime-conversation
+// https://github.com/ggml-org/llama.cpp/blob/v1.0.0/tools/server/README.md#realtime-conversation
 func (c *Client) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOption) (genai.RealtimeSession, error) {
 	// null preserves the runtime's automatic mode. Forcing speech prefills
 	// <|audio_start|> or <|mixed_start|>, competing with <tool_call>:
@@ -451,12 +454,10 @@ func (c *Client) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOpti
 			if o.OutputTranscription {
 				unsupported = append(unsupported, "output transcription")
 			}
-			if o.Voice != "" {
-				unsupported = append(unsupported, "voice selection")
-			}
 			if len(unsupported) != 0 {
 				return nil, fmt.Errorf("llama.cpp realtime conversation settings: %w", &base.ErrNotSupported{Options: unsupported})
 			}
+			setup.Audio.Output.Voice = o.Voice
 		case genai.Modalities:
 			for i, m := range o {
 				if m != genai.ModalityAudio && m != genai.ModalityText {
@@ -549,7 +550,8 @@ func (c *Client) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOpti
 			}
 			info = genai.RealtimeSessionInfo{ID: got.ID, InputFormat: in, OutputFormat: out, InputModalities: []genai.Modality{genai.ModalityAudio, genai.ModalityText}, TurnDetection: genai.RealtimeTurnManual}
 			want = &setup
-			want.Audio = AudioConfig{Input: AudioInput{Format: got.Audio.Input.Format}, Output: AudioOutput{Format: got.Audio.Output.Format}}
+			want.Audio.Input = AudioInput{Format: got.Audio.Input.Format}
+			want.Audio.Output.Format = got.Audio.Output.Format
 			data, err := json.Marshal(ClientMessage{Type: EventSessionUpdate, Session: want})
 			if err != nil {
 				return nil, errors.Join(err, ws.Close())
@@ -566,7 +568,7 @@ func (c *Client) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOpti
 			// setup, so normalize them after sending the caller's requested order.
 			slices.Sort(got.OutputModalities)
 			slices.Sort(want.OutputModalities)
-			if got.ID != info.ID || got.Type != SessionRealtime || got.Instructions != want.Instructions || !slices.Equal(got.OutputModalities, want.OutputModalities) || got.Audio.Input.Format != want.Audio.Input.Format || got.Audio.Output.Format != want.Audio.Output.Format || got.Audio.Input.TurnDetection != nil || got.Audio.Input.Transcription != nil || got.Audio.Output.Voice != "" {
+			if got.ID != info.ID || got.Type != SessionRealtime || got.Instructions != want.Instructions || !slices.Equal(got.OutputModalities, want.OutputModalities) || got.Audio.Input.Format != want.Audio.Input.Format || got.Audio.Output.Format != want.Audio.Output.Format || got.Audio.Input.TurnDetection != nil || got.Audio.Input.Transcription != nil || (want.Audio.Output.Voice != "" && got.Audio.Output.Voice != want.Audio.Output.Voice) {
 				return nil, errors.Join(errors.New("llama.cpp did not accept realtime configuration"), ws.Close())
 			}
 			if want.MaxOutputTokens != nil && (got.MaxOutputTokens == nil || *want.MaxOutputTokens != *got.MaxOutputTokens) {
@@ -586,6 +588,7 @@ func (c *Client) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOpti
 					ToolChoiceRequired: true,
 					MaxOutputTokens:    true,
 					OutputModalities:   true,
+					VoiceBeforeOutput:  true,
 				},
 			}
 			s := newRealtimeSession(ws, &info, names)
@@ -822,7 +825,7 @@ func (c *Client) GetHealth(ctx context.Context) (string, error) {
 	return msg.Status, err
 }
 
-// SpeechRaw writes WAV or PCM audio incrementally to out using /tts.
+// SpeechRaw writes WAV or PCM audio incrementally to out using /v1/audio/speech.
 // The loaded model must support audio generation. A failed call may have
 // already written partial audio. Returned headers include Content-Type, which
 // carries the native sample rate for PCM (for example audio/pcm;rate=24000).
@@ -842,7 +845,7 @@ func (c *Client) SpeechRaw(ctx context.Context, in *SpeechRequest, out io.Writer
 	return resp.Header, nil
 }
 
-// SpeechStreamRaw returns the native /tts HTTP response before reading audio.
+// SpeechStreamRaw returns the /v1/audio/speech HTTP response before reading audio.
 // The caller owns Body and must close it, including after cancellation or early
 // playback termination. Headers retain the server's container and PCM metadata.
 func (c *Client) SpeechStreamRaw(ctx context.Context, in *SpeechRequest) (*http.Response, error) {
@@ -852,7 +855,7 @@ func (c *Client) SpeechStreamRaw(ctx context.Context, in *SpeechRequest) (*http.
 	if err := in.Validate(); err != nil {
 		return nil, err
 	}
-	u := c.baseURL + "/tts"
+	u := c.baseURL + "/v1/audio/speech"
 	resp, err := c.impl.JSONRequest(ctx, http.MethodPost, u, in)
 	if err != nil {
 		if resp != nil {

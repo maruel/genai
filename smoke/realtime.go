@@ -354,6 +354,7 @@ func RunRealtimeScenario(ctx context.Context, c genai.Provider, reason bool) (sc
 		return sc, usage, errors.New("tool result regressed")
 	}
 	sc.Realtime = &scoreboard.RealtimeFunctionality{
+		Cost:             !report.Usage.Cost.IsZero(),
 		InputSampleRate:  report.Info.InputFormat.SampleRate,
 		OutputSampleRate: report.Info.OutputFormat.SampleRate,
 		CancelResponse:   realtimeProbePassed(&report, RealtimeProbeCancellation),

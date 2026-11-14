@@ -2,12 +2,12 @@
 
 | Model                                                         | Mode    | ➛In   | Out➛   | Tool   | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
 | ------------------------------------------------------------- | ------- | ----- | ------ | ------ | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
-| qwen/qwen3.5-397b-a17b🥇                                       | Sync🧠   | 💬📸  | 💬     | ❌     | ☁️[] | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | 💨     |
-| qwen/qwen3.5-397b-a17b🥇                                       | Stream🧠 | 💬📸  | 💬     | ✅🪨🔀 | ☁️[] | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | ✅     |
-| qwen/qwen3.5-122b-a10b🥈                                       | Sync🧠   | 💬📸  | 💬     | ✅🔀   | ☁️   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | ✅     |
-| qwen/qwen3.5-122b-a10b🥈                                       | Stream🧠 | 💬📸  | 💬     | ✅🔀   | ☁️   | ❌    | ❌   | ❌   | 🌱📏  | ✅    | ❌     | ✅    | ✅     |
-| qwen/qwen3.5-35b-a3b🥉                                         | Sync🧠   | 💬📸  | 💬     | ✅🪨🔀 | ☁️[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| qwen/qwen3.5-35b-a3b🥉                                         | Stream🧠 | 💬📸  | 💬     | 💨🪨   | ☁️[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| qwen/qwen3.5-397b-a17b🥇                                       | Sync🧠   | 💬📸  | 💬     | ❌     | ☁️[] | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅💲   | 💨     |
+| qwen/qwen3.5-397b-a17b🥇                                       | Stream🧠 | 💬📸  | 💬     | ✅🪨🔀 | ☁️[] | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅💲   | ✅     |
+| qwen/qwen3.5-122b-a10b🥈                                       | Sync🧠   | 💬📸  | 💬     | ✅🔀   | ☁️   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅💲   | ✅     |
+| qwen/qwen3.5-122b-a10b🥈                                       | Stream🧠 | 💬📸  | 💬     | ✅🔀   | ☁️   | ❌    | ❌   | ❌   | 🌱📏  | ✅    | ❌     | ✅💲   | ✅     |
+| qwen/qwen3.5-35b-a3b🥉                                         | Sync🧠   | 💬📸  | 💬     | ✅🪨🔀 | ☁️[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅💲   | ✅     |
+| qwen/qwen3.5-35b-a3b🥉                                         | Stream🧠 | 💬📸  | 💬     | 💨🪨   | ☁️[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅💲   | ✅     |
 | ai21/jamba-large-1.7                                          | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | aion-labs/aion-1.0                                            | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | aion-labs/aion-1.0-mini                                       | ?       | ?     | ?      | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -719,4 +719,5 @@
 - Cite: Citation generation from a provided document, specially useful for RAG
 - Probs: Return logprobs to analyse each token probabilities
 - Limits: Returns the rate limits, including the remaining quota
+- Usage: Reports token usage; 💲 also reports monetary cost
 </details>

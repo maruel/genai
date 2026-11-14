@@ -124,6 +124,8 @@ const (
 //
 // The third group is about text specific features.
 type Functionality struct {
+	// Cost means that the provider reports monetary cost in its Usage.
+	Cost bool `json:"cost,omitzero"`
 	// ReportRateLimits means that the provider reports rate limits in its Usage.
 	ReportRateLimits bool `json:"reportRateLimits,omitzero"`
 	// ReportTokenUsage means that the token usage is correctly reported in all cases. It is flaky if it is not
@@ -198,6 +200,9 @@ type Functionality struct {
 
 // Less returns true if the functionality is less that the other.
 func (f *Functionality) Less(rhs *Functionality) bool {
+	if !f.Cost && rhs.Cost {
+		return true
+	}
 	if !f.ReportRateLimits && rhs.ReportRateLimits {
 		return true
 	}
@@ -409,6 +414,8 @@ func (f *DecisionFunctionality) Validate() error {
 // EmbeddingFunctionality records measured text batch embedding behavior.
 // Successful qualification checks vectors, input order and semantic retrieval.
 type EmbeddingFunctionality struct {
+	// Cost means that the provider reports monetary cost in its Usage.
+	Cost bool `json:"cost,omitzero"`
 	// Dimensions is the default vector size measured with no requested size.
 	Dimensions int `json:"dimensions,omitzero"`
 	// RequestedDimensions is nil when unmeasured, otherwise whether the requested
@@ -433,6 +440,8 @@ func (f *EmbeddingFunctionality) Validate() error {
 // failed, or did not run. Tools is tri-state because models can call tools only
 // intermittently with audio output.
 type RealtimeFunctionality struct {
+	// Cost means that the provider reports monetary cost in session usage.
+	Cost bool `json:"cost,omitzero"`
 	// Voices lists sorted, unique provider-advertised voice IDs.
 	// Empty means the catalog is unknown.
 	Voices []string `json:"voices,omitzero"`
@@ -483,7 +492,7 @@ func (f *RealtimeFunctionality) Validate() error {
 // empty reports whether f is a qualification marker without measurements.
 func (f *RealtimeFunctionality) empty() bool {
 	return len(f.Voices) == 0 && f.InputSampleRate == 0 && f.OutputSampleRate == 0 &&
-		!f.CancelResponse && f.Tools == False && !f.ReportRateLimits && f.ReportTokenUsage == False &&
+		!f.Cost && !f.CancelResponse && f.Tools == False && !f.ReportRateLimits && f.ReportTokenUsage == False &&
 		(f.Transcription == nil || *f.Transcription == RealtimeTranscription{})
 }
 

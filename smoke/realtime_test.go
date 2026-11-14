@@ -1071,7 +1071,7 @@ func TestRunRealtimeScenario(t *testing.T) {
 			f := newFakeRealtimeFactory(t)
 			f.text = []genai.RealtimeEvent{
 				{Kind: genai.RealtimeEventContentText, Content: genai.RealtimeContent{Text: "hello"}},
-				{Kind: genai.RealtimeEventUsage, ResponseID: "r1", Usage: &genai.Usage{InputTokens: 5, OutputTokens: 1, TotalTokens: 6}},
+				{Kind: genai.RealtimeEventUsage, ResponseID: "r1", Usage: &genai.Usage{InputTokens: 5, OutputTokens: 1, TotalTokens: 6, Cost: genai.Cost{Total: 0.01, Currency: "USD"}}},
 				{Kind: genai.RealtimeEventGenerationDone},
 				{Kind: genai.RealtimeEventTurnDone},
 			}
@@ -1080,7 +1080,7 @@ func TestRunRealtimeScenario(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			if sc.Realtime == nil || usage.TotalTokens != 6 {
+			if sc.Realtime == nil || !sc.Realtime.Cost || usage.TotalTokens != 6 {
 				t.Fatalf("scenario=%+v usage=%+v", sc, usage)
 			}
 			_, usage, err = smoke.Realtime{}.Run(t.Context(), smoke.Direct(func(string) genai.Provider { return p }), scoreboard.Model{Model: "model"}, scoreboard.WireSession, &scoreboard.Realtime{Models: []string{"model"}, Realtime: &scoreboard.RealtimeFunctionality{}})

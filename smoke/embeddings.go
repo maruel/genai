@@ -76,6 +76,7 @@ func RunEmbeddings(ctx context.Context, pf ProviderFactory, dimensions int) (sco
 			f.ReportTokenUsage = scoreboard.Flaky
 		}
 		calls++
+		f.Cost = f.Cost || !out.Usage.Cost.IsZero()
 		u.Add(&out.Usage)
 		return out, nil
 	}

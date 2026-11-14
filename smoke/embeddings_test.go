@@ -65,7 +65,7 @@ func TestRunEmbeddings(t *testing.T) {
 			if err := sc.Validate(); err != nil {
 				t.Fatal(err)
 			}
-			if sc.Embed == nil || sc.Embed.Dimensions != 2 || sc.Embed.ReportTokenUsage != tc.reporting {
+			if sc.Embed == nil || sc.Embed.Dimensions != 2 || sc.Embed.ReportTokenUsage != tc.reporting || !sc.Embed.Cost {
 				t.Fatalf("functionality %+v", sc.Embed)
 			}
 			if (sc.Embed.RequestedDimensions == nil) != (tc.supported == nil) || tc.supported != nil && *sc.Embed.RequestedDimensions != *tc.supported {
@@ -226,6 +226,7 @@ func (p *embeddingProvider) Embed(_ context.Context, in *genai.EmbeddingRequest)
 	if p.defect == "usage" || p.defect == "flaky usage" && p.calls == 2 {
 		out.Usage = genai.Usage{}
 	}
+	out.Usage.Cost = genai.Cost{Total: 0.01, Currency: "USD"}
 	return out, nil
 }
 

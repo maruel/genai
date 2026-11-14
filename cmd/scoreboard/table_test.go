@@ -84,11 +84,35 @@ func TestTableDataRow(t *testing.T) {
 		}
 	})
 	t.Run("usage", func(t *testing.T) {
-		s := realtimeRow(audio, audio, &scoreboard.RealtimeFunctionality{ReportRateLimits: true, ReportTokenUsage: scoreboard.True})
+		s := realtimeRow(audio, audio, &scoreboard.RealtimeFunctionality{Cost: true, ReportRateLimits: true, ReportTokenUsage: scoreboard.True})
 		row := tableDataRow{}
 		row.initFromRealtime(&s)
-		if row.RateLimits != "✅" || row.Usage != "✅" {
+		if row.RateLimits != "✅" || row.Usage != "✅💲" {
 			t.Fatalf("row=%+v", row)
+		}
+	})
+	t.Run("cost aggregation", func(t *testing.T) {
+		for _, tc := range []struct {
+			name string
+			fs   []scoreboard.Functionality
+			want string
+		}{
+			{"cost only", []scoreboard.Functionality{{Cost: true}}, "💲"},
+			{"tokens after cost", []scoreboard.Functionality{{Cost: true}, {ReportTokenUsage: scoreboard.True}}, "✅💲"},
+			{"cost after tokens", []scoreboard.Functionality{{ReportTokenUsage: scoreboard.True}, {Cost: true}}, "✅💲"},
+			{"repeated cost", []scoreboard.Functionality{{Cost: true}, {Cost: true}}, "💲"},
+			{"flaky tokens", []scoreboard.Functionality{{Cost: true, ReportTokenUsage: scoreboard.Flaky}, {}}, "💨💲"},
+			{"upgrade tokens", []scoreboard.Functionality{{Cost: true, ReportTokenUsage: scoreboard.Flaky}, {ReportTokenUsage: scoreboard.True}}, "✅💲"},
+		} {
+			t.Run(tc.name, func(t *testing.T) {
+				row := tableDataRow{}
+				for i := range tc.fs {
+					row.initFromScenario(&sectionRow{}, &tc.fs[i])
+				}
+				if row.Usage != tc.want {
+					t.Fatalf("usage=%q, want %q", row.Usage, tc.want)
+				}
+			})
 		}
 	})
 	t.Run("flaky tools", func(t *testing.T) {
@@ -114,11 +138,11 @@ func TestTableDataRow(t *testing.T) {
 	t.Run("initFromEmbed", func(t *testing.T) {
 		s := scoreboard.Embed{
 			In:    map[scoreboard.Modality]scoreboard.ModalCapability{scoreboard.ModalityText: {Inline: true}},
-			Embed: &scoreboard.EmbeddingFunctionality{Dimensions: 2},
+			Embed: &scoreboard.EmbeddingFunctionality{Cost: true, Dimensions: 2},
 		}
 		row := tableDataRow{}
 		row.initFromEmbed(&s)
-		if row.Mode != "Embed" || row.Inputs != "💬" || row.Outputs != "🧬" {
+		if row.Mode != "Embed" || row.Inputs != "💬" || row.Outputs != "🧬" || row.Usage != "💲" {
 			t.Fatalf("row=%+v", row)
 		}
 	})

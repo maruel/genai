@@ -61,7 +61,7 @@ genai is _intentional_. Curious why it was created? See the release announcement
 | [baseten](docs/baseten.md)                 | 🇺🇸   | Sync, Stream🧠                             | 💬📸       | 💬      | ✅🪨🔀   | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
 | [bfl](docs/bfl.md)                         | 🇩🇪   | Sync                                      | 💬         | 📸      | ❌       | ❌   | ✅    | ❌   | ❌   | 🌱   | ❌    | ✅     | ❌    | ❌     |
 | [cerebras](docs/cerebras.md)               | 🇺🇸   | Sync, Stream🧠                             | 💬📸       | 💬      | ✅🪨     | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
-| [claudecode](docs/claudecode.md)           | 🇺🇸   | Sync, Stream🧠                             | 💬📄📸     | 💬      | 🕸️       | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
+| [claudecode](docs/claudecode.md)           | 🇺🇸   | Sync, Stream🧠                             | 💬📄📸     | 💬      | 🕸️       | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅💲   | ✅     |
 | [cloudflare](docs/cloudflare.md)           | 🇺🇸   | SystemOne, Sync, Stream🧠                  | 💬📸       | 🎯💬     | 💨       | ✅[] | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | 💨     |
 | [codex](docs/codex.md)                     | 🇺🇸   | Sync, Stream🧠                             | 💬📸       | 💬      | ❌       | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
 | [cohere](docs/cohere.md)                   | 🇨🇦   | Sync, Stream🧠                             | 💬         | 💬      | 💨🪨     | ✅   | ❌    | ❌   | ✅   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
@@ -75,9 +75,9 @@ genai is _intentional_. Curious why it was created? See the release announcement
 | [ollama](docs/ollama.md)                   | 🏠   | Embed, SystemOne, Sync, Stream🧠           | 💬📸       | 🎯💬🧬    | ✅🔀     | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
 | [openaichat](docs/openaichat.md)           | 🇺🇸   | Embed, Realtime, Sync, Stream🧠            | 🎤💬📄📸   | 🎤💬📸🧬 | ✅🪨     | ✅   | ✅    | ✅   | ❌   | 🌱📏  | ✅    | ✅     | ✅    | ✅     |
 | [openairesponses](docs/openairesponses.md) | 🇺🇸   | Embed, Realtime, Sync, Stream🧠            | 🎤💬📄📸   | 🎤💬📸🧬 | ✅🪨🕸️   | ✅   | ✅    | ❌   | ❌   | ❌   | ❌    | ✅     | ✅    | ✅     |
-| [opencode](docs/opencode.md)               | 🇺🇸   | Sync, Stream🧠                             | 💬📸       | 💬      | ❌       | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
-| [openrouter](docs/openrouter.md)           | 🇺🇸   | Sync, Stream🧠                             | 💬📸       | 💬      | ✅🔀🪨   | ☁️[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| [pi](docs/pi.md)                           | 🇦🇹   | Sync, Stream🧠                             | 💬📸       | 💬      | ❌       | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
+| [opencode](docs/opencode.md)               | 🇺🇸   | Sync, Stream🧠                             | 💬📸       | 💬      | ❌       | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅💲   | ✅     |
+| [openrouter](docs/openrouter.md)           | 🇺🇸   | Sync, Stream🧠                             | 💬📸       | 💬      | ✅🔀🪨   | ☁️[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅💲   | ✅     |
+| [pi](docs/pi.md)                           | 🇦🇹   | Sync, Stream🧠                             | 💬📸       | 💬      | ❌       | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅💲   | ✅     |
 | [pollinations](docs/pollinations.md)       | 🇩🇪   | Sync, Stream🧠                             | 💬📄📸     | 💬📸    | ✅🪨     | ☁️   | ❌    | ❌   | ❌   | 🌱   | ❌    | ❌     | ✅    | ✅     |
 | [togetherai](docs/togetherai.md)           | 🇺🇸   | Sync, Stream🧠                             | 💬📸       | 💬📸    | ✅🪨     | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
 | [typesafe](docs/typesafe.md)               | 🇺🇸   | SystemOne                                 | 💬         | 🎯       | ❌       | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ❌     |
@@ -125,6 +125,7 @@ genai is _intentional_. Curious why it was created? See the release announcement
 - Cite: Citation generation from a provided document, specially useful for RAG
 - Probs: Return logprobs to analyse each token probabilities
 - Limits: Returns the rate limits, including the remaining quota
+- Usage: Reports token usage; 💲 also reports monetary cost
 </details>
 
 

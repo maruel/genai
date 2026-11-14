@@ -160,6 +160,7 @@
 - Cite: Citation generation from a provided document, specially useful for RAG
 - Probs: Return logprobs to analyse each token probabilities
 - Limits: Returns the rate limits, including the remaining quota
+- Usage: Reports token usage; 💲 also reports monetary cost
 </details>
 
 ## Warnings

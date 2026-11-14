@@ -2,12 +2,12 @@
 
 | Model   | Mode    | ➛In    | Out➛   | Tool | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
 | ------- | ------- | ------ | ------ | ---- | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
-| opus🥇   | Sync🧠   | 💬📄📸 | 💬     | 🕸️   | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
-| opus🥇   | Stream🧠 | 💬📄📸 | 💬     | 🕸️   | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
-| sonnet🥈 | Sync🧠   | 💬📄📸 | 💬     | 🕸️   | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
-| sonnet🥈 | Stream🧠 | 💬📄📸 | 💬     | 🕸️   | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
-| haiku🥉  | Sync🧠   | 💬📄📸 | 💬     | 🕸️   | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
-| haiku🥉  | Stream🧠 | 💬📄📸 | 💬     | 🕸️   | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
+| opus🥇   | Sync🧠   | 💬📄📸 | 💬     | 🕸️   | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅💲   | ✅     |
+| opus🥇   | Stream🧠 | 💬📄📸 | 💬     | 🕸️   | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅💲   | ✅     |
+| sonnet🥈 | Sync🧠   | 💬📄📸 | 💬     | 🕸️   | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅💲   | ✅     |
+| sonnet🥈 | Stream🧠 | 💬📄📸 | 💬     | 🕸️   | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅💲   | ✅     |
+| haiku🥉  | Sync🧠   | 💬📄📸 | 💬     | 🕸️   | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅💲   | ✅     |
+| haiku🥉  | Stream🧠 | 💬📄📸 | 💬     | 🕸️   | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅💲   | ✅     |
 <details>
 <summary>‼️ Click here for the legend of columns and symbols</summary>
 
@@ -50,4 +50,5 @@
 - Cite: Citation generation from a provided document, specially useful for RAG
 - Probs: Return logprobs to analyse each token probabilities
 - Limits: Returns the rate limits, including the remaining quota
+- Usage: Reports token usage; 💲 also reports monetary cost
 </details>

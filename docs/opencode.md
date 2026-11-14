@@ -2,10 +2,10 @@
 
 | Model                                                                         | Mode    | ➛In   | Out➛   | Tool | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
 | ----------------------------------------------------------------------------- | ------- | ----- | ------ | ---- | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
-| opencode/big-pickle                                                           | Sync🧠   | 💬    | 💬     | ❌   | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
-| opencode/big-pickle                                                           | Stream🧠 | 💬    | 💬     | ❌   | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
-| opencode/mimo-v2.6-flash-free                                                 | Sync🧠   | 💬📸  | 💬     | ❌   | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
-| opencode/mimo-v2.6-flash-free                                                 | Stream🧠 | 💬📸  | 💬     | ❌   | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
+| opencode/big-pickle                                                           | Sync🧠   | 💬    | 💬     | ❌   | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅💲   | ✅     |
+| opencode/big-pickle                                                           | Stream🧠 | 💬    | 💬     | ❌   | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅💲   | ✅     |
+| opencode/mimo-v2.6-flash-free                                                 | Sync🧠   | 💬📸  | 💬     | ❌   | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅💲   | ✅     |
+| opencode/mimo-v2.6-flash-free                                                 | Stream🧠 | 💬📸  | 💬     | ❌   | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅💲   | ✅     |
 | anthropic/claude-3-5-haiku-20241022                                           | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | anthropic/claude-3-5-haiku-latest                                             | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | anthropic/claude-3-5-sonnet-20240620                                          | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -2044,4 +2044,5 @@
 - Cite: Citation generation from a provided document, specially useful for RAG
 - Probs: Return logprobs to analyse each token probabilities
 - Limits: Returns the rate limits, including the remaining quota
+- Usage: Reports token usage; 💲 also reports monetary cost
 </details>

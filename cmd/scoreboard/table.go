@@ -63,6 +63,7 @@ const legend = `<details>
 - Cite: Citation generation from a provided document, specially useful for RAG
 - Probs: Return logprobs to analyse each token probabilities
 - Limits: Returns the rate limits, including the remaining quota
+- Usage: Reports token usage; 💲 also reports monetary cost
 </details>
 `
 
@@ -209,7 +210,7 @@ func (t *tableDataRow) initFromChat(s *scoreboard.Chat, f *scoreboard.Functional
 
 func (t *tableDataRow) initFromEmbed(s *scoreboard.Embed) {
 	f := s.Embed
-	t.initFromScenario(&sectionRow{Row: s.Row, Out: s.Outputs()}, &scoreboard.Functionality{ReportTokenUsage: f.ReportTokenUsage})
+	t.initFromScenario(&sectionRow{Row: s.Row, Out: s.Outputs()}, &scoreboard.Functionality{Cost: f.Cost, ReportTokenUsage: f.ReportTokenUsage})
 	if !strings.Contains(t.Mode, "Embed") {
 		if t.Mode != "" {
 			t.Mode += ", "
@@ -237,6 +238,7 @@ func (t *tableDataRow) initFromRealtime(s *scoreboard.Realtime) {
 		t.Mode += "Realtime"
 	}
 	t.initFromScenario(&sectionRow{Row: s.Row, Out: s.Out, Reason: s.Reason}, &scoreboard.Functionality{
+		Cost:             s.Realtime.Cost,
 		Tools:            s.Realtime.Tools,
 		ReportRateLimits: s.Realtime.ReportRateLimits,
 		ReportTokenUsage: s.Realtime.ReportTokenUsage,
@@ -322,10 +324,17 @@ func (t *tableDataRow) initFromScenario(s *sectionRow, f *scoreboard.Functionali
 	if f.ReportRateLimits {
 		t.RateLimits = "✅"
 	}
-	if f.ReportTokenUsage == scoreboard.True {
+	cost := f.Cost || strings.Contains(t.Usage, "💲")
+	switch {
+	case f.ReportTokenUsage == scoreboard.True || strings.Contains(t.Usage, "✅"):
 		t.Usage = "✅"
-	} else if f.ReportTokenUsage == scoreboard.Flaky && !strings.Contains(t.Usage, "✅") {
+	case f.ReportTokenUsage == scoreboard.Flaky || strings.Contains(t.Usage, "💨"):
 		t.Usage = "💨"
+	default:
+		t.Usage = ""
+	}
+	if cost {
+		t.Usage += "💲"
 	}
 	if f.ReportFinishReason == scoreboard.True {
 		t.Finish = "✅"

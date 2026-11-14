@@ -100,6 +100,7 @@ func runSync(ctx context.Context, pf ProviderFactory, skipURLMedia bool) (scoreb
 					if result.GenSync == nil {
 						result.GenSync = f
 					} else {
+						result.GenSync.Cost = result.GenSync.Cost || f.Cost
 						if f.ReportTokenUsage != scoreboard.False {
 							result.GenSync.ReportTokenUsage = f.ReportTokenUsage
 						}
@@ -179,6 +180,7 @@ func runSync(ctx context.Context, pf ProviderFactory, skipURLMedia bool) (scoreb
 				if result.GenStream == nil {
 					result.GenStream = f
 				} else {
+					result.GenStream.Cost = result.GenStream.Cost || f.Cost
 					if f.ReportTokenUsage != scoreboard.False {
 						result.GenStream.ReportTokenUsage = f.ReportTokenUsage
 					}
@@ -219,6 +221,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 		return nil, err
 	}
 	f := &scoreboard.Functionality{}
+	defer func() { f.Cost = !cs.usage.Cost.IsZero() }()
 	// Optimistically assume it works.
 	f.ReportTokenUsage = scoreboard.True
 	f.ReportFinishReason = scoreboard.True
@@ -529,6 +532,7 @@ func exerciseGenTextMultiModal(ctx context.Context, cs *callState, prefix string
 	in = map[genai.Modality]scoreboard.ModalCapability{}
 	out = map[genai.Modality]scoreboard.ModalCapability{}
 	f = &scoreboard.Functionality{}
+	defer func() { f.Cost = !cs.usage.Cost.IsZero() }()
 	m, err := exerciseGenInputDocument(ctx, cs, f, prefix+"Document-")
 	if m != nil {
 		in[genai.ModalityDocument] = *m
@@ -871,6 +875,7 @@ func (cs *callState) callGen(ctx context.Context, name string, msgs genai.Messag
 	cs.usage.InputTokens += res.Usage.InputTokens
 	cs.usage.InputCachedTokens += res.Usage.InputCachedTokens
 	cs.usage.OutputTokens += res.Usage.OutputTokens
+	cs.usage.Cost = cs.usage.Cost.Add(res.Usage.Cost)
 	return res, err
 }
 
@@ -935,6 +940,7 @@ func exerciseGenImage(ctx context.Context, pf ProviderFactory, name string, out 
 			usage.OutputTokens += resp.Usage.OutputTokens
 		}
 	}
+	out.GenSync.Cost = out.GenSync.Cost || !resp.Usage.Cost.IsZero()
 	if len(resp.Usage.Limits) != 0 {
 		out.GenSync.ReportRateLimits = true
 		for _, l := range resp.Usage.Limits {
@@ -1027,6 +1033,7 @@ func exerciseGenAudio(ctx context.Context, pf ProviderFactory, name string, out 
 			usage.OutputTokens += resp.Usage.OutputTokens
 		}
 	}
+	out.GenSync.Cost = out.GenSync.Cost || !resp.Usage.Cost.IsZero()
 	if len(resp.Usage.Limits) != 0 {
 		out.GenSync.ReportRateLimits = true
 		for _, l := range resp.Usage.Limits {
@@ -1136,6 +1143,7 @@ func isBadError(ctx context.Context, err error) bool {
 }
 
 func mergeFunctionality(dst, src *scoreboard.Functionality) {
+	dst.Cost = dst.Cost || src.Cost
 	dst.ReportRateLimits = dst.ReportRateLimits || src.ReportRateLimits
 	dst.ReportTokenUsage = mergeTriState(dst.ReportTokenUsage, src.ReportTokenUsage)
 	dst.ReportFinishReason = mergeTriState(dst.ReportFinishReason, src.ReportFinishReason)

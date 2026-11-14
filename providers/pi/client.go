@@ -783,6 +783,14 @@ func buildResult(line []byte, text, thinking string, contextTokens, contextWindo
 		r.Usage.InputCachedTokens = msg.Usage.CacheRead
 		r.Usage.ReasoningTokens = msg.Usage.Reasoning
 		r.Usage.TotalTokens = msg.Usage.TotalTokens
+		r.Usage.Cost = genai.Cost{
+			Input:      msg.Usage.Cost.Input,
+			Output:     msg.Usage.Cost.Output,
+			CacheRead:  msg.Usage.Cost.CacheRead,
+			CacheWrite: msg.Usage.Cost.CacheWrite,
+			Total:      msg.Usage.Cost.Total,
+			Currency:   "USD",
+		}
 		r.Usage.FinishReason = stopReasonToFinishReason(msg.StopReason)
 
 		// If we didn't accumulate streaming text, extract from the message content.

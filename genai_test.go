@@ -63,6 +63,7 @@ func TestUsage(t *testing.T) {
 			TotalTokens:       50,
 			ContextTokens:     100,
 			ContextWindow:     1000,
+			Cost:              Cost{Total: 0.25, Currency: "USD"},
 		}
 		u2 := Usage{
 			InputTokens:       20,
@@ -72,6 +73,7 @@ func TestUsage(t *testing.T) {
 			TotalTokens:       100,
 			ContextTokens:     200,
 			ContextWindow:     2000,
+			Cost:              Cost{Total: 0.5, Currency: "USD"},
 		}
 		expected := Usage{
 			InputTokens:       30,
@@ -81,10 +83,44 @@ func TestUsage(t *testing.T) {
 			TotalTokens:       150,
 			ContextTokens:     100,
 			ContextWindow:     1000,
+			Cost:              Cost{Total: 0.75, Currency: "USD"},
 		}
 		u1.Add(&u2)
 		if diff := cmp.Diff(expected, u1); diff != "" {
 			t.Fatalf("Usage.Add() mismatch (-want +got):\n%s", diff)
+		}
+	})
+}
+
+func TestCost(t *testing.T) {
+	t.Run("Amount", func(t *testing.T) {
+		if got := (Cost{Total: 0.5, Input: 0.1}).Amount(); got != 0.5 {
+			t.Fatalf("Amount() = %v, want the reported total", got)
+		}
+		if got := (Cost{Input: 0.25, Output: 0.5, CacheRead: 0.125}).Amount(); got != 0.875 {
+			t.Fatalf("Amount() = %v, want the summed breakdown", got)
+		}
+	})
+	t.Run("IsZero", func(t *testing.T) {
+		if !(Cost{}).IsZero() {
+			t.Fatal("zero Cost is not zero")
+		}
+		if (Cost{Total: 0.01}).IsZero() {
+			t.Fatal("Cost with an amount is zero")
+		}
+	})
+	t.Run("Add", func(t *testing.T) {
+		c := Cost{Input: 0.1, Output: 0.2, Total: 0.3, Currency: "USD"}
+		got := c.Add(Cost{Input: 0.4, Output: 0.5, Total: 0.9, Currency: "EUR"})
+		want := Cost{Input: 0.5, Output: 0.7, Total: 1.2, Currency: "USD"}
+		if diff := cmp.Diff(want, got); diff != "" {
+			t.Fatalf("Cost.Add() mismatch (-want +got):\n%s", diff)
+		}
+	})
+	t.Run("String", func(t *testing.T) {
+		u := Usage{InputTokens: 1, Cost: Cost{Total: 0.0125, Currency: "USD"}}
+		if got, want := u.String(), "in: 1 (cached 0), reasoning: 0, out: 0, total: 0, cost: 0.0125 USD"; got != want {
+			t.Fatalf("Usage.String() = %q, want %q", got, want)
 		}
 	})
 }

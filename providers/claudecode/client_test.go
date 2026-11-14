@@ -603,6 +603,12 @@ func TestBuildResultContextUsage(t *testing.T) {
 			t.Errorf("context usage: got %d/%d, want 1234/10000", res.Usage.ContextTokens, res.Usage.ContextWindow)
 		}
 	})
+	t.Run("cost", func(t *testing.T) {
+		res := buildResult(&OutputResultMsg{TotalCostUSD: 1.25}, nil, nil, "s", 0, 0)
+		if res.Usage.Cost.Total != 1.25 || res.Usage.Cost.Currency != "USD" {
+			t.Errorf("cost: got %+v, want 1.25 USD", res.Usage.Cost)
+		}
+	})
 	t.Run("model_usage_window", func(t *testing.T) {
 		res := buildResult(&OutputResultMsg{
 			ModelUsage: map[string]ModelUsageEntry{"m": {ContextWindow: 200000}},

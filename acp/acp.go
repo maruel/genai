@@ -670,6 +670,7 @@ func buildPromptResult(line []byte, text, thinking, sessionID string, usage *Usa
 	if usage != nil {
 		r.Usage.ContextTokens = int64(usage.Used)
 		r.Usage.ContextWindow = int64(usage.Size)
+		r.Usage.Cost = genai.Cost{Total: usage.Cost.Amount, Currency: usage.Cost.Currency}
 	}
 
 	if thinking != "" {

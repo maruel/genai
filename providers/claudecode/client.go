@@ -1005,6 +1005,7 @@ func buildResult(res *OutputResultMsg, asstBlocks []OutputContentBlock, summarie
 			ReasoningTokens:   res.Usage.OutputTokensDetails.ThinkingTokens,
 			OutputTokens:      res.Usage.OutputTokens,
 			TotalTokens:       res.Usage.InputTokens + res.Usage.OutputTokens,
+			Cost:              genai.Cost{Total: res.TotalCostUSD, Currency: "USD"},
 			FinishReason:      mapFinishReason(res.StopReason),
 			ServiceTier:       res.Usage.ServiceTier,
 		},

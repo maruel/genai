@@ -242,6 +242,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					u.ReasoningTokens = pkt.Usage.CompletionTokensDetails.ReasoningTokens
 					u.OutputTokens = pkt.Usage.CompletionTokens
 					u.TotalTokens = pkt.Usage.TotalTokens
+					u.Cost = genai.Cost{Total: pkt.Usage.Cost, Currency: "USD"}
 				}
 				if pkt.ServiceTier != "" {
 					u.ServiceTier = pkt.ServiceTier

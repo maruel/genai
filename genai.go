@@ -227,6 +227,56 @@ func (l *Logprob) GoString() string {
 	return string(b)
 }
 
+// Cost is the monetary cost a provider reports for a request.
+//
+// Providers report either a total or a breakdown. A provider that reports
+// neither leaves the zero value, which means the cost is unknown; it does not
+// mean the request was free. Currency is the ISO 4217 code of the amounts,
+// empty when the provider does not say.
+type Cost struct {
+	Input      float64
+	Output     float64
+	CacheRead  float64
+	CacheWrite float64
+	Total      float64
+	Currency   string
+}
+
+// Amount returns the total cost. It sums the breakdown when the provider
+// reported no total of its own.
+func (c Cost) Amount() float64 {
+	if c.Total != 0 {
+		return c.Total
+	}
+	return c.Input + c.Output + c.CacheRead + c.CacheWrite
+}
+
+// IsZero reports whether the provider reported no cost.
+func (c Cost) IsZero() bool {
+	return c.Amount() == 0 && c.Currency == ""
+}
+
+// Add returns the sum of c and r. It keeps the first non-empty currency.
+func (c Cost) Add(r Cost) Cost {
+	c.Input += r.Input
+	c.Output += r.Output
+	c.CacheRead += r.CacheRead
+	c.CacheWrite += r.CacheWrite
+	c.Total += r.Total
+	if c.Currency == "" {
+		c.Currency = r.Currency
+	}
+	return c
+}
+
+func (c Cost) String() string {
+	s := fmt.Sprintf("%.6g", c.Amount())
+	if c.Currency != "" {
+		s += " " + c.Currency
+	}
+	return s
+}
+
 // Usage from the LLM provider.
 type Usage struct {
 	// Token usage for the current request.
@@ -235,6 +285,9 @@ type Usage struct {
 	ReasoningTokens   int64
 	OutputTokens      int64
 	TotalTokens       int64
+	// Cost is what the provider charged for the request. It is the zero value
+	// when the provider does not report a cost.
+	Cost Cost
 	// ContextTokens is the number of tokens in the context window after the
 	// request. Zero when the provider does not report it.
 	ContextTokens int64
@@ -258,20 +311,24 @@ func (u *Usage) String() string {
 	if u.ContextTokens != 0 || u.ContextWindow != 0 {
 		fmt.Fprintf(&s, ", context: %d/%d", u.ContextTokens, u.ContextWindow)
 	}
+	if !u.Cost.IsZero() {
+		fmt.Fprintf(&s, ", cost: %s", u.Cost.String())
+	}
 	for _, l := range u.Limits {
 		fmt.Fprintf(&s, ", %s", l.String())
 	}
 	return s.String()
 }
 
-// Add accumulates the token counts from another result. It does not accumulate
-// the context fields, which are a snapshot of the context window.
+// Add accumulates the token counts and cost from another result. It does not
+// accumulate the context fields, which are a snapshot of the context window.
 func (u *Usage) Add(r *Usage) {
 	u.InputTokens += r.InputTokens
 	u.InputCachedTokens += r.InputCachedTokens
 	u.ReasoningTokens += r.ReasoningTokens
 	u.OutputTokens += r.OutputTokens
 	u.TotalTokens += r.TotalTokens
+	u.Cost = u.Cost.Add(r.Cost)
 }
 
 // RateLimitType defines the type of rate limit.

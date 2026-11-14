@@ -32,13 +32,13 @@ func TestGenSyncWithToolCallLoop(t *testing.T) {
 					{Text: "Let me use the calculator tool."},
 					{ToolCall: genai.ToolCall{ID: "1", Name: "calculator", Arguments: `{"a": 5, "b": 3, "operation": "add"}`}},
 				},
-				Usage: genai.Usage{InputTokens: 10, OutputTokens: 20},
+				Usage: genai.Usage{InputTokens: 10, OutputTokens: 20, TotalTokens: 30, Cost: genai.Cost{Total: 0.25, Currency: "USD"}, ContextTokens: 100, ContextWindow: 1000},
 			},
 			{
 				Replies: []genai.Reply{
 					{Text: "The result of 5 + 3 is 8."},
 				},
-				Usage: genai.Usage{InputTokens: 15, OutputTokens: 10},
+				Usage: genai.Usage{InputTokens: 15, OutputTokens: 10, TotalTokens: 25, Cost: genai.Cost{Total: 0.5, Currency: "USD"}, ContextTokens: 200, ContextWindow: 2000},
 			},
 		},
 	}
@@ -73,9 +73,9 @@ func TestGenSyncWithToolCallLoop(t *testing.T) {
 		t.Fatalf("Expected 3 messages, got %d", len(respMsgs))
 	}
 	t.Logf("Messages: %+v", respMsgs)
-	expectedUsage := genai.Usage{InputTokens: 25, OutputTokens: 30}
-	if usage.InputTokens != expectedUsage.InputTokens || usage.OutputTokens != expectedUsage.OutputTokens {
-		t.Fatalf("Expected usage %+v, got %+v", expectedUsage, usage)
+	expectedUsage := genai.Usage{InputTokens: 25, OutputTokens: 30, TotalTokens: 55, Cost: genai.Cost{Total: 0.75, Currency: "USD"}, ContextTokens: 200, ContextWindow: 2000}
+	if diff := cmp.Diff(expectedUsage, usage); diff != "" {
+		t.Fatalf("Expected usage mismatch (-want +got):\n%s", diff)
 	}
 }
 
@@ -88,13 +88,15 @@ func TestGenStreamWithToolCallLoop(t *testing.T) {
 					{Text: "Let me use the calculator tool."},
 					{ToolCall: genai.ToolCall{ID: "1", Name: "calculator", Arguments: `{"a": 5, "b": 3, "operation": "add"}`}},
 				},
-				usage: genai.Usage{InputTokens: 10, OutputTokens: 20},
+				usage: genai.Usage{InputTokens: 10, OutputTokens: 20, TotalTokens: 30, Cost: genai.Cost{Total: 0.25, Currency: "USD"}, ContextTokens: 100, ContextWindow: 1000},
 			},
 			{
 				fragments: []genai.Reply{
 					{Text: "The result of 5 + 3 is 8."},
 				},
-				usage: genai.Usage{InputTokens: 15, OutputTokens: 10},
+				// The last round did not report context; the previous
+				// snapshot describes the conversation.
+				usage: genai.Usage{InputTokens: 15, OutputTokens: 10, TotalTokens: 25, Cost: genai.Cost{Total: 0.5, Currency: "USD"}},
 			},
 		},
 	}
@@ -131,9 +133,9 @@ func TestGenStreamWithToolCallLoop(t *testing.T) {
 		t.Fatalf("Expected 3 messages, got %d", len(respMsgs))
 	}
 	t.Logf("Messages: %+v", respMsgs)
-	expectedUsage := genai.Usage{InputTokens: 25, OutputTokens: 30}
-	if usage.InputTokens != expectedUsage.InputTokens || usage.OutputTokens != expectedUsage.OutputTokens {
-		t.Fatalf("Expected usage %+v, got %+v", expectedUsage, usage)
+	expectedUsage := genai.Usage{InputTokens: 25, OutputTokens: 30, TotalTokens: 55, Cost: genai.Cost{Total: 0.75, Currency: "USD"}, ContextTokens: 100, ContextWindow: 1000}
+	if diff := cmp.Diff(expectedUsage, usage); diff != "" {
+		t.Fatalf("Expected usage mismatch (-want +got):\n%s", diff)
 	}
 	// Verify we received all fragments
 	if len(got) != 4 { // 2 text fragments + 1 tool call + 1 text fragment
@@ -216,14 +218,14 @@ func TestProviderUsage(t *testing.T) {
 	t.Run("GenSync", func(t *testing.T) {
 		provider := &mockProviderGenSync{
 			responses: []genai.Result{
-				{Usage: genai.Usage{InputTokens: 10, OutputTokens: 20}},
-				{Usage: genai.Usage{InputTokens: 15, OutputTokens: 25}},
+				{Usage: genai.Usage{InputTokens: 10, OutputTokens: 20, TotalTokens: 30, Cost: genai.Cost{Total: 0.25, Currency: "USD"}, ContextTokens: 100, ContextWindow: 1000}},
+				{Usage: genai.Usage{InputTokens: 15, OutputTokens: 25, TotalTokens: 40, Cost: genai.Cost{Total: 0.5, Currency: "USD"}, ContextTokens: 200, ContextWindow: 2000}},
 			},
 		}
 		wrapped := &adapters.ProviderUsage{Provider: provider}
 		_, _ = wrapped.GenSync(t.Context(), nil)
 		_, _ = wrapped.GenSync(t.Context(), nil)
-		expected := genai.Usage{InputTokens: 25, OutputTokens: 45}
+		expected := genai.Usage{InputTokens: 25, OutputTokens: 45, TotalTokens: 70, Cost: genai.Cost{Total: 0.75, Currency: "USD"}, ContextTokens: 200, ContextWindow: 2000}
 		if diff := cmp.Diff(expected, wrapped.GetAccumulatedUsage()); diff != "" {
 			t.Fatalf("unexpected usage: %s", diff)
 		}
@@ -231,8 +233,8 @@ func TestProviderUsage(t *testing.T) {
 	t.Run("GenStream", func(t *testing.T) {
 		provider := &mockProviderGenStream{
 			streamResponses: []streamResponse{
-				{usage: genai.Usage{InputTokens: 10, OutputTokens: 20}},
-				{usage: genai.Usage{InputTokens: 15, OutputTokens: 25}},
+				{usage: genai.Usage{InputTokens: 10, OutputTokens: 20, TotalTokens: 30, Cost: genai.Cost{Total: 0.25, Currency: "USD"}, ContextTokens: 100, ContextWindow: 1000}},
+				{usage: genai.Usage{InputTokens: 15, OutputTokens: 25, TotalTokens: 40, Cost: genai.Cost{Total: 0.5, Currency: "USD"}, ContextTokens: 200, ContextWindow: 2000}},
 			},
 		}
 		wrapped := &adapters.ProviderUsage{Provider: provider}
@@ -244,7 +246,7 @@ func TestProviderUsage(t *testing.T) {
 		for range fragments {
 		}
 		_, _ = finish()
-		expected := genai.Usage{InputTokens: 25, OutputTokens: 45}
+		expected := genai.Usage{InputTokens: 25, OutputTokens: 45, TotalTokens: 70, Cost: genai.Cost{Total: 0.75, Currency: "USD"}, ContextTokens: 200, ContextWindow: 2000}
 		if diff := cmp.Diff(expected, wrapped.GetAccumulatedUsage()); diff != "" {
 			t.Fatalf("unexpected usage: %s", diff)
 		}

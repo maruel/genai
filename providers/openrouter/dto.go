@@ -732,6 +732,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 			ReasoningTokens:   c.Usage.CompletionTokensDetails.ReasoningTokens,
 			OutputTokens:      c.Usage.CompletionTokens,
 			TotalTokens:       c.Usage.TotalTokens,
+			Cost:              genai.Cost{Total: c.Usage.Cost, Currency: "USD"},
 			ServiceTier:       c.ServiceTier,
 		},
 	}

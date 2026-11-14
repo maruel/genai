@@ -58,12 +58,27 @@ func TestModel(t *testing.T) {
 	})
 }
 
+func TestChatResponseCost(t *testing.T) {
+	var resp openrouter.ChatResponse
+	if err := json.Unmarshal([]byte(`{"choices":[{"finish_reason":"stop","message":{"role":"assistant","content":"hi"}}],"usage":{"prompt_tokens":10,"completion_tokens":5,"total_tokens":15,"cost":0.00123}}`), &resp); err != nil {
+		t.Fatal(err)
+	}
+	result, err := resp.ToResult()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result.Usage.Cost.Total != 0.00123 || result.Usage.Cost.Currency != "USD" {
+		t.Fatalf("cost = %+v, want 0.00123 USD", result.Usage.Cost)
+	}
+}
+
 func TestProcessStream(t *testing.T) {
 	chunks := make([]openrouter.ChatStreamChunkResponse, 0, 3)
 	for _, body := range []string{
 		`{"choices":[{"delta":{"reasoning":"first ","reasoning_details":[{"type":"reasoning.text","index":0,"text":"first "}]}}]}`,
 		`{"choices":[{"delta":{"reasoning":"second","reasoning_details":[{"type":"reasoning.text","index":0,"text":"second","signature":"signed"}]}}]}`,
 		`{"choices":[{"delta":{"content":"answer"}}]}`,
+		`{"choices":[{"delta":{},"finish_reason":"stop"}],"usage":{"prompt_tokens":10,"completion_tokens":5,"total_tokens":15,"cost":0.00123}}`,
 	} {
 		var c openrouter.ChatStreamChunkResponse
 		if err := json.Unmarshal([]byte(body), &c); err != nil {
@@ -78,8 +93,12 @@ func TestProcessStream(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	if _, _, err := finish(); err != nil {
+	usage, _, err := finish()
+	if err != nil {
 		t.Fatal(err)
+	}
+	if usage.Cost.Total != 0.00123 || usage.Cost.Currency != "USD" {
+		t.Fatalf("streamed cost = %+v, want 0.00123 USD", usage.Cost)
 	}
 	b, err := json.Marshal(msg)
 	if err != nil {

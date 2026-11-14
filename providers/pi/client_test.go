@@ -18,6 +18,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/google/go-cmp/cmp"
+
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal/internaltest"
@@ -328,12 +330,16 @@ func TestReadResponseForCommand(t *testing.T) {
 }
 
 func TestBuildResult(t *testing.T) {
-	res, err := buildResult([]byte(`{"type":"agent_end","messages":[{"role":"assistant","content":[{"type":"text","text":"Hello."}],"usage":{"input":10,"output":8,"cacheRead":4,"cacheWrite":2,"cacheWrite1h":1,"reasoning":3,"totalTokens":24,"cost":{"input":0,"output":0,"cacheRead":0,"cacheWrite":0,"total":0}},"stopReason":"stop"}]}`), "", "", 0, 0)
+	res, err := buildResult([]byte(`{"type":"agent_end","messages":[{"role":"assistant","content":[{"type":"text","text":"Hello."}],"usage":{"input":10,"output":8,"cacheRead":4,"cacheWrite":2,"cacheWrite1h":1,"reasoning":3,"totalTokens":24,"cost":{"input":0.01,"output":0.02,"cacheRead":0.003,"cacheWrite":0.004,"total":0.037}},"stopReason":"stop"}]}`), "", "", 0, 0)
 	if err != nil {
 		t.Fatal(err)
 	}
 	if res.Usage.ReasoningTokens != 3 {
 		t.Errorf("ReasoningTokens = %d, want 3", res.Usage.ReasoningTokens)
+	}
+	want := genai.Cost{Input: 0.01, Output: 0.02, CacheRead: 0.003, CacheWrite: 0.004, Total: 0.037, Currency: "USD"}
+	if diff := cmp.Diff(want, res.Usage.Cost); diff != "" {
+		t.Errorf("cost mismatch (-want +got):\n%s", diff)
 	}
 }
 

@@ -206,6 +206,9 @@ func (r Realtime) Run(ctx context.Context, rec Recorder, _ scoreboard.Model, wir
 			return scoreboard.Realtime{}, genai.Usage{}, fmt.Errorf("%w: %s", ErrUnsupported, reason)
 		}
 	}
+	if want != nil && want.Realtime != nil && want.Realtime.Transcription != nil {
+		return RunTranscriptionScenario(ctx, c)
+	}
 	sc, usage, err := RunRealtimeScenario(ctx, c, reasoning)
 	if err != nil {
 		return sc, usage, err

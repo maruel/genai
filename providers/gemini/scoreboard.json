@@ -381,6 +381,30 @@
   ],
   "realtime": [
     {
+      "comments": "Transcription session: recognizes speech without a response.",
+      "models": [
+        "gemini-3.5-transcribe-live"
+      ],
+      "in": {
+        "audio": {
+          "inline": true
+        }
+      },
+      "wire": "session",
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "Realtime": {
+        "inputSampleRate": 16000,
+        "transcription": {
+          "drafts": true,
+          "inputLanguage": true
+        }
+      }
+    },
+    {
       "comments": "Realtime non-thinking mode: the model's fixed latency profile.",
       "models": [
         "gemini-3.8-live"

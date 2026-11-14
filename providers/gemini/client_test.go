@@ -748,55 +748,26 @@ func TestClient(t *testing.T) {
 			}
 		})
 		t.Run("Transcription", func(t *testing.T) {
-			got := make(chan []map[string]any, 1)
-			endpoint := livePeer(t, func(ctx context.Context, ws *websocket.Conn, setup map[string]any) {
-				s := internaltest.AssertType[map[string]any](t, setup["setup"])
-				g := internaltest.AssertType[map[string]any](t, s["generationConfig"])
-				ri := internaltest.AssertType[map[string]any](t, s["realtimeInputConfig"])
-				trans := internaltest.AssertType[map[string]any](t, s["inputAudioTranscription"])
-				if !reflect.DeepEqual(g["responseModalities"], []any{"TEXT"}) || ri["activityHandling"] != "NO_INTERRUPTION" || !reflect.DeepEqual(ri["automaticActivityDetection"], map[string]any{"disabled": true}) || !reflect.DeepEqual(trans["languageCodes"], []any{"fr-CA"}) {
-					t.Errorf("transcription setup: %v", s)
-				}
-				msgs := make([]map[string]any, 3)
-				for i := range msgs {
-					msgs[i] = realtimetest.Read(t, ctx, ws)
-				}
-				got <- msgs
+			// The recorded smoke probe covers the exchange; this covers what the
+			// service never sends or the probe never tries.
+			endpoint := livePeer(t, func(ctx context.Context, ws *websocket.Conn, _ map[string]any) {
 				for _, frame := range []string{
-					`{"serverContent":{"interimInputTranscription":{"text":"Bon"}}}`,
 					`{"serverContent":{"inputTranscription":{"text":"Bonjour"}}}`,
 					`{"serverContent":{"modelTurn":{"parts":[{"text":"ignored"}]}}}`,
-					`{"serverContent":{"turnComplete":true}}`,
-					`{"serverContent":{"inputTranscription":{"text":" Marc."}}}`,
-					`{"serverContent":{"modelTurn":{},"generationComplete":true}}`,
+					`{"serverContent":{"generationComplete":true}}`,
 				} {
 					realtimetest.Write(t, ctx, ws, frame)
 				}
 				_, _, _ = ws.Read(ctx)
 			})
-			s, err := liveClientForModel(t, "gemini-3.5-transcribe-live").ConnectRealtime(t.Context(), genai.RealtimeOptionTranscription{}, &genai.RealtimeOptionAudio{InputLanguage: "fr-CA"}, &gemini.RealtimeOption{Endpoint: endpoint})
+			s, err := liveClientForModel(t, "gemini-3.5-transcribe-live").ConnectRealtime(t.Context(), genai.RealtimeOptionTranscription{}, &gemini.RealtimeOption{Endpoint: endpoint})
 			if err != nil {
 				t.Fatal(err)
 			}
 			t.Cleanup(func() { _ = s.Close() })
-			if info := s.Info(); info.OutputFormat != (genai.AudioFormat{}) || info.TurnDetection != genai.RealtimeTurnManual || !reflect.DeepEqual(info.InputModalities, []genai.Modality{genai.ModalityAudio}) || info.Capabilities != (genai.RealtimeCapabilities{AudioCommit: true}) {
-				t.Errorf("info: %+v", info)
-			}
 			for _, in := range []genai.RealtimeInput{genai.RealtimeInputContent{Text: "hi", Generate: true}, genai.RealtimeInputContent{Audio: []byte{0, 0}, Generate: true}, genai.RealtimeCancel{}} {
 				if _, ok := errors.AsType[*base.ErrNotSupported](s.Send(t.Context(), in)); !ok {
 					t.Errorf("%+v accepted", in)
-				}
-			}
-			if err := s.Send(t.Context(), genai.RealtimeInputContent{Audio: []byte{0, 0}}); err != nil {
-				t.Fatal(err)
-			}
-			if err := s.Send(t.Context(), genai.RealtimeInputContent{Commit: true}); err != nil {
-				t.Fatal(err)
-			}
-			msgs := <-got
-			for i, key := range []string{"activityStart", "audio", "activityEnd"} {
-				if _, ok := internaltest.AssertType[map[string]any](t, msgs[i]["realtimeInput"])[key]; !ok {
-					t.Errorf("%s: %v", key, msgs[i])
 				}
 			}
 			var events []genai.RealtimeEvent
@@ -810,10 +781,8 @@ func TestClient(t *testing.T) {
 				}
 			}
 			want := []genai.RealtimeEvent{
-				{Kind: genai.RealtimeEventTranscriptInputInterim, Content: genai.RealtimeContent{Text: "Bon"}},
 				{Kind: genai.RealtimeEventTranscriptInput, Content: genai.RealtimeContent{Text: "Bonjour"}},
-				{Kind: genai.RealtimeEventTranscriptInput, Content: genai.RealtimeContent{Text: " Marc."}},
-				{Kind: genai.RealtimeEventTranscriptInput, Content: genai.RealtimeContent{Text: "Bonjour Marc.", Final: true}},
+				{Kind: genai.RealtimeEventTranscriptInput, Content: genai.RealtimeContent{Text: "Bonjour", Final: true}},
 				{Kind: genai.RealtimeEventTurnDone},
 			}
 			if !reflect.DeepEqual(events, want) {

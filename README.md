@@ -71,7 +71,7 @@ genai is _intentional_. Curious why it was created? See the release announcement
 | [groq](docs/groq.md)                       | 🇺🇸   | Sync, Stream🧠                             | 💬📸       | 💬      | ✅🪨🔀🕸️ | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
 | [huggingface](docs/huggingface.md)         | 🇺🇸   | Sync, Stream🧠                             | 💬📸       | 💬      | ✅🪨🔀   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
 | [llamacpp](docs/llamacpp.md)               | 🏠   | Embed, SystemOne, Realtime, Sync, Stream🧠 | 🎤🎥💬📸   | 🎤🎯💬🧬  | ✅🪨🔀   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| [mistral](docs/mistral.md)                 | 🇫🇷   | Sync, Stream🧠                             | 🎤💬📄📸   | 💬      | ✅🪨     | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| [mistral](docs/mistral.md)                 | 🇫🇷   | Realtime, Sync, Stream🧠                   | 🎤💬📄📸   | 💬      | ✅🪨     | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
 | [ollama](docs/ollama.md)                   | 🏠   | Embed, SystemOne, Sync, Stream🧠           | 💬📸       | 🎯💬🧬    | ✅🔀     | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
 | [openaichat](docs/openaichat.md)           | 🇺🇸   | Embed, Realtime, Sync, Stream🧠            | 🎤💬📄📸   | 🎤💬📸🧬 | ✅🪨     | ✅   | ✅    | ✅   | ❌   | 🌱📏  | ✅    | ✅     | ✅    | ✅     |
 | [openairesponses](docs/openairesponses.md) | 🇺🇸   | Embed, Realtime, Sync, Stream🧠            | 🎤💬📄📸   | 🎤💬📸🧬 | ✅🪨🕸️   | ✅   | ✅    | ❌   | ❌   | ❌   | ❌    | ✅     | ✅    | ✅     |

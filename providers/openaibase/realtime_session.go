@@ -18,7 +18,7 @@ import (
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
-	"golang.org/x/text/language"
+	"github.com/maruel/genai/internal/realtime"
 )
 
 // RealtimeOption configures OpenAI Realtime beyond the portable session contract.
@@ -114,8 +114,15 @@ var _ genai.RealtimeOption = (*RealtimeOption)(nil)
 // provider errors are events; malformed recognized events terminate the session.
 // Frames, input transactions and pending events are bounded.
 //
+// With genai.RealtimeOptionTranscription, model is a transcription model and
+// the session transcribes one utterance instead; see
+// connectTranscriptionSession for its options.
+//
 // Protocol: GA /v1/realtime. See [Session] for the wire session.
-func ConnectRealtimeSession(ctx context.Context, hc *http.Client, model string, opts ...genai.RealtimeOption) (*Session, error) {
+func ConnectRealtimeSession(ctx context.Context, hc *http.Client, model string, opts ...genai.RealtimeOption) (genai.RealtimeSession, error) {
+	if slices.ContainsFunc(opts, func(o genai.RealtimeOption) bool { _, ok := o.(genai.RealtimeOptionTranscription); return ok }) {
+		return connectTranscriptionSession(ctx, hc, model, opts...)
+	}
 	parallelToolCalls := true
 	setup := &SessionConfig{
 		Type:              SessionRealtime,
@@ -247,29 +254,16 @@ func ConnectRealtimeSession(ctx context.Context, hc *http.Client, model string, 
 		if o.InputTranscriptionModel == "" {
 			return nil, errors.New("InputTranscription requires an explicit OpenAI transcription model")
 		}
-		lang, err := primaryLanguage(inputLanguage)
+		lang, err := realtime.PrimaryLanguage("OpenAI", inputLanguage)
 		if err != nil {
 			return nil, err
 		}
 		setup.Audio.Input.Transcription.Model = o.InputTranscriptionModel
 		setup.Audio.Input.Transcription.Language = lang
 	}
-	return ConnectRealtime(ctx, hc, u.String(), o.PingInterval, o.PingTimeout, setup)
-}
-
-// primaryLanguage returns the ISO-639-1 primary language of a BCP 47 tag that
-// RealtimeOptionAudio.Validate accepted.
-func primaryLanguage(tag string) (string, error) {
-	if tag == "" {
-		return "", nil
-	}
-	t, err := language.Parse(tag)
+	rs, err := ConnectRealtime(ctx, hc, u.String(), o.PingInterval, o.PingTimeout, setup)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	b, _ := t.Base()
-	if s := b.String(); len(s) == 2 {
-		return s, nil
-	}
-	return "", fmt.Errorf("OpenAI realtime input language %q has no ISO-639-1 code: %w", tag, &base.ErrNotSupported{Options: []string{"input language"}})
+	return rs, nil
 }

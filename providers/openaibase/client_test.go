@@ -213,22 +213,3 @@ func (e embeddingNoTransport) RoundTrip(*http.Request) (*http.Response, error) {
 	e.t.Fatal("unexpected HTTP request")
 	return nil, errors.New("unexpected HTTP request")
 }
-
-func TestPrimaryLanguage(t *testing.T) {
-	for _, tc := range []struct {
-		in   string
-		want string
-	}{
-		{in: "", want: ""},
-		{in: "FR", want: "fr"},
-		{in: "zh-Hant-TW", want: "zh"},
-	} {
-		got, err := primaryLanguage(tc.in)
-		if err != nil || got != tc.want {
-			t.Errorf("primaryLanguage(%q) = %q, %v; want %q", tc.in, got, err, tc.want)
-		}
-	}
-	if _, err := primaryLanguage("fil"); err == nil {
-		t.Error("language without an ISO-639-1 code accepted")
-	}
-}

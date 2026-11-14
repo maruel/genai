@@ -22,6 +22,7 @@ import (
 	"github.com/coder/websocket"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/websocketrecord"
 )
 
@@ -99,7 +100,12 @@ func (r *RealtimeRecorder) ConnectRealtime(ctx context.Context, opts ...genai.Re
 	s, err := r.Provider.ConnectRealtime(ctx, opts...)
 	if err != nil {
 		if !r.Updating {
-			return nil, err
+			// A refusal is a result whose fixture keeps its call number. Any other
+			// failure must not leave a fixture that the next run replays as one.
+			if _, ok := errors.AsType[*base.ErrNotSupported](err); ok {
+				return nil, errors.Join(err, rec.Close())
+			}
+			return nil, errors.Join(err, rec.Discard())
 		}
 		// A refused session is a result. Keep the exchange, and keep the call number
 		// that names it, so replay reproduces the refusal instead of asking again.

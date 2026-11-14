@@ -1,0 +1,73 @@
+{"dir":"=","status":101,"headers":{"Access-Control-Allow-Origin":["*"],"Alt-Svc":["h3=\":443\"; ma=86400"],"Cf-Cache-Status":["DYNAMIC"],"Cf-Ray":["a5a94dfebb29b5a7-YUL"],"Date":["Sat, 14 Nov 2026 22:03:10 GMT"],"Mistral-Correlation-Id":["01a1dc15-fc4d-742a-9566-eb1105473cb0"],"Server":["cloudflare"],"Server-Timing":["cfCacheStatus;desc=\"DYNAMIC\"","cfEdge;dur=17,cfOrigin;dur=428"],"Set-Cookie":["__cf_bm=cCXla0aIvobRAkM.w5Zzlt2yP91kiXxy3QRV38Lfxz4-1794693790.5237448-1.0.1.1-pETwWS841k5hMPk5faSZmDn67ZJuWCgs498JSyPrViNA0qjIGfOmj6q_RE78QXm.zXePg2V9U1tLDbMntmRKkEwMEu3ulxV9ffuQOi62GZheIIIKB_F1ZLOXAEGpEUj9; HttpOnly; SameSite=None; Partitioned; Secure; Path=/; Domain=mistral.ai; Expires=Sat, 14 Nov 2026 22:33:10 GMT"],"Strict-Transport-Security":["max-age=15552000; includeSubDomains; preload"],"X-Content-Type-Options":["nosniff"],"X-Kong-Proxy-Latency":["55"],"X-Kong-Request-Id":["01a1dc15-fc4d-742a-9566-eb1105473cb0"],"X-Kong-Upstream-Latency":["63"]}}
+{"dir":"\u003c","msg":"{\"type\":\"session.created\",\"session\":{\"request_id\":\"ws-01a1dc15-fcd2-75aa-aa3c-d8bd315985a0\",\"model\":\"voxtral-mini-transcribe-realtime-3-0-4\",\"audio_format\":{\"encoding\":\"pcm_s16le\",\"sample_rate\":16000},\"target_streaming_delay_ms\":null,\"diarize\":false,\"verbatim\":false,\"context_bias\":[],\"language\":null,\"speaker_references\":null,\"turn_detection\":null}}"}
+{"dir":"\u003e","msg":"{\"type\":\"session.update\",\"session\":{\"audio_format\":{\"encoding\":\"pcm_s16le\",\"sample_rate\":16000},\"language\":\"fr\"}}"}
+{"dir":"\u003c","msg":"{\"type\":\"session.updated\",\"session\":{\"request_id\":\"ws-01a1dc15-fcd2-75aa-aa3c-d8bd315985a0\",\"model\":\"voxtral-mini-transcribe-realtime-3-0-4\",\"audio_format\":{\"encoding\":\"pcm_s16le\",\"sample_rate\":16000},\"target_streaming_delay_ms\":null,\"diarize\":false,\"verbatim\":false,\"context_bias\":[],\"language\":\"fr\",\"speaker_references\":null,\"turn_detection\":null}}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003c","msg":"{\"type\":\"transcription.text.delta\",\"text\":\"What\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003c","msg":"{\"type\":\"transcription.text.delta\",\"text\":\" is\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003c","msg":"{\"type\":\"transcription.text.delta\",\"text\":\" the\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003c","msg":"{\"type\":\"transcription.text.delta\",\"text\":\" access\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003c","msg":"{\"type\":\"transcription.text.delta\",\"text\":\" code\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003c","msg":"{\"type\":\"transcription.text.delta\",\"text\":\" called\"}"}
+{"dir":"\u003c","msg":"{\"type\":\"transcription.text.delta\",\"text\":\" the\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003c","msg":"{\"type\":\"transcription.text.delta\",\"text\":\" lookup\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003c","msg":"{\"type\":\"transcription.text.delta\",\"text\":\" code\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003c","msg":"{\"type\":\"transcription.text.delta\",\"text\":\" tool\"}"}
+{"dir":"\u003c","msg":"{\"type\":\"transcription.text.delta\",\"text\":\",\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003c","msg":"{\"type\":\"transcription.text.delta\",\"text\":\" then\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003c","msg":"{\"type\":\"transcription.text.delta\",\"text\":\" reply\"}"}
+{"dir":"\u003c","msg":"{\"type\":\"transcription.text.delta\",\"text\":\" with\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003e","msg":"{\"audio\":\"AAA=\",\"type\":\"input_audio.append\"}"}
+{"dir":"\u003e","msg":"{\"type\":\"input_audio.flush\"}"}
+{"dir":"\u003e","msg":"{\"type\":\"input_audio.end\"}"}
+{"dir":"\u003c","msg":"{\"type\":\"transcription.text.delta\",\"text\":\" only\"}"}
+{"dir":"\u003c","msg":"{\"type\":\"transcription.text.delta\",\"text\":\" the\"}"}
+{"dir":"\u003c","msg":"{\"type\":\"transcription.text.delta\",\"text\":\" code\"}"}
+{"dir":"\u003c","msg":"{\"type\":\"transcription.text.delta\",\"text\":\".\"}"}
+{"dir":"\u003c","msg":"{\"model\":\"voxtral-mini-transcribe-realtime-3-0-4\",\"text\":\"What is the access code called the lookup code tool, then reply with only the code.\",\"language\":null,\"segments\":[],\"usage\":{\"prompt_audio_seconds\":4,\"prompt_tokens\":40,\"total_tokens\":110,\"completion_tokens\":70},\"type\":\"transcription.done\"}"}

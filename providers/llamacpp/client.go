@@ -525,19 +525,17 @@ func (c *Client) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOpti
 			return nil, fmt.Errorf("unsupported llama.cpp realtime option %T: %w", opt, &base.ErrNotSupported{Options: []string{fmt.Sprintf("%T", opt)}})
 		}
 		o = *v
-		conversation = append(conversation, fmt.Sprintf("%T", opt))
-	}
-	if transcription {
-		if len(conversation) != 0 {
-			return nil, fmt.Errorf("llama.cpp realtime transcription: %w", &base.ErrNotSupported{Options: conversation})
+		if o.MaxOutputTokens != 0 {
+			conversation = append(conversation, "max output tokens")
 		}
-		conn, err := c.ConnectTranscriptionRaw(ctx)
-		if err != nil {
-			return nil, err
+		if o.RequireToolCall {
+			conversation = append(conversation, "required tool call")
 		}
-		return newTranscriptionSession(conn, inputFormat)
 	}
-	if len(conversationOnly) != 0 {
+	if transcription && len(conversation) != 0 {
+		return nil, fmt.Errorf("llama.cpp realtime transcription: %w", &base.ErrNotSupported{Options: conversation})
+	}
+	if !transcription && len(conversationOnly) != 0 {
 		return nil, fmt.Errorf("llama.cpp realtime conversation settings: %w", &base.ErrNotSupported{Options: conversationOnly})
 	}
 	u, err := url.Parse(c.baseURL)
@@ -559,6 +557,13 @@ func (c *Client) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOpti
 	}
 	if o.PingInterval != 0 && o.PingTimeout == 0 {
 		o.PingTimeout = 10 * time.Second
+	}
+	if transcription {
+		conn, err := c.dialTranscription(ctx, u, o.PingInterval, o.PingTimeout)
+		if err != nil {
+			return nil, err
+		}
+		return newTranscriptionSession(conn, inputFormat)
 	}
 	names := setup.Tools.Names()
 	if o.MaxOutputTokens != 0 {
@@ -1153,8 +1158,14 @@ func (c *Client) ConnectTranscriptionRaw(ctx context.Context) (*TranscriptionCon
 		u.Scheme = "ws"
 	}
 	u.Path = strings.TrimRight(u.Path, "/") + "/v1/realtime"
-	u.RawQuery = "intent=transcription"
-	ws, err := realtime.Dial(ctx, u.String(), &c.impl.Client, maxMessageBytes, 0, 0)
+	return c.dialTranscription(ctx, u, 0, 0)
+}
+
+// dialTranscription opens the transcription session at the realtime URL u.
+func (c *Client) dialTranscription(ctx context.Context, u *url.URL, pingInterval, pingTimeout time.Duration) (*TranscriptionConn, error) {
+	t := *u
+	t.RawQuery = "intent=transcription"
+	ws, err := realtime.Dial(ctx, t.String(), &c.impl.Client, maxMessageBytes, pingInterval, pingTimeout)
 	if err != nil {
 		return nil, err
 	}

@@ -9,6 +9,7 @@ package mistral_test
 import (
 	_ "embed"
 	"net/http"
+	"path/filepath"
 	"slices"
 	"strings"
 	"testing"
@@ -115,14 +116,33 @@ func TestClient(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
+			rec := &internaltest.RealtimeRecorder{
+				Provider: c,
+				T:        t,
+				Target:   "wss://api.mistral.ai/v1/audio/transcriptions/realtime",
+				Dir:      filepath.Join("testdata", filepath.FromSlash(t.Name())),
+				Updating: internaltest.UpdatingRecordings(),
+				Mutation: func(opts []genai.RealtimeOption, endpoint string) []genai.RealtimeOption {
+					out := slices.Clone(opts)
+					for i, opt := range out {
+						if o, ok := opt.(*mistral.RealtimeOption); ok {
+							clone := *o
+							clone.Endpoint = endpoint
+							out[i] = &clone
+							return out
+						}
+					}
+					return append(out, &mistral.RealtimeOption{Endpoint: endpoint})
+				},
+			}
 			if strings.HasPrefix(model.Model, "voxtral") {
 				// If anyone at Mistral reads this, please get your shit together.
-				return &internaltest.HideHTTPCode{Provider: c, StatusCode: 500}
+				return &internaltest.HideHTTPCode{Provider: rec, StatusCode: 500}
 			}
-			return c
+			return rec
 		}
 
-		smoketest.Run(t, smoke.HTTP(testRecorder.Records, getClientRT), models, nil)
+		smoketest.Run(t, smoke.HTTPSession(testRecorder.Records, getClientRT), models, nil)
 	})
 
 	t.Run("Preferred", func(t *testing.T) {

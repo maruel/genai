@@ -91,6 +91,9 @@ func newTranscriptionSession(conn *TranscriptionConn, format genai.AudioFormat) 
 type transcriptionSession struct {
 	conn *TranscriptionConn
 	info genai.RealtimeSessionInfo
+	// pending is receiver-owned and holds the untaken events of one server
+	// message, so a consumer that stops early loses none.
+	pending []genai.RealtimeEvent
 
 	mu        sync.Mutex
 	committed bool
@@ -138,38 +141,41 @@ func (s *transcriptionSession) Send(ctx context.Context, in genai.RealtimeInput)
 func (s *transcriptionSession) Receive(ctx context.Context) iter.Seq2[genai.RealtimeEvent, error] {
 	return func(yield func(genai.RealtimeEvent, error) bool) {
 		for {
+			if len(s.pending) != 0 {
+				e := s.pending[0]
+				s.pending[0] = genai.RealtimeEvent{}
+				s.pending = s.pending[1:]
+				if !yield(e, nil) {
+					return
+				}
+				continue
+			}
 			m, err := s.conn.Receive(ctx)
 			if err != nil {
 				yield(genai.RealtimeEvent{}, err)
 				return
 			}
-			var events []genai.RealtimeEvent
 			switch m.Type {
 			case EventInputTranscriptDelta:
 				if m.Delta != "" {
-					events = append(events, genai.RealtimeEvent{Kind: genai.RealtimeEventTranscriptInput, ItemID: m.ItemID, Content: genai.RealtimeContent{Text: m.Delta}})
+					s.pending = append(s.pending, genai.RealtimeEvent{Kind: genai.RealtimeEventTranscriptInput, ItemID: m.ItemID, Content: genai.RealtimeContent{Text: m.Delta}})
 				}
 			case EventInputTranscriptDone:
 				if m.Transcript != "" {
-					events = append(events, genai.RealtimeEvent{Kind: genai.RealtimeEventTranscriptInput, ItemID: m.ItemID, Content: genai.RealtimeContent{Text: m.Transcript, Final: true}})
+					s.pending = append(s.pending, genai.RealtimeEvent{Kind: genai.RealtimeEventTranscriptInput, ItemID: m.ItemID, Content: genai.RealtimeContent{Text: m.Transcript, Final: true}})
 				}
-				events = append(events, genai.RealtimeEvent{Kind: genai.RealtimeEventTurnDone, ItemID: m.ItemID})
+				s.pending = append(s.pending, genai.RealtimeEvent{Kind: genai.RealtimeEventTurnDone, ItemID: m.ItemID})
 			case EventInputTranscriptFailed, EventError:
 				e := &genai.RealtimeError{Message: "llama.cpp transcription failed"}
 				if m.Error != nil {
 					e = &genai.RealtimeError{Code: m.Error.Code, Message: m.Error.Message}
 				}
-				events = append(events, genai.RealtimeEvent{Kind: genai.RealtimeEventError, ItemID: m.ItemID, Error: e})
+				s.pending = append(s.pending, genai.RealtimeEvent{Kind: genai.RealtimeEventError, ItemID: m.ItemID, Error: e})
 				if m.Type == EventInputTranscriptFailed {
-					events = append(events, genai.RealtimeEvent{Kind: genai.RealtimeEventTurnDone, ItemID: m.ItemID})
+					s.pending = append(s.pending, genai.RealtimeEvent{Kind: genai.RealtimeEventTurnDone, ItemID: m.ItemID})
 				}
 			default:
 				// Acknowledgements carry no transcript.
-			}
-			for i := range events {
-				if !yield(events[i], nil) {
-					return
-				}
 			}
 		}
 	}

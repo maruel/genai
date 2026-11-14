@@ -449,6 +449,10 @@ type RealtimeFunctionality struct {
 	ReportRateLimits bool `json:"reportRateLimits,omitzero"`
 	// ReportTokenUsage reports that session usage events include token counts.
 	ReportTokenUsage TriState `json:"reportTokenUsage,omitzero"`
+	// Transcription marks a transcription session, opened with
+	// genai.RealtimeOptionTranscription, instead of a conversation. A non-nil
+	// empty value requests its qualification.
+	Transcription *RealtimeTranscription `json:"transcription,omitzero"`
 }
 
 // Validate returns an error if the sample rates are negative.
@@ -470,13 +474,30 @@ func (f *RealtimeFunctionality) Validate() error {
 	if err := f.ReportTokenUsage.Validate(); err != nil {
 		return fmt.Errorf("token usage: %w", err)
 	}
+	if t := f.Transcription; t != nil && t.ForcesLanguage && !t.InputLanguage {
+		return errors.New("transcription cannot force a language it does not accept")
+	}
 	return nil
 }
 
 // empty reports whether f is a qualification marker without measurements.
 func (f *RealtimeFunctionality) empty() bool {
 	return len(f.Voices) == 0 && f.InputSampleRate == 0 && f.OutputSampleRate == 0 &&
-		!f.CancelResponse && f.Tools == False && !f.ReportRateLimits && f.ReportTokenUsage == False
+		!f.CancelResponse && f.Tools == False && !f.ReportRateLimits && f.ReportTokenUsage == False &&
+		(f.Transcription == nil || *f.Transcription == RealtimeTranscription{})
+}
+
+// RealtimeTranscription records a qualified transcription session. English
+// speech is the reference; a passing session returns its words.
+type RealtimeTranscription struct {
+	// Drafts reports that transcripts arrived before the final transcript.
+	Drafts bool `json:"drafts,omitzero"`
+	// InputLanguage reports that the session accepted
+	// genai.RealtimeOptionAudio.InputLanguage.
+	InputLanguage bool `json:"inputLanguage,omitzero"`
+	// ForcesLanguage reports that a mismatched InputLanguage, French for the
+	// English speech, cost the transcript its English words.
+	ForcesLanguage bool `json:"forcesLanguage,omitzero"`
 }
 
 // ModalCapability describes how a modality is supported by a provider.

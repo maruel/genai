@@ -548,6 +548,29 @@
         "tools": "true",
         "reportTokenUsage": "true"
       }
+    },
+    {
+      "comments": "Transcription session through /v1/realtime?intent=transcription. llama-server ignores the session language, so the client rejects InputLanguage.",
+      "models": [
+        "ggml-org/Voxtral-Mini-4B-Realtime-2602-GGUF:Q4_K_M"
+      ],
+      "in": {
+        "audio": {
+          "inline": true
+        }
+      },
+      "wire": "session",
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "Realtime": {
+        "inputSampleRate": 16000,
+        "transcription": {
+          "drafts": true
+        }
+      }
     }
   ]
 }

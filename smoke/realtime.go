@@ -323,7 +323,7 @@ func RunRealtimeScenario(ctx context.Context, c genai.Provider, reason bool) (sc
 			connOpts = append(connOpts, genai.Modalities{genai.ModalityText})
 		case RealtimeProbeAudioTool:
 			connOpts = append(connOpts, genai.Modalities{genai.ModalityAudio})
-		case RealtimeProbeSetup, RealtimeProbeText, RealtimeProbeReuse, RealtimeProbeCancellation, RealtimeProbeAudio:
+		case RealtimeProbeSetup, RealtimeProbeText, RealtimeProbeReuse, RealtimeProbeCancellation, RealtimeProbeAudio, RealtimeProbeTranscription:
 		}
 		if len(tools) != 0 {
 			connOpts = append(connOpts, &genai.RealtimeOptionTools{Tools: tools})

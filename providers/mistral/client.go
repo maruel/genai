@@ -17,7 +17,9 @@ import (
 	"iter"
 	"maps"
 	"net/http"
+	"net/url"
 	"os"
+	"reflect"
 	"slices"
 	"strconv"
 	"strings"
@@ -28,6 +30,7 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
+	"github.com/maruel/genai/internal/realtime"
 	"github.com/maruel/genai/scoreboard"
 )
 
@@ -184,6 +187,11 @@ func (c *Client) OutputModalities() genai.Modalities {
 	return c.impl.OutputModalities
 }
 
+// Capabilities implements genai.Provider.
+func (c *Client) Capabilities() genai.ProviderCapabilities {
+	return genai.ProviderCapabilities{Realtime: true}
+}
+
 // Scoreboard implements genai.Provider.
 func (c *Client) Scoreboard() scoreboard.Score {
 	return Scoreboard()
@@ -225,6 +233,120 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 		return nil, err
 	}
 	return resp.ToModels(), nil
+}
+
+// ConnectRealtime implements genai.Provider.
+//
+// Mistral's realtime API only transcribes, so it requires
+// genai.RealtimeOptionTranscription with a transcription model such as
+// voxtral-mini-transcribe-realtime-3. The session transcribes one utterance of
+// PCM16 audio, 16 kHz unless RealtimeOptionAudio.InputFormat selects another
+// rate. InputLanguage is sent as its ISO-639-1 code. Text deltas are final and
+// append-only; Commit flushes and ends the input, then transcription.done
+// yields the complete transcript and TurnDone.
+func (c *Client) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOption) (genai.RealtimeSession, error) {
+	if c.impl.Model == "" {
+		return nil, errors.New("mistral realtime requires a model")
+	}
+	var transcription bool
+	var unsupported []string
+	cfg := RealtimeSessionConfig{AudioFormat: &RealtimeAudioFormat{Encoding: RealtimeAudioPCMS16, SampleRate: realtimeInputRate}}
+	o := RealtimeOption{}
+	seen := make(map[reflect.Type]struct{}, len(opts))
+	for _, opt := range opts {
+		if opt == nil || (reflect.ValueOf(opt).Kind() == reflect.Pointer && reflect.ValueOf(opt).IsNil()) {
+			return nil, errors.New("realtime option must not be nil")
+		}
+		t := reflect.TypeOf(opt)
+		if _, ok := seen[t]; ok {
+			return nil, fmt.Errorf("duplicate realtime option type %s", t)
+		}
+		seen[t] = struct{}{}
+		if err := opt.Validate(); err != nil {
+			return nil, fmt.Errorf("realtime option %T: %w", opt, err)
+		}
+		switch v := opt.(type) {
+		case genai.RealtimeOptionTranscription:
+			transcription = true
+		case *genai.RealtimeOptionAudio:
+			if v.Voice != "" {
+				unsupported = append(unsupported, "voice")
+			}
+			if v.OutputTranscription {
+				unsupported = append(unsupported, "output transcription")
+			}
+			if r := v.InputFormat.SampleRate; r != 0 {
+				cfg.AudioFormat.SampleRate = r
+			}
+			lang, err := realtime.PrimaryLanguage("Mistral", v.InputLanguage)
+			if err != nil {
+				return nil, err
+			}
+			cfg.Language = lang
+		case genai.RealtimeTurnDetection:
+			if v == genai.RealtimeTurnServer {
+				unsupported = append(unsupported, "server turns")
+			}
+		case *RealtimeOption:
+			o = *v
+		default:
+			unsupported = append(unsupported, fmt.Sprintf("%T", opt))
+		}
+	}
+	if !transcription {
+		return nil, fmt.Errorf("mistral realtime only transcribes: %w", &base.ErrNotSupported{Options: []string{"conversation"}})
+	}
+	if len(unsupported) != 0 {
+		return nil, fmt.Errorf("mistral realtime transcription: %w", &base.ErrNotSupported{Options: unsupported})
+	}
+	endpoint := realtimeURL
+	if o.Endpoint != "" {
+		endpoint = o.Endpoint
+	}
+	u, err := url.Parse(endpoint)
+	if err != nil {
+		return nil, err
+	}
+	u.RawQuery = url.Values{"model": {c.impl.Model}}.Encode()
+	ws, err := realtime.Dial(ctx, u.String(), &c.impl.Client, maxRealtimeMessageBytes, 0, 0)
+	if err != nil {
+		return nil, err
+	}
+	s := &realtimeSession{ws: ws}
+	created, err := s.receive(ctx)
+	if err == nil && (created.Type != RealtimeSessionCreated || created.Session == nil) {
+		err = fmt.Errorf("mistral realtime expected session.created, got %q", created.Type)
+	}
+	if err == nil {
+		err = s.send(ctx, &RealtimeClientMessage{Type: RealtimeSessionUpdate, Session: &cfg})
+	}
+	var updated RealtimeServerMessage
+	if err == nil {
+		// The update is acknowledged before any transcript, so a rejected
+		// format or language fails the connection.
+		updated, err = s.receive(ctx)
+	}
+	if err == nil {
+		switch {
+		case updated.Type == RealtimeError && updated.Error != nil:
+			err = &genai.RealtimeError{Code: strconv.Itoa(updated.Error.Code), Message: updated.Error.Text()}
+		case updated.Type != RealtimeSessionUpdated || updated.Session == nil:
+			err = fmt.Errorf("mistral realtime expected session.updated, got %q", updated.Type)
+		case updated.Session.AudioFormat != *cfg.AudioFormat:
+			err = fmt.Errorf("mistral realtime kept input format %+v", updated.Session.AudioFormat)
+		}
+	}
+	if err != nil {
+		return nil, errors.Join(err, ws.Close())
+	}
+	s.info = genai.RealtimeSessionInfo{
+		ID:              updated.Session.RequestID,
+		InputFormat:     genai.AudioFormat{SampleRate: cfg.AudioFormat.SampleRate},
+		InputModalities: []genai.Modality{genai.ModalityAudio},
+		TurnDetection:   genai.RealtimeTurnManual,
+		Capabilities:    genai.RealtimeCapabilities{AudioCommit: true},
+	}
+	return s, nil
 }
 
 // ProcessStream converts the raw packets from the streaming API into Reply fragments.

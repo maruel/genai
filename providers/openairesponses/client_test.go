@@ -186,7 +186,7 @@ func TestClient(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			if strings.Contains(model.Model, "realtime") {
+			if transcribe := strings.Contains(model.Model, "transcribe"); transcribe || strings.Contains(model.Model, "realtime") {
 				rec := &internaltest.RealtimeRecorder{
 					Provider: c,
 					T:        t,
@@ -205,6 +205,10 @@ func TestClient(t *testing.T) {
 						}
 						return append(out, &openairesponses.RealtimeOption{Endpoint: endpoint})
 					},
+				}
+				if transcribe {
+					// Transcription sessions take no effort.
+					return rec
 				}
 				effort := genai.EffortOff
 				if model.Reason {

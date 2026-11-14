@@ -1,24 +1,25 @@
 # Scoreboard
 
-| Model                                  | Mode      | ➛In      | Out➛   | Tool   | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
-| -------------------------------------- | --------- | -------- | ------ | ------ | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
-| LiquidAI/LFM3-Audio-2B-GGUF:Q4_K_M     | Sync🧠     | 🎤💬     | 💬     | ✅🪨🔀 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| LiquidAI/LFM3-Audio-2B-GGUF:Q4_K_M     | Stream🧠   | 🎤💬     | 💬     | ✅🪨🔀 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| LiquidAI/LFM3-Audio-2B-GGUF:Q4_K_M     | Realtime  | 🎤💬     | 🎤💬   | 💨     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ❌     |
-| LiquidAI/LFM3-Omni-2B-GGUF:Q4_K_M      | Sync      | 🎤🎥💬📸 | 💬     | ✅🪨🔀 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| LiquidAI/LFM3-Omni-2B-GGUF:Q4_K_M      | Stream    | 🎤🎥💬📸 | 💬     | ✅🪨🔀 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| LiquidAI/LFM3-Omni-2B-GGUF:Q4_K_M      | Realtime  | 🎤💬     | 🎤💬   | ✅     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ❌     |
-| LiquidAI/LFM3-VL-2B-GGUF:Q4_K_M        | Sync🧠     | 🎥💬📸   | 💬     | ✅🪨   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| LiquidAI/LFM3-VL-2B-GGUF:Q4_K_M        | Stream🧠   | 🎥💬📸   | 💬     | ✅🪨   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| LiquidAI/LFM3-VL-2B-GGUF:Q4_K_M        | Sync      | 🎥💬📸   | 💬     | 💨🪨   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| LiquidAI/LFM3-VL-2B-GGUF:Q4_K_M        | Stream    | 🎥💬📸   | 💬     | 💨🪨   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| LiquidAI/d1-2B-GGUF:Q4_K_M             | SystemOne | 💬📸     | 🎯      | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ❌     |
-| ggml-org/Kev-4B-GGUF:Q4_K_M            | SystemOne | 💬       | 🎯      | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ❌     |
-| ggml-org/Qwen3-ASR-0.6B-GGUF:Q8_0      | Sync      | 🎤💬     | 💬     | ❌     | 📐[]  | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| ggml-org/Qwen3-ASR-0.6B-GGUF:Q8_0      | Stream    | 🎤💬     | 💬     | ❌     | 📐[]  | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| ggml-org/embeddinggemma-2-GGUF:Q8_0    | Embed     | 🎤💬📸   | 🧬      | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ❌     |
-| unsloth/gemma-4-E2B-it-GGUF:UD-Q4_K_XL | Sync🧠     | 🎤🎥💬📸 | 💬     | ✅🪨🔀 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| unsloth/gemma-4-E2B-it-GGUF:UD-Q4_K_XL | Stream🧠   | 🎤🎥💬📸 | 💬     | ✅🪨🔀 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| Model                                              | Mode      | ➛In      | Out➛   | Tool   | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
+| -------------------------------------------------- | --------- | -------- | ------ | ------ | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
+| LiquidAI/LFM3-Audio-2B-GGUF:Q4_K_M                 | Sync🧠     | 🎤💬     | 💬     | ✅🪨🔀 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| LiquidAI/LFM3-Audio-2B-GGUF:Q4_K_M                 | Stream🧠   | 🎤💬     | 💬     | ✅🪨🔀 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| LiquidAI/LFM3-Audio-2B-GGUF:Q4_K_M                 | Realtime  | 🎤💬     | 🎤💬   | 💨     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ❌     |
+| LiquidAI/LFM3-Omni-2B-GGUF:Q4_K_M                  | Sync      | 🎤🎥💬📸 | 💬     | ✅🪨🔀 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| LiquidAI/LFM3-Omni-2B-GGUF:Q4_K_M                  | Stream    | 🎤🎥💬📸 | 💬     | ✅🪨🔀 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| LiquidAI/LFM3-Omni-2B-GGUF:Q4_K_M                  | Realtime  | 🎤💬     | 🎤💬   | ✅     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ❌     |
+| LiquidAI/LFM3-VL-2B-GGUF:Q4_K_M                    | Sync🧠     | 🎥💬📸   | 💬     | ✅🪨   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| LiquidAI/LFM3-VL-2B-GGUF:Q4_K_M                    | Stream🧠   | 🎥💬📸   | 💬     | ✅🪨   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| LiquidAI/LFM3-VL-2B-GGUF:Q4_K_M                    | Sync      | 🎥💬📸   | 💬     | 💨🪨   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| LiquidAI/LFM3-VL-2B-GGUF:Q4_K_M                    | Stream    | 🎥💬📸   | 💬     | 💨🪨   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| LiquidAI/d1-2B-GGUF:Q4_K_M                         | SystemOne | 💬📸     | 🎯      | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ❌     |
+| ggml-org/Kev-4B-GGUF:Q4_K_M                        | SystemOne | 💬       | 🎯      | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ❌     |
+| ggml-org/Qwen3-ASR-0.6B-GGUF:Q8_0                  | Sync      | 🎤💬     | 💬     | ❌     | 📐[]  | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| ggml-org/Qwen3-ASR-0.6B-GGUF:Q8_0                  | Stream    | 🎤💬     | 💬     | ❌     | 📐[]  | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| ggml-org/Voxtral-Mini-4B-Realtime-2602-GGUF:Q4_K_M | Realtime  | 🎤       | 💬     | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ❌    | ❌     |
+| ggml-org/embeddinggemma-2-GGUF:Q8_0                | Embed     | 🎤💬📸   | 🧬      | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ❌     |
+| unsloth/gemma-4-E2B-it-GGUF:UD-Q4_K_XL             | Sync🧠     | 🎤🎥💬📸 | 💬     | ✅🪨🔀 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| unsloth/gemma-4-E2B-it-GGUF:UD-Q4_K_XL             | Stream🧠   | 🎤🎥💬📸 | 💬     | ✅🪨🔀 | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
 <details>
 <summary>‼️ Click here for the legend of columns and symbols</summary>
 

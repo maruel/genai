@@ -451,7 +451,6 @@
         "gpt-image-2.5-flare-2026-09-08",
         "gpt-image-2.5-sunburst-2026-09-08",
         "gpt-live-1",
-        "gpt-live-transcribe",
         "gpt-realtime",
         "gpt-realtime-2.1",
         "gpt-realtime-2.1-mini",
@@ -554,6 +553,30 @@
     }
   ],
   "realtime": [
+    {
+      "comments": "Transcription session through /v1/realtime?intent=transcription.",
+      "models": [
+        "gpt-live-transcribe"
+      ],
+      "in": {
+        "audio": {
+          "inline": true
+        }
+      },
+      "wire": "session",
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "Realtime": {
+        "inputSampleRate": 24000,
+        "transcription": {
+          "drafts": true,
+          "inputLanguage": true
+        }
+      }
+    },
     {
       "comments": "Realtime thinking mode: ReasoningEffortHigh.",
       "models": [

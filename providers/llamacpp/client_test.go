@@ -976,14 +976,18 @@ func TestClient(t *testing.T) {
 			if model.Model != "" {
 				opts = append(opts, genai.ProviderOptionModel(model.Model))
 			}
-			if fn != nil {
-				opts = append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(func(h http.RoundTripper) http.RoundTripper {
-					return fn(&roundtrippers.Header{
-						Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
-						Transport: h,
-					})
-				})}, opts...)
-			}
+			// Realtime families pass no HTTP recorder but still dial the
+			// authenticated server.
+			opts = append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(func(h http.RoundTripper) http.RoundTripper {
+				var rt http.RoundTripper = &roundtrippers.Header{
+					Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
+					Transport: h,
+				}
+				if fn != nil {
+					rt = fn(rt)
+				}
+				return rt
+			})}, opts...)
 			c2, err2 := llamacpp.New(ctx, opts...)
 			if c2 != nil {
 				internaltest.CleanupCloser(t, c2)
@@ -1231,12 +1235,18 @@ func startServerTest(t testing.TB, ctx context.Context, exe, model, apiKey strin
 			"--cache-type-k", "q8_0",
 			"--cache-type-v", "q8_0",
 			"--reasoning-preserve",
-			"--spec-default",
 			"--no-warmup",
 			// "--spec-type", "draft-mtp",
 			"--parallel", "4",
 			"--kv-unified",
 		)
+		// TODO: llama-server v1.0.0 (b12359) segfaults while decoding
+		// a Voxtral Realtime transcription session when speculative decoding
+		// is on; the same session passes without --spec-default. Drop the
+		// exception once a release fixes it.
+		if !strings.Contains(model, "Voxtral") {
+			extraArgs = append(extraArgs, "--spec-default")
+		}
 	}
 	// Allocate an ephemeral port to avoid dual-stack conflicts when running
 	// multiple servers (e.g. "localhost:8080" can bind on both IPv4 and IPv6).

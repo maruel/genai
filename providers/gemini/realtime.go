@@ -14,7 +14,6 @@ import (
 	"iter"
 	"maps"
 	"net/url"
-	"slices"
 	"strconv"
 	"strings"
 	"sync"
@@ -39,9 +38,6 @@ type RealtimeOption struct {
 	// Endpoint replaces the Live WebSocket URL, for a trusted provider proxy.
 	// The client's HTTP authentication transport is used for this endpoint too.
 	Endpoint string
-	// InputLanguages supplies BCP-47 transcription hints; output language belongs
-	// in the caller's system instruction, not speechConfig.languageCode.
-	InputLanguages []string
 	// SessionResumption requests resumable-state events. ResumeHandle restores a
 	// previous session and implies SessionResumption. Pass the latest nonempty
 	// Handle from a *Resumption provider event. No replay is automatic.
@@ -62,9 +58,6 @@ func (o *RealtimeOption) Validate() error {
 		if err != nil || (u.Scheme != "ws" && u.Scheme != "wss") || u.Host == "" || u.User != nil || u.RawQuery != "" || u.Fragment != "" {
 			return errors.New("gemini live endpoint must be an absolute ws/wss URL without credentials, query or fragment")
 		}
-	}
-	if slices.Contains(o.InputLanguages, "") {
-		return errors.New("gemini live input language hints must not be empty")
 	}
 	if o.PingInterval < 0 || o.PingTimeout < 0 {
 		return errors.New("gemini live keepalive durations must not be negative")
@@ -150,6 +143,8 @@ type RealtimeSession struct {
 	sendMu chan struct{}
 	// activity is owned by Send, under sendMu.
 	activity bool
+	// transcription is immutable: the session only recognizes input audio.
+	transcription bool
 
 	toolMu sync.Mutex
 	tools  map[string]realtimePendingTool
@@ -191,6 +186,9 @@ func (s *RealtimeSession) Send(ctx context.Context, in genai.RealtimeInput) erro
 	}
 	if err := s.ws.Err(); err != nil {
 		return err
+	}
+	if v, ok := in.(genai.RealtimeInputContent); s.transcription && (!ok || v.Audio == nil && !v.Commit || v.Generate) {
+		return fmt.Errorf("gemini live transcription accepts only audio and commits: %w", &base.ErrNotSupported{Options: []string{fmt.Sprintf("%T", in)}})
 	}
 	if u, ok := in.(genai.RealtimeUpdate); ok {
 		update, tools, choice, err := s.updateMessage(&u)
@@ -388,7 +386,7 @@ func (s *RealtimeSession) translate(msg *LiveServerMessage) error {
 		return &genai.RealtimeError{Code: strconv.Itoa(msg.Error.Code), Message: "gemini live provider error"}
 	}
 	first := len(s.pending)
-	if (msg.ServerContent != nil && len(msg.ServerContent.ModelTurn.Parts) != 0 || msg.ToolCall != nil) && s.responseID == "" {
+	if !s.transcription && (msg.ServerContent != nil && len(msg.ServerContent.ModelTurn.Parts) != 0 || msg.ToolCall != nil) && s.responseID == "" {
 		s.nextResponseID++
 		s.responseID = "genai-gemini-response-" + strconv.FormatUint(s.nextResponseID, 10)
 	}
@@ -400,6 +398,9 @@ func (s *RealtimeSession) translate(msg *LiveServerMessage) error {
 			s.pending = append(s.pending, genai.RealtimeEvent{Kind: genai.RealtimeEventInterrupted})
 		}
 		for i := range c.ModelTurn.Parts {
+			if s.transcription {
+				break
+			}
 			p := &c.ModelTurn.Parts[i]
 			if p.InlineData != nil {
 				if p.InlineData.MIMEType != "audio/pcm;rate=24000" || len(p.InlineData.Data) == 0 || len(p.InlineData.Data)%2 != 0 {
@@ -437,12 +438,23 @@ func (s *RealtimeSession) translate(msg *LiveServerMessage) error {
 		if c.InteractionStatus != "" {
 			s.pending = append(s.pending, genai.RealtimeEvent{Kind: genai.RealtimeEventProvider, ProviderEvent: &InteractionStatus{Status: c.InteractionStatus}})
 		}
-		if c.GenerationComplete || c.Interrupted {
+		if !s.transcription && (c.GenerationComplete || c.Interrupted) {
 			s.pending = append(s.pending, genai.RealtimeEvent{Kind: genai.RealtimeEventGenerationDone})
 		}
-		// Extended-thinking sessions emit turnComplete for filler utterances while
-		// interactionStatus is IN_PROGRESS. Only the final status completes the turn.
-		if c.TurnComplete && c.InteractionStatus != InteractionStatusInProgress {
+		// Transcription models end an utterance with generationComplete alone and
+		// do not mark its last input segment finished.
+		if s.transcription {
+			if c.GenerationComplete {
+				if s.inputTranscript.Len() != 0 {
+					s.pending = append(s.pending, genai.RealtimeEvent{Kind: genai.RealtimeEventTranscriptInput, Content: genai.RealtimeContent{Text: s.inputTranscript.String(), Final: true}})
+					s.inputTranscript.Reset()
+				}
+				s.pending = append(s.pending, genai.RealtimeEvent{Kind: genai.RealtimeEventTurnDone})
+			}
+		} else if c.TurnComplete && c.InteractionStatus != InteractionStatusInProgress {
+			// Extended-thinking sessions emit turnComplete for filler utterances
+			// while interactionStatus is IN_PROGRESS. Only the final status
+			// completes the turn.
 			s.pending = append(s.pending, genai.RealtimeEvent{Kind: genai.RealtimeEventTurnDone})
 		}
 	}

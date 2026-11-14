@@ -91,7 +91,8 @@ type Provider interface {
 	// Capabilities().Embed describes endpoint implementation; the scoreboard
 	// Embedding lookup describes tested support for the configured model.
 	Embed(ctx context.Context, in *EmbeddingRequest) (*EmbeddingResponse, error)
-	// ConnectRealtime opens a bidirectional conversation and waits for setup acceptance.
+	// ConnectRealtime opens a bidirectional conversation, or a transcription
+	// session with RealtimeOptionTranscription, and waits for setup acceptance.
 	// Requires Capabilities().Realtime. Unsupported session features return base.ErrNotSupported.
 	ConnectRealtime(ctx context.Context, opts ...RealtimeOption) (RealtimeSession, error)
 	// ListModels returns the list of models the provider supports. Not all providers support it, some will

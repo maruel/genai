@@ -20,6 +20,8 @@ import (
 	"iter"
 	"slices"
 	"strings"
+
+	"golang.org/x/text/language"
 )
 
 // RealtimeSession is one provider-owned conversation and its transport.
@@ -114,6 +116,12 @@ func (RealtimeOptionInstructions) Validate() error { return nil }
 // them either way.
 type RealtimeOptionAudio struct {
 	Voice string
+	// InputLanguage is the BCP 47 tag of the language spoken in input audio,
+	// for input transcription and transcription sessions. Empty lets the model
+	// detect it. The provider passes it to the model's native setting, which
+	// may force the language or only bias recognition. A provider without one
+	// returns base.ErrNotSupported.
+	InputLanguage string
 	// InputFormat requests the format of RealtimeInputContent.Audio; the
 	// provider resamples it to the model rate. Zero keeps the provider's native
 	// format. A provider that cannot accept the rate returns
@@ -131,8 +139,30 @@ func (o *RealtimeOptionAudio) Validate() error {
 			return fmt.Errorf("input format: %w", err)
 		}
 	}
+	if o.InputLanguage != "" {
+		if _, err := language.Parse(o.InputLanguage); err != nil {
+			return fmt.Errorf("input language %q: %w", o.InputLanguage, err)
+		}
+	}
 	return nil
 }
+
+// RealtimeOptionTranscription opens a transcription session instead of a
+// conversation: it transcribes user audio and never generates a response. It
+// accepts only RealtimeInputContent with Audio or Commit, and emits input
+// transcript, error and TurnDone events.
+//
+// Commit ends the utterance: the session emits its complete transcript as a
+// final RealtimeEventTranscriptInput, then RealtimeEventTurnDone. Each provider
+// documents whether the session accepts another utterance afterwards.
+//
+// RealtimeOptionAudio may select InputFormat and InputLanguage. Providers
+// reject a voice, output transcription, instructions, tools, output modalities
+// and server turn detection.
+type RealtimeOptionTranscription struct{}
+
+// Validate implements RealtimeOption.
+func (RealtimeOptionTranscription) Validate() error { return nil }
 
 // RealtimeOptionTools declares session tools. The application owns their execution.
 type RealtimeOptionTools struct {

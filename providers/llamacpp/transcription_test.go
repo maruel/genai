@@ -2,7 +2,7 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
-// Tests dedicated live-ASR clients against native WebSocket peers.
+// Tests dedicated live-ASR clients and sessions against native WebSocket peers.
 
 package llamacpp_test
 
@@ -10,9 +10,12 @@ import (
 	"context"
 	"errors"
 	"net/http"
+	"reflect"
 	"testing"
 
 	"github.com/coder/websocket"
+	"github.com/maruel/genai"
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/realtimetest"
 	"github.com/maruel/genai/providers/llamacpp"
@@ -81,6 +84,74 @@ func testClientConnectTranscriptionRaw(t *testing.T) {
 		s.Abort(cause)
 		if _, err := s.Receive(t.Context()); !errors.Is(err, cause) {
 			t.Fatalf("abort cause %v", err)
+		}
+	})
+	t.Run("realtime session", func(t *testing.T) {
+		t.Parallel()
+		endpoint := realtimetest.Peer(t, func(r *http.Request) {
+			if r.URL.RawQuery != "intent=transcription" {
+				t.Error(r.URL)
+			}
+		}, func(ctx context.Context, ws *websocket.Conn) {
+			realtimetest.Write(t, ctx, ws, nativeTranscriptionSession)
+			if m := realtimetest.Read(t, ctx, ws); m["type"] != "input_audio_buffer.append" {
+				t.Error(m)
+			}
+			realtimetest.Write(t, ctx, ws, `{"type":"conversation.item.input_audio_transcription.delta","item_id":"u","delta":"hel"}`)
+			if m := realtimetest.Read(t, ctx, ws); m["type"] != "input_audio_buffer.commit" || m["final"] != true {
+				t.Error(m)
+			}
+			realtimetest.Write(t, ctx, ws, `{"type":"conversation.item.input_audio_transcription.completed","item_id":"u","transcript":"Hello."}`)
+			_, _, _ = ws.Read(ctx)
+		})
+		c := realtimeClient(t, endpoint)
+		for _, opts := range [][]genai.RealtimeOption{
+			{genai.RealtimeOptionTranscription{}, genai.RealtimeOptionInstructions("x")},
+			{genai.RealtimeOptionTranscription{}, &genai.RealtimeOptionAudio{InputLanguage: "fr"}},
+			{&genai.RealtimeOptionAudio{InputTranscription: true}},
+		} {
+			if _, err := c.ConnectRealtime(t.Context(), opts...); !errors.As(err, new(*base.ErrNotSupported)) {
+				t.Errorf("%+v: %v", opts, err)
+			}
+		}
+		s, err := c.ConnectRealtime(t.Context(), genai.RealtimeOptionTranscription{}, &genai.RealtimeOptionAudio{InputTranscription: true})
+		if err != nil {
+			t.Fatal(err)
+		}
+		t.Cleanup(func() { _ = s.Close() })
+		want := genai.RealtimeSessionInfo{ID: "sess_native", InputFormat: genai.AudioFormat{SampleRate: 16000}, InputModalities: []genai.Modality{genai.ModalityAudio}, TurnDetection: genai.RealtimeTurnManual, Capabilities: genai.RealtimeCapabilities{AudioCommit: true}}
+		if info := s.Info(); !reflect.DeepEqual(info, want) {
+			t.Errorf("info %+v", info)
+		}
+		if err := s.Send(t.Context(), genai.RealtimeInputContent{Audio: []byte{0, 0}, Generate: true}); !errors.As(err, new(*base.ErrNotSupported)) {
+			t.Errorf("generate: %v", err)
+		}
+		if err := s.Send(t.Context(), genai.RealtimeInputContent{Audio: []byte{0, 0}}); err != nil {
+			t.Fatal(err)
+		}
+		if err := s.Send(t.Context(), genai.RealtimeInputContent{Commit: true}); err != nil {
+			t.Fatal(err)
+		}
+		if err := s.Send(t.Context(), genai.RealtimeInputContent{Audio: []byte{0, 0}}); err == nil {
+			t.Error("audio after commit accepted")
+		}
+		var got []genai.RealtimeEvent
+		for e, err := range s.Receive(t.Context()) {
+			if err != nil {
+				t.Fatal(err)
+			}
+			got = append(got, e)
+			if e.Kind == genai.RealtimeEventTurnDone {
+				break
+			}
+		}
+		wantEvents := []genai.RealtimeEvent{
+			{Kind: genai.RealtimeEventTranscriptInput, ItemID: "u", Content: genai.RealtimeContent{Text: "hel"}},
+			{Kind: genai.RealtimeEventTranscriptInput, ItemID: "u", Content: genai.RealtimeContent{Text: "Hello.", Final: true}},
+			{Kind: genai.RealtimeEventTurnDone, ItemID: "u"},
+		}
+		if !reflect.DeepEqual(got, wantEvents) {
+			t.Errorf("events %+v", got)
 		}
 	})
 }

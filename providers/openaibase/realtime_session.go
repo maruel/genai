@@ -14,11 +14,11 @@ import (
 	"net/url"
 	"reflect"
 	"slices"
-	"strings"
 	"time"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
+	"golang.org/x/text/language"
 )
 
 // RealtimeOption configures OpenAI Realtime beyond the portable session contract.
@@ -29,11 +29,9 @@ type RealtimeOption struct {
 	Endpoint string
 	// InputTranscriptionModel is required when InputTranscription is requested.
 	// It is explicit because transcription model availability changes separately
-	// from realtime models. InputLanguage is an optional language hint. A full
-	// BCP 47 locale such as fr-CA is accepted and reduced to its ISO-639-1 primary
-	// language.
+	// from realtime models. RealtimeOptionAudio.InputLanguage is reduced to its
+	// ISO-639-1 primary language, such as fr for fr-CA.
 	InputTranscriptionModel string
-	InputLanguage           string
 	// MaxOutputTokens bounds each model response; zero leaves the provider default.
 	MaxOutputTokens int64
 	// Truncation selects how the server drops the oldest conversation items once
@@ -79,11 +77,6 @@ func (o *RealtimeOption) Validate() error {
 			}
 		default:
 			return fmt.Errorf("unknown OpenAI realtime truncation strategy %q", t.Strategy)
-		}
-	}
-	if o.InputLanguage != "" {
-		if _, err := normalizeInputLanguage(o.InputLanguage); err != nil {
-			return err
 		}
 	}
 	return nil
@@ -133,6 +126,7 @@ func ConnectRealtimeSession(ctx context.Context, hc *http.Client, model string, 
 	}
 	var turnDetection genai.RealtimeTurnDetection
 	var outputTranscription bool
+	var inputLanguage string
 	var providerOpts []genai.RealtimeOption
 	seen := make(map[reflect.Type]struct{}, len(opts))
 	for _, opt := range opts {
@@ -172,6 +166,7 @@ func ConnectRealtimeSession(ctx context.Context, hc *http.Client, model string, 
 				return nil, fmt.Errorf("OpenAI realtime input is PCM16 at %d Hz: %w", setup.Audio.Input.Format.Rate, &base.ErrNotSupported{Options: []string{"input sample rate"}})
 			}
 			setup.Audio.Output.Voice.Name = o.Voice
+			inputLanguage = o.InputLanguage
 			outputTranscription = o.OutputTranscription
 			if o.InputTranscription {
 				setup.Audio.Input.Transcription = &Transcription{}
@@ -235,7 +230,7 @@ func ConnectRealtimeSession(ctx context.Context, hc *http.Client, model string, 
 	if textOutput && (outputTranscription || setup.Audio.Output.Voice.Name != "") {
 		return nil, fmt.Errorf("OpenAI text output cannot request audio voice or transcription: %w", &base.ErrNotSupported{Options: []string{"voice or output transcription with text output"}})
 	}
-	if setup.Audio.Input.Transcription == nil && (o.InputLanguage != "" || o.InputTranscriptionModel != "") {
+	if setup.Audio.Input.Transcription == nil && (inputLanguage != "" || o.InputTranscriptionModel != "") {
 		return nil, errors.New("input transcription options require InputTranscription")
 	}
 	if o.MaxOutputTokens != 0 {
@@ -252,40 +247,29 @@ func ConnectRealtimeSession(ctx context.Context, hc *http.Client, model string, 
 		if o.InputTranscriptionModel == "" {
 			return nil, errors.New("InputTranscription requires an explicit OpenAI transcription model")
 		}
-		language, err := normalizeInputLanguage(o.InputLanguage)
+		lang, err := primaryLanguage(inputLanguage)
 		if err != nil {
 			return nil, err
 		}
 		setup.Audio.Input.Transcription.Model = o.InputTranscriptionModel
-		setup.Audio.Input.Transcription.Language = language
+		setup.Audio.Input.Transcription.Language = lang
 	}
 	return ConnectRealtime(ctx, hc, u.String(), o.PingInterval, o.PingTimeout, setup)
 }
 
-// normalizeInputLanguage accepts a language or locale and returns its ISO-639-1
-// primary language. Both '-' and '_' separators are accepted.
-func normalizeInputLanguage(value string) (string, error) {
-	if value == "" {
+// primaryLanguage returns the ISO-639-1 primary language of a BCP 47 tag that
+// RealtimeOptionAudio.Validate accepted.
+func primaryLanguage(tag string) (string, error) {
+	if tag == "" {
 		return "", nil
 	}
-	parts := strings.Split(value, "-")
-	if len(parts[0]) != 2 {
-		return "", errors.New("OpenAI realtime input language must start with an ISO-639-1 code")
+	t, err := language.Parse(tag)
+	if err != nil {
+		return "", err
 	}
-	for _, c := range strings.ToLower(parts[0]) {
-		if c < 'a' || c > 'z' {
-			return "", errors.New("OpenAI realtime input language must start with an ISO-639-1 code")
-		}
+	b, _ := t.Base()
+	if s := b.String(); len(s) == 2 {
+		return s, nil
 	}
-	for _, part := range parts[1:] {
-		if part == "" {
-			return "", errors.New("OpenAI realtime input language has an empty locale segment")
-		}
-		for _, c := range strings.ToLower(part) {
-			if (c < 'a' || c > 'z') && (c < '0' || c > '9') {
-				return "", errors.New("OpenAI realtime input language has an invalid locale segment")
-			}
-		}
-	}
-	return strings.ToLower(parts[0]), nil
+	return "", fmt.Errorf("OpenAI realtime input language %q has no ISO-639-1 code: %w", tag, &base.ErrNotSupported{Options: []string{"input language"}})
 }

@@ -344,6 +344,13 @@ func (c *Client) HTTPClient() *http.Client {
 // correlations remain pending. A malformed recognized payload terminates the
 // session. Keep Receive running to process ping replies.
 //
+// RealtimeOptionTranscription opens a transcription session on a
+// transcription model, such as gemini-3.5-transcribe-live, with manual
+// activity. Each Commit ends one utterance and the session accepts the next.
+// RealtimeOptionAudio.InputLanguage is sent as a languageCodes hint, for
+// transcription sessions and input transcription alike; it biases recognition
+// and does not force the language.
+//
 // Protocol source:
 // https://github.com/googleapis/go-genai/blob/9cf04deac32f2418781170b3cd41c09abf060564/live.go
 func (c *Client) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOption) (genai.RealtimeSession, error) {
@@ -352,6 +359,10 @@ func (c *Client) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOpti
 		RealtimeInputConfig: LiveRealtimeInputConfig{ActivityHandling: LiveActivityInterrupts, TurnCoverage: LiveTurnOnlyActivity},
 	}
 	var inputFormat genai.AudioFormat
+	var inputLanguage string
+	var transcription bool
+	// conversation lists options a transcription session rejects.
+	var conversation []string
 	var providerOpts []genai.RealtimeOption
 	seen := make(map[reflect.Type]struct{}, len(opts))
 	for _, opt := range opts {
@@ -364,10 +375,13 @@ func (c *Client) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOpti
 		}
 		seen[t] = struct{}{}
 		switch o := opt.(type) {
+		case genai.RealtimeOptionTranscription:
+			transcription = true
 		case genai.EffortLevel:
 			if o == "" {
 				continue
 			}
+			conversation = append(conversation, "effort")
 			cfg, err := thinkingConfig(c.impl.Model, o)
 			if err != nil {
 				return nil, err
@@ -377,13 +391,16 @@ func (c *Client) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOpti
 			}
 			setup.GenerationConfig.ThinkingConfig = &cfg
 		case genai.ReasoningOutput:
+			conversation = append(conversation, "reasoning output")
 			if setup.GenerationConfig.ThinkingConfig == nil {
 				setup.GenerationConfig.ThinkingConfig = &ThinkingConfig{}
 			}
 			setup.GenerationConfig.ThinkingConfig.IncludeThoughts = true
 		case genai.RealtimeOptionInstructions:
+			conversation = append(conversation, "instructions")
 			setup.SystemInstruction = &LiveContent{Parts: []LivePart{{Text: string(o)}}}
 		case *genai.RealtimeOptionTools:
+			conversation = append(conversation, "tools")
 			if err := setup.Tools.Init(o.Tools, c.impl.Model); err != nil {
 				return nil, err
 			}
@@ -391,20 +408,27 @@ func (c *Client) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOpti
 			// Gemini Live resamples input at any rate declared in the blob MIME type:
 			// https://aistudio.google.com/docs/live-api/capabilities
 			inputFormat = o.InputFormat
+			inputLanguage = o.InputLanguage
 			if o.Voice != "" {
+				conversation = append(conversation, "voice")
 				setup.GenerationConfig.SpeechConfig = &LiveSpeechConfig{VoiceConfig: LiveVoiceConfig{PrebuiltVoiceConfig: LivePrebuiltVoiceConfig{VoiceName: o.Voice}}}
 			}
 			if o.InputTranscription {
 				setup.InputAudioTranscription = &LiveTranscriptionConfig{}
 			}
 			if o.OutputTranscription {
+				conversation = append(conversation, "output transcription")
 				setup.OutputAudioTranscription = &LiveTranscriptionConfig{}
 			}
 		case genai.Modalities:
+			conversation = append(conversation, "output modalities")
 			if len(o) > 1 || (len(o) == 1 && o[0] != genai.ModalityAudio) {
 				return nil, fmt.Errorf("gemini live native-audio output: %w", &base.ErrNotSupported{Options: []string{"output modalities"}})
 			}
 		case genai.RealtimeTurnDetection:
+			if o == genai.RealtimeTurnServer {
+				conversation = append(conversation, "server turn detection")
+			}
 			if o == genai.RealtimeTurnManual {
 				setup.RealtimeInputConfig.AutomaticActivityDetection = &LiveAutomaticActivityDetection{Disabled: true}
 			}
@@ -429,8 +453,22 @@ func (c *Client) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOpti
 		}
 		o = *v
 	}
-	if len(o.InputLanguages) != 0 && setup.InputAudioTranscription == nil {
-		return nil, errors.New("gemini live input language hints require input transcription")
+	if transcription {
+		if len(conversation) != 0 {
+			return nil, fmt.Errorf("gemini live transcription: %w", &base.ErrNotSupported{Options: conversation})
+		}
+		// Transcription models answer only with the input transcript; activity
+		// bounds each utterance and a new one never interrupts the previous.
+		setup.GenerationConfig.ResponseModalities = []Modality{ModalityText}
+		setup.InputAudioTranscription = &LiveTranscriptionConfig{}
+		setup.RealtimeInputConfig = LiveRealtimeInputConfig{AutomaticActivityDetection: &LiveAutomaticActivityDetection{Disabled: true}, ActivityHandling: LiveActivityNoInterruption, TurnCoverage: LiveTurnOnlyActivity}
+	}
+	if inputLanguage != "" {
+		if setup.InputAudioTranscription == nil {
+			return nil, errors.New("gemini live input language requires input transcription")
+		}
+		// languageCodes biases recognition; it does not force a language.
+		setup.InputAudioTranscription.LanguageCodes = []string{inputLanguage}
 	}
 	if o.Endpoint == "" {
 		o.Endpoint = "wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent"
@@ -444,9 +482,6 @@ func (c *Client) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOpti
 	setup.Model = c.impl.Model
 	if !strings.HasPrefix(setup.Model, "models/") {
 		setup.Model = "models/" + setup.Model
-	}
-	if setup.InputAudioTranscription != nil {
-		setup.InputAudioTranscription.LanguageCodes = o.InputLanguages
 	}
 	if strings.Contains(c.impl.Model, "extended-thinking") {
 		if setup.GenerationConfig.ThinkingConfig == nil {
@@ -483,11 +518,16 @@ func (c *Client) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOpti
 	}
 	info.InputModalities = []genai.Modality{genai.ModalityAudio, genai.ModalityImage, genai.ModalityText}
 	info.Capabilities.AudioCommit = true
-	info.Capabilities.ToolResults = len(setup.Tools) > 0
-	// contextUpdate is preview. It updates instructions and tools only; output
-	// modality, token limits, voice and turn detection stay connection-scoped.
-	info.Capabilities.Update = genai.RealtimeUpdateCapabilities{Instructions: true, Tools: true, ToolChoice: true}
-	s := &RealtimeSession{ws: ws, info: info, model: c.impl.Model, liveTools: setup.Tools, toolChoice: genai.ToolCallAny, tools: make(map[string]realtimePendingTool), sendMu: make(chan struct{}, 1)}
+	if transcription {
+		info.OutputFormat = genai.AudioFormat{}
+		info.InputModalities = []genai.Modality{genai.ModalityAudio}
+	} else {
+		info.Capabilities.ToolResults = len(setup.Tools) > 0
+		// contextUpdate is preview. It updates instructions and tools only; output
+		// modality, token limits, voice and turn detection stay connection-scoped.
+		info.Capabilities.Update = genai.RealtimeUpdateCapabilities{Instructions: true, Tools: true, ToolChoice: true}
+	}
+	s := &RealtimeSession{ws: ws, info: info, model: c.impl.Model, liveTools: setup.Tools, toolChoice: genai.ToolCallAny, tools: make(map[string]realtimePendingTool), sendMu: make(chan struct{}, 1), transcription: transcription}
 	if err := ws.Write(ctx, data); err != nil {
 		return nil, errors.Join(err, ws.Close())
 	}

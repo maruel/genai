@@ -425,6 +425,15 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest) (chunks iter
 // and context sizing; context or output-limit exhaustion can end the connection
 // and may be reported as completed.
 //
+// RealtimeOptionTranscription opens /v1/realtime?intent=transcription on a
+// server whose model has a streaming audio encoder or an "asr" chat template,
+// such as Voxtral Realtime or LFM3-Audio. The session transcribes one
+// utterance at the model's native input rate: Commit ends the input and later
+// audio is rejected. llama.cpp answers its session.update with a fixed
+// configuration and prompts with the "asr" template rendered without a
+// language (handle_realtime in tools/server/server-context.cpp), so
+// RealtimeOptionAudio.InputLanguage is rejected for both session types.
+//
 // Protocol source:
 // https://github.com/ggml-org/llama.cpp/blob/v1.0.0/tools/server/README.md#realtime-conversation
 func (c *Client) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOption) (genai.RealtimeSession, error) {
@@ -433,6 +442,11 @@ func (c *Client) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOpti
 	// https://huggingface.co/LiquidAI/LFM3-Audio-2B#tool-calling-from-spoken-requests
 	setup := SessionConfig{Type: SessionRealtime, Tools: ToolList{}}
 	var providerOpts []genai.RealtimeOption
+	var inputFormat genai.AudioFormat
+	var transcription bool
+	// conversation lists settings a transcription session rejects;
+	// conversationOnly those a conversation rejects as well.
+	var conversation, conversationOnly []string
 	seen := make(map[reflect.Type]struct{}, len(opts))
 	for _, opt := range opts {
 		if opt == nil || (reflect.ValueOf(opt).Kind() == reflect.Pointer && reflect.ValueOf(opt).IsNil()) {
@@ -444,22 +458,31 @@ func (c *Client) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOpti
 		}
 		seen[t] = struct{}{}
 		switch o := opt.(type) {
+		case genai.RealtimeOptionTranscription:
+			transcription = true
 		case genai.RealtimeOptionInstructions:
+			conversation = append(conversation, "instructions")
 			setup.Instructions = string(o)
 		case *genai.RealtimeOptionTools:
+			conversation = append(conversation, "tools")
 			if err := setup.Tools.Init(o.Tools); err != nil {
 				return nil, err
 			}
 		case *genai.RealtimeOptionAudio:
-			var unsupported []string
+			inputFormat = o.InputFormat
+			if o.InputLanguage != "" {
+				// Neither session type passes it to the model; see
+				// RealtimeOptionTranscription above.
+				return nil, fmt.Errorf("llama.cpp realtime input language: %w", &base.ErrNotSupported{Options: []string{"input language"}})
+			}
 			if o.InputTranscription {
-				unsupported = append(unsupported, "input transcription")
+				conversationOnly = append(conversationOnly, "input transcription")
 			}
 			if o.OutputTranscription {
-				unsupported = append(unsupported, "output transcription")
+				conversationOnly = append(conversationOnly, "output transcription")
 			}
-			if len(unsupported) != 0 {
-				return nil, fmt.Errorf("llama.cpp realtime conversation settings: %w", &base.ErrNotSupported{Options: unsupported})
+			if o.Voice != "" {
+				conversation = append(conversation, "voice")
 			}
 			if r := o.InputFormat.SampleRate; r != 0 {
 				if r < minInputRate || r > maxInputRate {
@@ -469,6 +492,7 @@ func (c *Client) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOpti
 			}
 			setup.Audio.Output.Voice = o.Voice
 		case genai.Modalities:
+			conversation = append(conversation, "output modalities")
 			for i, m := range o {
 				if m != genai.ModalityAudio && m != genai.ModalityText {
 					return nil, fmt.Errorf("realtime option %T: unsupported realtime output modality %q: %w", opt, m, &base.ErrNotSupported{Options: []string{string(m)}})
@@ -501,6 +525,20 @@ func (c *Client) ConnectRealtime(ctx context.Context, opts ...genai.RealtimeOpti
 			return nil, fmt.Errorf("unsupported llama.cpp realtime option %T: %w", opt, &base.ErrNotSupported{Options: []string{fmt.Sprintf("%T", opt)}})
 		}
 		o = *v
+		conversation = append(conversation, fmt.Sprintf("%T", opt))
+	}
+	if transcription {
+		if len(conversation) != 0 {
+			return nil, fmt.Errorf("llama.cpp realtime transcription: %w", &base.ErrNotSupported{Options: conversation})
+		}
+		conn, err := c.ConnectTranscriptionRaw(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return newTranscriptionSession(conn, inputFormat)
+	}
+	if len(conversationOnly) != 0 {
+		return nil, fmt.Errorf("llama.cpp realtime conversation settings: %w", &base.ErrNotSupported{Options: conversationOnly})
 	}
 	u, err := url.Parse(c.baseURL)
 	if err != nil || (u.Scheme != "http" && u.Scheme != "https") || u.Host == "" || u.User != nil || u.RawQuery != "" || u.Fragment != "" {

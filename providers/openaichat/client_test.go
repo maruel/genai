@@ -159,7 +159,7 @@ func TestClient(t *testing.T) {
 						realtimetest.Write(t, ctx, ws, b)
 					}
 				})
-				s, err := realtimeClient(t).ConnectRealtime(t.Context(), genai.RealtimeTurnManual, &genai.RealtimeOptionTools{Tools: []genai.ToolDef{{Name: "lookup", Description: "Lookup a value", InputSchemaOverride: json.RawMessage(`{"type":"object"}`)}}}, &genai.RealtimeOptionAudio{InputTranscription: true, OutputTranscription: true}, &openaichat.RealtimeOption{Endpoint: endpoint, InputTranscriptionModel: "gpt-realtime-whisper", InputLanguage: "fr-CA"})
+				s, err := realtimeClient(t).ConnectRealtime(t.Context(), genai.RealtimeTurnManual, &genai.RealtimeOptionTools{Tools: []genai.ToolDef{{Name: "lookup", Description: "Lookup a value", InputSchemaOverride: json.RawMessage(`{"type":"object"}`)}}}, &genai.RealtimeOptionAudio{InputLanguage: "fr-CA", InputTranscription: true, OutputTranscription: true}, &openaichat.RealtimeOption{Endpoint: endpoint, InputTranscriptionModel: "gpt-realtime-whisper"})
 				if err != nil {
 					t.Fatal(err)
 				}
@@ -535,7 +535,7 @@ func TestClient(t *testing.T) {
 						t.Fatal("accepted invalid setup")
 					}
 				}
-				for _, o := range []*openaichat.RealtimeOption{{Endpoint: "https://example.com"}, {Endpoint: "wss://example.com?key=secret"}, {PingInterval: -time.Second}, {MaxOutputTokens: -1}, {InputLanguage: "en"}, {InputLanguage: "english"}, {InputLanguage: "fr_CA"}, {InputLanguage: "fr--CA"}, {Truncation: &openaibase.Truncation{}}, {Truncation: &openaibase.Truncation{Strategy: openaibase.TruncationAuto, Ratio: 0.5}}, {Truncation: &openaibase.Truncation{Strategy: openaibase.TruncationRetentionRatio}}, {Truncation: &openaibase.Truncation{Strategy: openaibase.TruncationRetentionRatio, Ratio: 0.8, PostInstructionsTokens: -1}}} {
+				for _, o := range []*openaichat.RealtimeOption{{Endpoint: "https://example.com"}, {Endpoint: "wss://example.com?key=secret"}, {PingInterval: -time.Second}, {MaxOutputTokens: -1}, {Truncation: &openaibase.Truncation{}}, {Truncation: &openaibase.Truncation{Strategy: openaibase.TruncationAuto, Ratio: 0.5}}, {Truncation: &openaibase.Truncation{Strategy: openaibase.TruncationRetentionRatio}}, {Truncation: &openaibase.Truncation{Strategy: openaibase.TruncationRetentionRatio, Ratio: 0.8, PostInstructionsTokens: -1}}} {
 					if _, err := c.ConnectRealtime(t.Context(), o); err == nil {
 						t.Fatal("accepted invalid option")
 					}
@@ -1074,7 +1074,7 @@ func TestClient(t *testing.T) {
 						}
 						realtimetest.Write(t, ctx, ws, string(b))
 					})
-					if _, err := realtimeClient(t).ConnectRealtime(t.Context(), &genai.RealtimeOptionAudio{InputTranscription: true}, &openaichat.RealtimeOption{Endpoint: endpoint, InputTranscriptionModel: "transcribe", InputLanguage: "en"}); err == nil {
+					if _, err := realtimeClient(t).ConnectRealtime(t.Context(), &genai.RealtimeOptionAudio{InputLanguage: "en", InputTranscription: true}, &openaichat.RealtimeOption{Endpoint: endpoint, InputTranscriptionModel: "transcribe"}); err == nil {
 						t.Fatal("changed transcription configuration accepted")
 					}
 				})

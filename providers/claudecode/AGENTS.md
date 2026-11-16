@@ -18,16 +18,21 @@ Claude Code headless:
 
 ## Keeping DTOs in sync
 
-The published TypeScript SDK declaration is the authoritative released wire contract. The `claude` binary is a
-Bun SEA that still embeds the Zod output schemas, including `@internal` messages and fields the SDK omits. To type
-such a field seen in a log, search the binary for its key, e.g. `type:T("command_lifecycle")`, and read the
-enclosing `u({...})` object.
-
-Fetch the exact SDK version paired with the Claude Code release, then verify that every SDK message, control request,
-and hook discriminator is declared in `dto.go`:
+The published TypeScript SDK declaration is the authoritative released wire contract. Fetch the SDK version paired
+with the Claude Code release above, then check that `dto.go` declares every discriminator and every field reachable
+from them:
 
 ```sh
-npm pack @anthropic-ai/claude-agent-sdk@0.3.325
-tar -xzf anthropic-ai-claude-agent-sdk-0.3.325.tgz
-./extract_schema.py package/sdk.d.ts dto.go --version 0.3.325
+npm pack @anthropic-ai/claude-agent-sdk@<version>
+tar -xzf anthropic-ai-claude-agent-sdk-<version>.tgz
+./extract_schema.py package/sdk.d.ts dto.go --version <version>
+```
+
+The `claude` binary embeds the Zod output schemas, including `@internal` messages and fields the SDK omits.
+`zod_schema.py` reads them: `lookup` prints the schema around a key seen in a log, and `check` lists schema fields
+missing from `dto.go`. Most of those are telemetry that stream-json never sends; add one when a log shows it.
+
+```sh
+./zod_schema.py "$(readlink -f "$(command -v claude)")" lookup 'type:T("command_lifecycle")'
+./zod_schema.py "$(readlink -f "$(command -v claude)")" check dto.go
 ```

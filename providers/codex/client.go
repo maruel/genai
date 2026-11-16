@@ -624,7 +624,7 @@ func initAndListModels(stdin io.Writer, sc *bufio.Scanner) ([]ModelInfo, int64, 
 	if err := msgutil.WriteNDJSON(stdin, JSONRPCRequest{
 		JSONRPC: "2.0",
 		ID:      1,
-		Method:  "initialize",
+		Method:  RequestInitialize,
 		Params:  params,
 	}); err != nil {
 		return nil, 0, fmt.Errorf("write initialize: %w", err)
@@ -647,7 +647,7 @@ func initAndListModels(stdin io.Writer, sc *bufio.Scanner) ([]ModelInfo, int64, 
 		if err != nil {
 			return nil, 0, fmt.Errorf("marshal model/list params: %w", err)
 		}
-		if err := msgutil.WriteNDJSON(stdin, JSONRPCRequest{JSONRPC: "2.0", ID: nextID, Method: "model/list", Params: params}); err != nil {
+		if err := msgutil.WriteNDJSON(stdin, JSONRPCRequest{JSONRPC: "2.0", ID: nextID, Method: RequestModelList, Params: params}); err != nil {
 			return nil, 0, fmt.Errorf("write model/list: %w", err)
 		}
 		mlData, err := readResponse(sc, nextID)
@@ -745,7 +745,7 @@ func handshake(stdin io.Writer, sc *bufio.Scanner, mdl, resumeThreadID string, c
 		threadReq = JSONRPCRequest{
 			JSONRPC: "2.0",
 			ID:      nextID + 1,
-			Method:  "thread/resume",
+			Method:  RequestThreadResume,
 			Params:  params,
 		}
 	} else {
@@ -762,7 +762,7 @@ func handshake(stdin io.Writer, sc *bufio.Scanner, mdl, resumeThreadID string, c
 		threadReq = JSONRPCRequest{
 			JSONRPC: "2.0",
 			ID:      nextID + 1,
-			Method:  "thread/start",
+			Method:  RequestThreadStart,
 			Params:  params,
 		}
 	}
@@ -846,7 +846,7 @@ func sendTurnStart(stdin io.Writer, threadID string, effort ReasoningEffort, msg
 	return msgutil.WriteNDJSON(stdin, JSONRPCRequest{
 		JSONRPC: "2.0",
 		ID:      100, // Arbitrary; we don't wait for this response.
-		Method:  "turn/start",
+		Method:  RequestTurnStart,
 		Params:  params,
 	})
 }

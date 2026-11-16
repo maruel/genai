@@ -118,6 +118,142 @@ const (
 	EventExtensionUI                    EventType = "extension_ui_request"
 )
 
+// NewCommand returns a pointer to a new zero DTO for the stdin command t, or
+// nil when this package does not type t.
+func NewCommand(t EventType) any {
+	switch t {
+	case CmdPrompt:
+		return &PromptCmd{}
+	case CmdSteer:
+		return &SteerCmd{}
+	case CmdFollowUp:
+		return &FollowUpCmd{}
+	case CmdAbort:
+		return &AbortCmd{}
+	case CmdClearQueue:
+		return &ClearQueueCmd{}
+	case CmdNewSession:
+		return &NewSessionCmd{}
+	case CmdGetState:
+		return &GetStateCmd{}
+	case CmdGetSessionStats:
+		return &GetSessionStatsCmd{}
+	case CmdExportHTML:
+		return &ExportHTMLCmd{}
+	case CmdSwitchSession:
+		return &SwitchSessionCmd{}
+	case CmdFork:
+		return &ForkCmd{}
+	case CmdClone:
+		return &CloneCmd{}
+	case CmdGetForkMessages:
+		return &GetForkMessagesCmd{}
+	case CmdGetEntries:
+		return &GetEntriesCmd{}
+	case CmdGetTree:
+		return &GetTreeCmd{}
+	case CmdGetLastAssistantText:
+		return &GetLastAssistantTextCmd{}
+	case CmdSetSessionName:
+		return &SetSessionNameCmd{}
+	case CmdGetMessages:
+		return &GetMessagesCmd{}
+	case CmdGetCommands:
+		return &GetCommandsCmd{}
+	case CmdSetModel:
+		return &SetModelCmd{}
+	case CmdCycleModel:
+		return &CycleModelCmd{}
+	case CmdGetModels:
+		return &GetModelsCmd{}
+	case CmdSetThinking:
+		return &SetThinkingCmd{}
+	case CmdCycleThinking:
+		return &CycleThinkingCmd{}
+	case CmdGetThinkingLevels:
+		return &GetThinkingLevelsCmd{}
+	case CmdSetSteeringMode:
+		return &SetSteeringModeCmd{}
+	case CmdSetFollowUpMode:
+		return &SetFollowUpModeCmd{}
+	case CmdCompact:
+		return &CompactCmd{}
+	case CmdSetAutoCompaction:
+		return &SetAutoCompactionCmd{}
+	case CmdSetAutoRetry:
+		return &SetAutoRetryCmd{}
+	case CmdAbortRetry:
+		return &AbortRetryCmd{}
+	case CmdBash:
+		return &BashCmd{}
+	case CmdAbortBash:
+		return &AbortBashCmd{}
+	default:
+		return nil
+	}
+}
+
+// NewEvent returns a pointer to a new zero DTO for the stdout line t, or nil
+// when this package does not type t.
+func NewEvent(t EventType) any {
+	switch t {
+	case EventAgentStart:
+		return &AgentStartEvent{}
+	case EventAgentEnd:
+		return &AgentEndEvent{}
+	case EventAgentSettled:
+		return &AgentSettledEvent{}
+	case EventTurnStart:
+		return &TurnStartEvent{}
+	case EventTurnEnd:
+		return &TurnEndEvent{}
+	case EventMessageStart:
+		return &MessageStartEvent{}
+	case EventMessageUpdate:
+		return &MessageUpdateEvent{}
+	case EventMessageEnd:
+		return &MessageEndEvent{}
+	case EventToolExecStart:
+		return &ToolExecStartEvent{}
+	case EventToolExecUpdate:
+		return &ToolExecUpdateEvent{}
+	case EventToolExecEnd:
+		return &ToolExecEndEvent{}
+	case EventQueueUpdate:
+		return &QueueUpdateEvent{}
+	case EventCompactionStart:
+		return &CompactionStartEvent{}
+	case EventCompactionEnd:
+		return &CompactionEndEvent{}
+	case EventAutoRetryStart:
+		return &AutoRetryStartEvent{}
+	case EventAutoRetryEnd:
+		return &AutoRetryEndEvent{}
+	case EventSummarizationRetryScheduled:
+		return &SummarizationRetryScheduledEvent{}
+	case EventSummarizationRetryAttemptStart:
+		return &SummarizationRetryAttemptStartEvent{}
+	case EventSummarizationRetryFinished:
+		return &SummarizationRetryFinishedEvent{}
+	case EventThinkingLevelChanged:
+		return &ThinkingLevelChangedEvent{}
+	case EventEntryAppended:
+		return &EntryAppendedEvent{}
+	case EventBashExecutionUpdate:
+		return &BashExecutionUpdateEvent{}
+	case EventSessionInfoChanged:
+		return &SessionInfoChangedEvent{}
+	case EventExtensionError:
+		return &ExtensionErrorEvent{}
+	case EventResponse:
+		return &Response{}
+	case EventExtensionUI:
+		return &ExtensionUIRequest{}
+	default:
+		return nil
+	}
+}
+
 // DeltaType is the type discriminator for AssistantMessageEvent deltas.
 type DeltaType string
 

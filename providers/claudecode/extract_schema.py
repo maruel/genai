@@ -3,16 +3,18 @@
 # Use of this source code is governed under the Apache License, Version 2.0
 # that can be found in the LICENSE file.
 
-"""Check Claude Code Go discriminators against the published TypeScript SDK.
+"""Check Claude Code Go DTOs against the published TypeScript SDK.
 
-Claude Code binaries no longer retain the Zod source fragments that the old
-binary-string extractor depended on. The npm package's sdk.d.ts is the released
-wire contract and can be checked reproducibly instead.
+The npm package's sdk.d.ts is the released wire contract. This verifies that
+dto.go declares every message, control request and hook discriminator, and
+every field reachable from them at any depth. Values that dto.go keeps as raw
+JSON wherever they occur are not descended into. zod_schema.py covers the
+@internal fields that sdk.d.ts omits.
 
 Usage:
-  npm pack @anthropic-ai/claude-agent-sdk@0.3.310
-  tar -xzf anthropic-ai-claude-agent-sdk-0.3.310.tgz
-  ./extract_schema.py package/sdk.d.ts dto.go --version 0.3.310
+  npm pack @anthropic-ai/claude-agent-sdk@<version>
+  tar -xzf anthropic-ai-claude-agent-sdk-<version>.tgz
+  ./extract_schema.py package/sdk.d.ts dto.go --version <version>
 """
 
 import argparse
@@ -29,8 +31,12 @@ TYPE_TOKEN = re.compile(
 LITERAL_FIELD = re.compile(r"\b(?:type|subtype):\s*'([^']+)'")
 QUOTED_LITERAL = re.compile(r"'([^']+)'")
 GO_LITERAL = re.compile(r'^\s*(?:const\s+)?\w+(?:\s+\w+)?\s*=\s*"([^"\\]*(?:\\.[^"\\]*)*)"', re.MULTILINE)
-TS_FIELD = re.compile(r"^    ([A-Za-z_][A-Za-z0-9_]*)(?:\?)?:", re.MULTILINE)
+TS_FIELD = re.compile(r"^\s+([A-Za-z_][A-Za-z0-9_]*)\??:", re.MULTILINE)
+TS_COMMENT = re.compile(r"/\*.*?\*/|//[^\n]*", re.DOTALL)
+TS_IDENTIFIER = re.compile(r"\b[A-Z][A-Za-z0-9_]*\b")
 GO_JSON_TAG = re.compile(r"json:\"([^,\"]+)")
+GO_FIELD = re.compile(r"^\s*\w+\s+(\S+)\s+`json:\"([^,\"]+)", re.MULTILINE)
+GO_OPAQUE_TYPE = re.compile(r"(?:\[\])?(?:map\[string\])?(?:json\.RawMessage|base\.Unknown)")
 
 
 def _declarations(source: str) -> dict[str, str]:
@@ -68,15 +74,50 @@ def _discriminators(name: str, declarations: dict[str, str], seen: set[str]) -> 
     return values
 
 
-def _fields(name: str, declarations: dict[str, str], seen: set[str]) -> set[str]:
+def _skip_value(body: str, start: int) -> int:
+    """Return the end of the field value starting at start: the next ';' or newline outside brackets."""
+    depth = 0
+    for index in range(start, len(body)):
+        char = body[index]
+        if char in "{([<":
+            depth += 1
+        elif char in "})]>":
+            depth -= 1
+        elif depth <= 0 and char in ";\n" and index > start:
+            return index
+    return len(body)
+
+
+def _drop_opaque(body: str, opaque: set[str]) -> str:
+    """Remove the values of fields that dto.go keeps as raw JSON."""
+    out = []
+    position = 0
+    for match in TS_FIELD.finditer(body):
+        if match.start() < position or match.group(1) not in opaque:
+            continue
+        out.append(body[position : match.end()])
+        position = _skip_value(body, match.end())
+    out.append(body[position:])
+    return "".join(out)
+
+
+def _fields(
+    name: str,
+    declarations: dict[str, str],
+    opaque: set[str],
+    fields: dict[str, set[str]],
+    seen: set[str],
+) -> None:
+    """Map each field of name and of the types it references, at every depth, to its declaring types."""
     if name in seen:
-        return set()
+        return
     seen.add(name)
-    body = declarations.get(name, "")
-    values = set(TS_FIELD.findall(body))
-    for member in _union_members(body):
-        values.update(_fields(member, declarations, seen))
-    return values
+    body = _drop_opaque(TS_COMMENT.sub("", declarations.get(name, "")), opaque)
+    for field in TS_FIELD.findall(body):
+        fields.setdefault(field, set()).add(name)
+    for reference in TS_IDENTIFIER.findall(body):
+        if reference in declarations:
+            _fields(reference, declarations, opaque, fields, seen)
 
 
 def _sdk_version(path: Path) -> str | None:
@@ -108,8 +149,15 @@ def main() -> int:
     declarations = _declarations(sdk_source)
     expected = _discriminators("SDKMessage", declarations, set())
     expected.update(_discriminators("SDKControlRequestInner", declarations, set()))
-    expected_fields = _fields("SDKMessage", declarations, set())
-    expected_fields.update(_fields("SDKControlRequestInner", declarations, set()))
+    # dto.go keeps these values as raw JSON wherever they occur, so their
+    # contents are not checked.
+    go_fields = GO_FIELD.findall(dto_source)
+    typed = {tag for go_type, tag in go_fields if not GO_OPAQUE_TYPE.fullmatch(go_type)}
+    opaque = {tag for go_type, tag in go_fields if GO_OPAQUE_TYPE.fullmatch(go_type)} - typed
+    fields: dict[str, set[str]] = {}
+    seen: set[str] = set()
+    _fields("SDKMessage", declarations, opaque, fields, seen)
+    _fields("SDKControlRequestInner", declarations, opaque, fields, seen)
 
     hooks_match = re.search(r"HOOK_EVENTS:\s*readonly\s*\[(.*?)\]", sdk_source, re.DOTALL)
     if hooks_match:
@@ -117,7 +165,7 @@ def main() -> int:
 
     present = {bytes(value, "utf-8").decode("unicode_escape") for value in GO_LITERAL.findall(dto_source)}
     missing = sorted(expected - present)
-    missing_fields = sorted(expected_fields - set(GO_JSON_TAG.findall(dto_source)))
+    missing_fields = sorted(set(fields) - set(GO_JSON_TAG.findall(dto_source)))
     print(f"Claude Agent SDK {version or 'unknown'}: {len(expected)} discriminators")
     if missing or missing_fields:
         if missing:
@@ -125,11 +173,11 @@ def main() -> int:
             for value in missing:
                 print(f"  {value}")
         if missing_fields:
-            print("Missing top-level JSON fields from dto.go:")
+            print("Missing JSON fields from dto.go:")
             for value in missing_fields:
-                print(f"  {value}")
+                print(f"  {value} ({', '.join(sorted(fields[value]))})")
         return 1
-    print("All SDK message/control discriminators and top-level fields are declared.")
+    print("All SDK message/control discriminators and fields are declared.")
     return 0
 
 

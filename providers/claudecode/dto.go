@@ -43,6 +43,25 @@ const (
 	InputUpdateEnvVars InputType = "update_environment_variables"
 )
 
+// NewInputMsg returns a pointer to a new zero DTO for the stdin record type t,
+// or nil when this package does not type t.
+func NewInputMsg(t InputType) any {
+	switch t {
+	case InputUser:
+		return &InputUserMsg{}
+	case InputControlRequest:
+		return &InputControlRequestMsg{}
+	case InputControlResponse:
+		return &InputControlResponseMsg{}
+	case InputKeepAlive:
+		return &InputKeepAliveMsg{}
+	case InputUpdateEnvVars:
+		return &InputUpdateEnvVarsMsg{}
+	default:
+		return nil
+	}
+}
+
 // ---------- user message ----------
 
 // InputUserMsg sends a user turn to Claude Code (type:"user").
@@ -147,7 +166,7 @@ type ControlReqInitialize struct {
 	JSONSchema                  JSONSchema                 `json:"jsonSchema,omitempty"`
 	SystemPrompt                []string                   `json:"systemPrompt,omitempty"`
 	AppendSystemPrompt          string                     `json:"appendSystemPrompt,omitempty"`
-	Agents                      json.RawMessage            `json:"agents,omitempty"`
+	Agents                      map[string]AgentDefinition `json:"agents,omitempty"`
 	PromptSuggestions           bool                       `json:"promptSuggestions,omitempty"`
 	AgentProgressSummaries      bool                       `json:"agentProgressSummaries,omitempty"`
 	SystemPromptSnapshot        bool                       `json:"systemPromptSnapshot,omitempty"`
@@ -558,6 +577,33 @@ type HookMatcherConfig struct {
 	Matcher         string   `json:"matcher,omitempty"`
 	HookCallbackIDs []string `json:"hookCallbackIds,omitempty"`
 	Timeout         float64  `json:"timeout,omitempty"`
+	// OnFailure is "continue" or "block": what happens when a callback fails.
+	OnFailure string `json:"onFailure,omitempty"`
+}
+
+// AgentDefinition defines a custom subagent passed in the initialize request.
+type AgentDefinition struct {
+	Description     string   `json:"description"`
+	Prompt          string   `json:"prompt"`
+	Tools           []string `json:"tools,omitempty"`
+	DisallowedTools []string `json:"disallowedTools,omitempty"`
+	Model           string   `json:"model,omitempty"`
+	// MCPServers holds server names or name-to-config objects.
+	MCPServers                       []json.RawMessage `json:"mcpServers,omitempty"`
+	CriticalSystemReminderExperiment string            `json:"criticalSystemReminder_EXPERIMENTAL,omitempty"`
+	Skills                           []string          `json:"skills,omitempty"`
+	InitialPrompt                    string            `json:"initialPrompt,omitempty"`
+	MaxTurns                         int               `json:"maxTurns,omitempty"`
+	AutoCompactWindow                int64             `json:"autoCompactWindow,omitempty"`
+	Background                       bool              `json:"background,omitempty"`
+	OmitClaudeMd                     bool              `json:"omitClaudeMd,omitempty"`
+	// Memory is "user", "project" or "local".
+	Memory string `json:"memory,omitempty"`
+	// Effort is an effort level name or a thinking token budget.
+	Effort          json.RawMessage `json:"effort,omitempty"`
+	PermissionMode  string          `json:"permissionMode,omitempty"`
+	Observer        string          `json:"observer,omitempty"`
+	ObserverMessage string          `json:"observerMessage,omitempty"`
 }
 
 // HookCallbackInput carries a hook callback payload from Claude Code.
@@ -584,6 +630,119 @@ type HookCallbackInput struct {
 	Title                 string                     `json:"title,omitempty"`
 	NotificationType      string                     `json:"notification_type,omitempty"`
 	PermissionSuggestions []PermissionUpdate         `json:"permission_suggestions,omitempty"`
+
+	PromptID string     `json:"prompt_id,omitempty"`
+	Effort   HookEffort `json:"effort,omitzero"`
+	Model    string     `json:"model,omitempty"`
+	// Source and Reason hold per-event enums, e.g. SessionStart's "startup" or
+	// "resume".
+	Source     string               `json:"source,omitempty"`
+	Reason     string               `json:"reason,omitempty"`
+	DurationMS base.DurationMS      `json:"duration_ms,omitempty"`
+	MCPServer  *MCPServerProvenance `json:"mcp_server,omitempty"`
+
+	// Elicitation and ElicitationResult fields.
+	MCPServerName   string                     `json:"mcp_server_name,omitempty"`
+	Mode            string                     `json:"mode,omitempty"`
+	URL             string                     `json:"url,omitempty"`
+	ElicitationID   string                     `json:"elicitation_id,omitempty"`
+	RequestedSchema map[string]json.RawMessage `json:"requested_schema,omitempty"`
+	Action          string                     `json:"action,omitempty"`
+	Content         map[string]json.RawMessage `json:"content,omitempty"`
+
+	// File, directory and worktree event fields.
+	Directory       string   `json:"directory,omitempty"`
+	Event           string   `json:"event,omitempty"`
+	FilePath        string   `json:"file_path,omitempty"`
+	Name            string   `json:"name,omitempty"`
+	OldCwd          string   `json:"old_cwd,omitempty"`
+	NewCwd          string   `json:"new_cwd,omitempty"`
+	WorktreePath    string   `json:"worktree_path,omitempty"`
+	MemoryType      string   `json:"memory_type,omitempty"`
+	LoadReason      string   `json:"load_reason,omitempty"`
+	Globs           []string `json:"globs,omitempty"`
+	TriggerFilePath string   `json:"trigger_file_path,omitempty"`
+	ParentFilePath  string   `json:"parent_file_path,omitempty"`
+
+	// MessageDisplay fields.
+	TurnID    string `json:"turn_id,omitempty"`
+	MessageID string `json:"message_id,omitempty"`
+	Index     int    `json:"index,omitempty"`
+	Final     bool   `json:"final,omitempty"`
+	Delta     string `json:"delta,omitempty"`
+
+	CompactSummary string `json:"compact_summary,omitempty"`
+
+	// PreModelSwitch, PostModelSwitch and SessionStart fields.
+	FromModel                string  `json:"from_model,omitempty"`
+	ToModel                  string  `json:"to_model,omitempty"`
+	RequestedModel           *string `json:"requested_model,omitempty"`
+	ContextTokens            int64   `json:"context_tokens,omitempty"`
+	PromptCacheWarm          bool    `json:"prompt_cache_warm,omitempty"`
+	PromptCacheLikelyExpired bool    `json:"prompt_cache_likely_expired,omitempty"`
+	CacheTTL                 string  `json:"cache_ttl,omitempty"`
+	EstimatedCacheWriteUSD   float64 `json:"estimated_cache_write_usd,omitempty"`
+	Pricing                  string  `json:"pricing,omitempty"`
+	SessionTitle             string  `json:"session_title,omitempty"`
+	SecondsSinceLastResponse float64 `json:"seconds_since_last_response,omitempty"`
+
+	// Stop, SubagentStop and StopFailure fields.
+	ErrorDetails         string               `json:"error_details,omitempty"`
+	LastAssistantMessage string               `json:"last_assistant_message,omitempty"`
+	BackgroundTasks      []HookBackgroundTask `json:"background_tasks,omitempty"`
+	SessionCrons         []HookSessionCron    `json:"session_crons,omitempty"`
+
+	// Task and teammate fields.
+	TaskID          string `json:"task_id,omitempty"`
+	TaskSubject     string `json:"task_subject,omitempty"`
+	TaskDescription string `json:"task_description,omitempty"`
+	TeammateName    string `json:"teammate_name,omitempty"`
+	TeamName        string `json:"team_name,omitempty"`
+
+	// UserPromptExpansion fields.
+	ExpansionType string `json:"expansion_type,omitempty"`
+	CommandName   string `json:"command_name,omitempty"`
+	CommandArgs   string `json:"command_args,omitempty"`
+	CommandSource string `json:"command_source,omitempty"`
+
+	ToolCalls []HookToolCall `json:"tool_calls,omitempty"`
+}
+
+// HookEffort is the effort level active when a hook fired.
+type HookEffort struct {
+	Level string `json:"level"`
+}
+
+// IsZero reports whether no effort was supplied.
+func (h HookEffort) IsZero() bool { return h.Level == "" }
+
+// HookBackgroundTask is a background task still running when Stop fired.
+type HookBackgroundTask struct {
+	ID          string `json:"id"`
+	Type        string `json:"type"`
+	Status      string `json:"status"`
+	Description string `json:"description"`
+	Command     string `json:"command,omitempty"`
+	AgentType   string `json:"agent_type,omitempty"`
+	Server      string `json:"server,omitempty"`
+	Tool        string `json:"tool,omitempty"`
+	Name        string `json:"name,omitempty"`
+}
+
+// HookSessionCron is a session-scheduled prompt listed when Stop fired.
+type HookSessionCron struct {
+	ID        string `json:"id"`
+	Schedule  string `json:"schedule"`
+	Recurring bool   `json:"recurring"`
+	Prompt    string `json:"prompt"`
+}
+
+// HookToolCall is one tool call in a PostToolBatch hook.
+type HookToolCall struct {
+	ToolName     string          `json:"tool_name"`
+	ToolInput    json.RawMessage `json:"tool_input"`
+	ToolUseID    string          `json:"tool_use_id"`
+	ToolResponse json.RawMessage `json:"tool_response,omitempty"`
 }
 
 // PermissionUpdate is a permission update suggestion.
@@ -869,6 +1028,94 @@ type OutputTypeProbe struct {
 	// system messages, but free-form strings like "success" or "error_max_turns"
 	// for result messages.
 	Subtype string `json:"subtype"`
+}
+
+// NewOutputMsg returns a pointer to a new zero DTO for the stdout record
+// that p identifies, or nil when this package does not type it. A system
+// subtype with its own DTO gets that DTO; other known subtypes get
+// OutputSystemMsg. control_response and keep_alive share the shape of their
+// input counterparts.
+func NewOutputMsg(p *OutputTypeProbe) any {
+	switch p.Type {
+	case OutputAssistant:
+		return &OutputAssistantMsg{}
+	case OutputUser:
+		return &OutputUserMsg{}
+	case OutputResult:
+		return &OutputResultMsg{}
+	case OutputSystem:
+		return newSystemMsg(SystemSubtype(p.Subtype))
+	case OutputStreamEvent:
+		return &OutputStreamEventMsg{}
+	case OutputRateLimitEvent:
+		return &OutputRateLimitEventMsg{}
+	case OutputToolProgress:
+		return &OutputToolProgressMsg{}
+	case OutputAuthStatus:
+		return &OutputAuthStatusMsg{}
+	case OutputToolUseSummary:
+		return &OutputToolUseSummaryMsg{}
+	case OutputPromptSuggestion:
+		return &OutputPromptSuggestionMsg{}
+	case OutputConversationReset:
+		return &OutputConversationResetMsg{}
+	case OutputCommandLifecycle:
+		return &OutputCommandLifecycleMsg{}
+	case OutputControlRequest:
+		return &OutputControlRequestMsg{}
+	case OutputControlResponse:
+		return &InputControlResponseMsg{}
+	case OutputControlCancelRequest:
+		return &OutputControlCancelRequestMsg{}
+	case OutputKeepAlive:
+		return &InputKeepAliveMsg{}
+	default:
+		return nil
+	}
+}
+
+func newSystemMsg(s SystemSubtype) any {
+	switch s {
+	case SystemInit:
+		return &OutputInitMsg{}
+	case SystemVCSStateChanged:
+		return &OutputVCSStateChangedMsg{}
+	case SystemDevIntent:
+		return &OutputDevIntentMsg{}
+	case SystemCodeChangePublished:
+		return &OutputCodeChangePublishedMsg{}
+	case SystemSessionWritesLost:
+		return &OutputSessionWritesLostMsg{}
+	case SystemSessionStateChanged:
+		return &OutputSessionStateChangedMsg{}
+	case SystemPostTurnSummary:
+		return &OutputPostTurnSummaryMsg{}
+	case SystemCommandsChanged:
+		return &OutputCommandsChangedMsg{}
+	case SystemTurnDuration:
+		return &OutputTurnDurationMsg{}
+	case SystemLocalCommandOutput:
+		return &OutputLocalCommandOutputMsg{}
+	case SystemHookStarted:
+		return &OutputHookStartedMsg{}
+	case SystemHookProgress:
+		return &OutputHookProgressMsg{}
+	case SystemHookResponse:
+		return &OutputHookResponseMsg{}
+	case SystemFilesPersisted:
+		return &OutputFilesPersistedMsg{}
+	case SystemElicitationComplete:
+		return &OutputElicitationCompleteMsg{}
+	case SystemTaskStarted, SystemTaskNotification, SystemTaskProgress, SystemTaskUpdated,
+		SystemBackgroundTasksChanged, SystemThinkingTokens, SystemCompactBoundary, SystemStatus,
+		SystemAPIRetry, SystemModelRefusalFallback, SystemModelRefusalNoFallback,
+		SystemControlRequestProgress, SystemPluginInstall, SystemWorkerShuttingDown,
+		SystemNotification, SystemMemoryRecall, SystemPermissionDenied, SystemMirrorError,
+		SystemInformational:
+		return &OutputSystemMsg{}
+	default:
+		return nil
+	}
 }
 
 // OutputControlRequestMsg is a host control request emitted by Claude Code.

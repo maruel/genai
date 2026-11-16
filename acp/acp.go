@@ -555,38 +555,21 @@ func parseSessionUpdateDelta(params json.RawMessage) (sessionDelta, error) {
 			return sessionDelta{}, fmt.Errorf("unmarshal agent_thought_chunk: %w", err)
 		}
 		d.reasoning = u.Content.Text
-	case UpdateUserMessageChunk:
-		return d, decodeSessionUpdate[UserMessageChunkUpdate](sup.Update, probe.SessionUpdate)
-	case UpdateToolCall:
-		return d, decodeSessionUpdate[ToolCallUpdate](sup.Update, probe.SessionUpdate)
-	case UpdateToolCallUpdate:
-		return d, decodeSessionUpdate[ToolCallUpdateUpdate](sup.Update, probe.SessionUpdate)
-	case UpdatePlan:
-		return d, decodeSessionUpdate[PlanUpdate](sup.Update, probe.SessionUpdate)
 	case UpdateUsageUpdate:
 		var u UsageUpdateUpdate
 		if err := internal.UnmarshalJSON(sup.Update, &u); err != nil {
 			return sessionDelta{}, fmt.Errorf("unmarshal %s: %w", probe.SessionUpdate, err)
 		}
 		d.usage = &u
-	case UpdateCurrentModeUpdate:
-		return d, decodeSessionUpdate[CurrentModeUpdate](sup.Update, probe.SessionUpdate)
-	case UpdateSessionInfoUpdate:
-		return d, decodeSessionUpdate[SessionInfoUpdate](sup.Update, probe.SessionUpdate)
-	case UpdateAvailableCommandsUpdate:
-		return d, decodeSessionUpdate[AvailableCommandsUpdate](sup.Update, probe.SessionUpdate)
-	case UpdateConfigOptionUpdate:
-		return d, decodeSessionUpdate[ConfigOptionUpdate](sup.Update, probe.SessionUpdate)
+	default:
+		// Validate the remaining typed variants; their content is unused.
+		if dst := NewSessionUpdate(probe.SessionUpdate); dst != nil {
+			if err := internal.UnmarshalJSON(sup.Update, dst); err != nil {
+				return sessionDelta{}, fmt.Errorf("unmarshal %s: %w", probe.SessionUpdate, err)
+			}
+		}
 	}
 	return d, nil
-}
-
-func decodeSessionUpdate[T any](data json.RawMessage, updateType UpdateType) error {
-	var update T
-	if err := internal.UnmarshalJSON(data, &update); err != nil {
-		return fmt.Errorf("unmarshal %s: %w", updateType, err)
-	}
-	return nil
 }
 
 // handleAgentRequest responds to JSON-RPC requests from the agent. A permission

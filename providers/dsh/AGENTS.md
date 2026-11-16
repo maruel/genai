@@ -31,9 +31,8 @@ untested. Model discovery requires network access to the configured provider cat
 
 ## Keeping DTOs in sync
 
-The wire contract is pinned to DeepSeek Harness `dsh-v0.2.2-rc.3`, commit
-`38a6a5c965aa99ab525161efb7cc5cf1fe62fced`, and `@agentclientprotocol/sdk` `1.4.0`, commit
-`e6463f444093ed7c5f1cc937c3f32afb5853e906`. To check a new release:
+The [`acp/dto.go`](../../acp/dto.go) header pins the DeepSeek Harness release and its ACP SDK. To check a
+new release:
 
 1. Clone https://github.com/deepseek-ai/deepseek-harness at the release tag.
 2. Diff these sources against [`dto.go`](../../acp/dto.go):
@@ -42,7 +41,7 @@ The wire contract is pinned to DeepSeek Harness `dsh-v0.2.2-rc.3`, commit
    `packages/acp/acp/src/updates.ts` (session updates), and
    `packages/acp/acp/src/codec.ts` (stop reasons).
 3. Diff the ACP SDK schema at the pinned SDK commit.
-4. Record fresh fixtures and update the header comment.
+4. Record fresh fixtures and update the pin in the `acp/dto.go` header.
 
 ## References
 

@@ -4,8 +4,8 @@
 
 // Native DeepSeek Harness ACP effort values and profile patch entries.
 //
-// Source: https://github.com/deepseek-ai/deepseek-harness,
-// dsh-v0.2.2-rc.3, commit 38a6a5c965aa99ab525161efb7cc5cf1fe62fced.
+// Source: https://github.com/deepseek-ai/deepseek-harness, at the release
+// pinned in the acp/dto.go header.
 
 package dsh
 

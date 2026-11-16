@@ -9,13 +9,18 @@
 //	codex-rs/app-server-protocol/src/protocol/v2/       — notification and item structs
 //	codex-rs/app-server-protocol/src/protocol/common.rs — method string ↔ struct mapping
 //
-// Source: https://github.com/openai/codex
-// Turn lineage, MCP app UI, sub-agent settings, attachment and prediction events,
-// and gateway OAuth notifications follow upstream commit
-// 0ada5d8806cdad498230d5b1b2924091e04c8feb. ThreadItemTimes follows tag
-// rust-v0.167.0. Attached threads, completed-item token counts, agent message
-// moderation, thread settings environments and model/list providers follow tag
-// rust-v0.169.0 (d32063f96c2dff1dc96af839b3952abb6acfeda4).
+// Source: https://github.com/openai/codex. Pinned releases, the single record
+// of what these types were checked against:
+//
+//	rust-v0.154.0, commit 6b9826e3aa83b1a5947db50f4332cb9c65f1b340: full sync.
+//	rust-v0.159.3: model access-program metadata, disabled plugin IDs and
+//	  resume collaboration mode.
+//	commit 0ada5d8806cdad498230d5b1b2924091e04c8feb: turn lineage, MCP app UI,
+//	  sub-agent settings, attachment and prediction events, and gateway OAuth
+//	  notifications.
+//	rust-v0.167.0: ThreadItemTimes.
+//	rust-v0.169.0, commit d32063f96c2dff1dc96af839b3952abb6acfeda4: every
+//	  protocol change since rust-v0.167.0 that affects these types.
 
 package codex
 
@@ -240,6 +245,145 @@ const (
 	// MethodWindowsSandboxSetupCompleted reports completion of Windows sandbox setup.
 	MethodWindowsSandboxSetupCompleted Method = "windowsSandbox/setupCompleted"
 )
+
+// NewNotificationParams returns a pointer to a new zero params DTO for the
+// server notification m, or nil when this package does not type m.
+func NewNotificationParams(m Method) any {
+	switch m {
+	case MethodThreadStarted:
+		return &ThreadStartedNotification{}
+	case MethodThreadArchived:
+		return &ThreadArchivedNotification{}
+	case MethodThreadDeleted:
+		return &ThreadDeletedNotification{}
+	case MethodThreadUnarchived:
+		return &ThreadUnarchivedNotification{}
+	case MethodThreadClosed:
+		return &ThreadClosedNotification{}
+	case MethodThreadReverted:
+		return &ThreadRevertedNotification{}
+	case MethodTurnStarted:
+		return &TurnStartedNotification{}
+	case MethodTurnCompleted:
+		return &TurnCompletedNotification{}
+	case MethodItemStarted:
+		return &ItemStartedNotification{}
+	case MethodItemCompleted:
+		return &ItemCompletedNotification{}
+	case MethodItemDelta:
+		return &AgentMessageDeltaNotification{}
+	case MethodRawItemCompleted:
+		return &RawResponseItemCompletedNotification{}
+	case MethodRawResponseCompleted:
+		return &RawResponseCompletedNotification{}
+	case MethodTokenUsageUpdated:
+		return &ThreadTokenUsageUpdatedNotification{}
+	case MethodItemGuardianApprovalReviewStarted:
+		return &ItemGuardianApprovalReviewStartedNotification{}
+	case MethodItemGuardianApprovalReviewCompleted:
+		return &ItemGuardianApprovalReviewCompletedNotification{}
+	case MethodStrictReviewRequired:
+		return &StrictReviewRequiredNotification{}
+	case MethodCommandOutputDelta:
+		return &CommandExecutionOutputDeltaNotification{}
+	case MethodCommandTerminalInteract:
+		return &TerminalInteractionNotification{}
+	case MethodFileChangePatchUpdated:
+		return &FileChangePatchUpdatedNotification{}
+	case MethodFileChangeOutputDelta:
+		return &FileChangeOutputDeltaNotification{}
+	case MethodReasoningSummaryTextDelta:
+		return &ReasoningSummaryTextDeltaNotification{}
+	case MethodReasoningSummaryPartAdded:
+		return &ReasoningSummaryPartAddedNotification{}
+	case MethodReasoningTextDelta:
+		return &ReasoningTextDeltaNotification{}
+	case MethodPlanDelta:
+		return &PlanDeltaNotification{}
+	case MethodMcpToolCallProgress:
+		return &McpToolCallProgressNotification{}
+	case MethodTurnDiffUpdated:
+		return &TurnDiffUpdatedNotification{}
+	case MethodTurnPlanUpdated:
+		return &TurnPlanUpdatedNotification{}
+	case MethodThreadStatusChanged:
+		return &ThreadStatusChangedNotification{}
+	case MethodThreadSettingsUpdated:
+		return &ThreadSettingsUpdatedNotification{}
+	case MethodThreadNameUpdated:
+		return &ThreadNameUpdatedNotification{}
+	case MethodThreadAttachmentUpdated:
+		return &ThreadAttachmentUpdatedNotification{}
+	case MethodThreadPredictionUpdated:
+		return &ThreadPredictionUpdatedNotification{}
+	case MethodThreadGoalUpdated:
+		return &ThreadGoalUpdatedNotification{}
+	case MethodThreadGoalCleared:
+		return &ThreadGoalClearedNotification{}
+	case MethodThreadQueueChanged:
+		return &ThreadQueueChangedNotification{}
+	case MethodProjectChanged:
+		return &ProjectChangedNotification{}
+	case MethodThreadProjectUpdated:
+		return &ThreadProjectUpdatedNotification{}
+	case MethodEnvironmentConnected:
+		return &EnvironmentConnectionNotification{}
+	case MethodEnvironmentDisconnected:
+		return &EnvironmentConnectionNotification{}
+	case MethodThreadCompacted:
+		return &ContextCompactedNotification{}
+	case MethodModelRerouted:
+		return &ModelReroutedNotification{}
+	case MethodModelVerification:
+		return &ModelVerificationNotification{}
+	case MethodAuthRecoveryStarted:
+		return &AuthRecoveryNotification{}
+	case MethodAuthRecoveryCompleted:
+		return &AuthRecoveryNotification{}
+	case MethodModelSafetyBufferingUpdated:
+		return &ModelSafetyBufferingUpdatedNotification{}
+	case MethodTurnModerationMetadata:
+		return &TurnModerationMetadataNotification{}
+	case MethodWarning:
+		return &WarningNotification{}
+	case MethodGuardianWarning:
+		return &GuardianWarningNotification{}
+	case MethodErrorNotification:
+		return &ErrorNotification{}
+	case MethodServerRequestResolved:
+		return &ServerRequestResolvedNotification{}
+	case MethodAccountUpdated:
+		return &AccountUpdatedNotification{}
+	case MethodGatewayOAuthChanged:
+		return &GatewayOAuthChangedNotification{}
+	case MethodAccountRateLimitsUpdated:
+		return &AccountRateLimitsUpdatedNotification{}
+	case MethodRemoteControlStatusChanged:
+		return &RemoteControlStatusChangedNotification{}
+	case MethodExternalAgentConfigImportProgress:
+		return &ExternalAgentConfigImportProgressNotification{}
+	case MethodConfigWarning:
+		return &ConfigWarningNotification{}
+	case MethodDeprecationNotice:
+		return &DeprecationNoticeNotification{}
+	case MethodSkillsChanged:
+		return &SkillsChangedNotification{}
+	case MethodMcpOauthLoginCompleted:
+		return &McpServerOauthLoginCompletedNotification{}
+	case MethodMcpServerStatusUpdated:
+		return &McpServerStatusUpdatedNotification{}
+	case MethodMcpServerEventStream:
+		return &McpServerEventStreamNotification{}
+	case MethodThreadRealtimeItemStarted:
+		return &ThreadRealtimeItemStartedNotification{}
+	case MethodThreadRealtimeItemTranscriptDelta:
+		return &ThreadRealtimeItemTranscriptDeltaNotification{}
+	case MethodThreadRealtimeItemCompleted:
+		return &ThreadRealtimeItemCompletedNotification{}
+	default:
+		return nil
+	}
+}
 
 // ItemType is the item type discriminator for codex app-server items (camelCase).
 type ItemType string
@@ -725,8 +869,42 @@ type MethodProbe struct {
 type JSONRPCRequest struct {
 	JSONRPC string          `json:"jsonrpc"`
 	ID      int64           `json:"id,omitzero"`
-	Method  string          `json:"method"`
+	Method  RequestMethod   `json:"method"`
 	Params  json.RawMessage `json:"params,omitzero"`
+}
+
+// RequestMethod is a client-to-server JSON-RPC request method.
+type RequestMethod string
+
+// Client request methods this package types.
+const (
+	RequestInitialize         RequestMethod = "initialize"
+	RequestModelList          RequestMethod = "model/list"
+	RequestThreadCompactStart RequestMethod = "thread/compact/start"
+	RequestThreadResume       RequestMethod = "thread/resume"
+	RequestThreadStart        RequestMethod = "thread/start"
+	RequestTurnStart          RequestMethod = "turn/start"
+)
+
+// NewRequestParams returns a pointer to a new zero params DTO for the client
+// request m, or nil when this package does not type m.
+func NewRequestParams(m RequestMethod) any {
+	switch m {
+	case RequestInitialize:
+		return &InitializeParams{}
+	case RequestModelList:
+		return &ModelListParams{}
+	case RequestThreadCompactStart:
+		return &ThreadCompactStartParams{}
+	case RequestThreadResume:
+		return &ThreadResumeParams{}
+	case RequestThreadStart:
+		return &ThreadStartParams{}
+	case RequestTurnStart:
+		return &TurnStartParams{}
+	default:
+		return nil
+	}
 }
 
 // JSONRPCNotification is a JSON-RPC 2.0 notification (no id, no response expected).

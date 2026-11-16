@@ -9,10 +9,12 @@
 //	@agentclientprotocol/sdk 1.4.0 src/schema/types.gen.ts — wire schema
 //	packages/opencode/src/acp/agent.ts — OpenCode session update handling
 //
-// Checked against OpenCode 1.19.5 (810c0eba1a7348036f8bdf61e6632d0c36c6876c)
-// and DeepSeek Harness dsh-v0.2.2-rc.3
-// (38a6a5c965aa99ab525161efb7cc5cf1fe62fced). The ACP SDK 1.4.0 revision is
-// e6463f444093ed7c5f1cc937c3f32afb5853e906; OpenCode 1.19.5 uses 0.21.0.
+// Pinned releases, the single record of what these types were checked against:
+//
+//	OpenCode 1.19.5, commit 810c0eba1a7348036f8bdf61e6632d0c36c6876c,
+//	  ships @agentclientprotocol/sdk 0.21.0, commit 74372b59f8f56eb30e72f2538df2671a0adb376f.
+//	DeepSeek Harness dsh-v0.2.2-rc.3, commit 38a6a5c965aa99ab525161efb7cc5cf1fe62fced,
+//	  ships @agentclientprotocol/sdk 1.4.0, commit e6463f444093ed7c5f1cc937c3f32afb5853e906.
 //
 // Sources: https://github.com/anomalyco/opencode
 //          https://github.com/deepseek-ai/deepseek-harness
@@ -34,6 +36,17 @@ import (
 
 // Method is a JSON-RPC method string for the ACP protocol.
 type Method string
+
+// FromAgent reports whether the agent sends m to the client. Other methods
+// flow from the client to the agent.
+func (m Method) FromAgent() bool {
+	switch m {
+	case MethodFSWriteTextFile, MethodSessionUpdate, MethodSessionRequestPermission:
+		return true
+	default:
+		return false
+	}
+}
 
 // JSON-RPC method constants for the ACP protocol.
 const (
@@ -59,6 +72,80 @@ const (
 	MethodSessionRequestPermission Method = "session/request_permission"
 )
 
+// NewParams returns a pointer to a new zero params DTO for the request or
+// notification m, or nil when this package does not type m.
+// session/set_config_option returns the string-valued form;
+// SetSessionBooleanConfigOptionParams is the boolean form.
+func NewParams(m Method) any {
+	switch m {
+	case MethodAuthenticate:
+		return &AuthenticateParams{}
+	case MethodInitialize:
+		return &InitializeParams{}
+	case MethodSessionClose:
+		return &SessionCloseParams{}
+	case MethodSessionFork:
+		return &SessionForkParams{}
+	case MethodSessionList:
+		return &SessionListParams{}
+	case MethodSessionNew:
+		return &SessionNewParams{}
+	case MethodSessionLoad:
+		return &SessionLoadParams{}
+	case MethodSessionPrompt:
+		return &SessionPromptParams{}
+	case MethodSessionResume:
+		return &SessionResumeParams{}
+	case MethodSessionCancel:
+		return &SessionCancelParams{}
+	case MethodSessionSetModel:
+		return &SetSessionModelParams{}
+	case MethodSessionSetMode:
+		return &SetSessionModeParams{}
+	case MethodSessionSetConfigOption:
+		return &SetSessionConfigOptionParams{}
+	case MethodFSWriteTextFile:
+		return &WriteTextFileParams{}
+	case MethodSessionUpdate:
+		return &SessionUpdateParams{}
+	case MethodSessionRequestPermission:
+		return &PermissionRequestParams{}
+	default:
+		return nil
+	}
+}
+
+// NewResult returns a pointer to a new zero result DTO for the request m, or
+// nil when m is a notification or this package does not type m.
+func NewResult(m Method) any {
+	switch m {
+	case MethodAuthenticate, MethodSessionClose, MethodSessionSetModel, MethodSessionSetMode:
+		return &EmptyResult{}
+	case MethodInitialize:
+		return &InitializeResult{}
+	case MethodSessionFork:
+		return &SessionForkResult{}
+	case MethodSessionList:
+		return &SessionListResult{}
+	case MethodSessionNew:
+		return &SessionNewResult{}
+	case MethodSessionLoad:
+		return &SessionLoadResult{}
+	case MethodSessionPrompt:
+		return &PromptResult{}
+	case MethodSessionResume:
+		return &SessionResumeResult{}
+	case MethodSessionSetConfigOption:
+		return &SetSessionConfigOptionResult{}
+	case MethodFSWriteTextFile:
+		return &WriteTextFileResult{}
+	case MethodSessionRequestPermission:
+		return &PermissionResponseResult{}
+	default:
+		return nil
+	}
+}
+
 // UpdateType is the session update discriminator (sessionUpdate field).
 type UpdateType string
 
@@ -76,6 +163,37 @@ const (
 	UpdateAvailableCommandsUpdate UpdateType = "available_commands_update"
 	UpdateConfigOptionUpdate      UpdateType = "config_option_update"
 )
+
+// NewSessionUpdate returns a pointer to a new zero DTO for the session/update
+// variant u, or nil when this package does not type u.
+func NewSessionUpdate(u UpdateType) any {
+	switch u {
+	case UpdateAgentMessageChunk:
+		return &AgentMessageChunkUpdate{}
+	case UpdateAgentThoughtChunk:
+		return &AgentThoughtChunkUpdate{}
+	case UpdateUserMessageChunk:
+		return &UserMessageChunkUpdate{}
+	case UpdateToolCall:
+		return &ToolCallUpdate{}
+	case UpdateToolCallUpdate:
+		return &ToolCallUpdateUpdate{}
+	case UpdatePlan:
+		return &PlanUpdate{}
+	case UpdateUsageUpdate:
+		return &UsageUpdateUpdate{}
+	case UpdateCurrentModeUpdate:
+		return &CurrentModeUpdate{}
+	case UpdateSessionInfoUpdate:
+		return &SessionInfoUpdate{}
+	case UpdateAvailableCommandsUpdate:
+		return &AvailableCommandsUpdate{}
+	case UpdateConfigOptionUpdate:
+		return &ConfigOptionUpdate{}
+	default:
+		return nil
+	}
+}
 
 // ToolStatus is the status of a tool call.
 type ToolStatus string

@@ -41,6 +41,7 @@ import (
 	"github.com/maruel/genai/providers/togetherai"
 	"github.com/maruel/genai/providers/typesafe"
 	"github.com/maruel/genai/providers/xiaomi"
+	"github.com/maruel/genai/scoreboard"
 )
 
 // Config is a registry entry.
@@ -52,6 +53,10 @@ type Config struct {
 	// ProviderOptionTransportWrapper.
 	IsCLI   bool
 	Factory func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error)
+	// Scoreboard returns the provider's scoreboard without constructing a
+	// client, as genai.Provider.Scoreboard would. It is nil when provider
+	// options select the scoreboard, as alibaba's backend does.
+	Scoreboard func() scoreboard.Score
 }
 
 // All is a easy way to propose the user to load any of the supported provider.
@@ -71,6 +76,7 @@ var All = map[string]Config{
 	},
 	"anthropic": {
 		APIKeyEnvVar: "ANTHROPIC_API_KEY",
+		Scoreboard:   anthropic.Scoreboard,
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
 			p, err := anthropic.New(ctx, opts...)
 			if p == nil {
@@ -80,7 +86,8 @@ var All = map[string]Config{
 		},
 	},
 	"antigravity": {
-		IsCLI: true,
+		IsCLI:      true,
+		Scoreboard: antigravity.Scoreboard,
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
 			p, err := antigravity.New(ctx, opts...)
 			if p == nil {
@@ -91,6 +98,7 @@ var All = map[string]Config{
 	},
 	"baseten": {
 		APIKeyEnvVar: "BASETEN_API_KEY",
+		Scoreboard:   baseten.Scoreboard,
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
 			p, err := baseten.New(ctx, opts...)
 			if p == nil {
@@ -101,6 +109,7 @@ var All = map[string]Config{
 	},
 	"bfl": {
 		APIKeyEnvVar: "BFL_API_KEY",
+		Scoreboard:   bfl.Scoreboard,
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
 			p, err := bfl.New(ctx, opts...)
 			if p == nil {
@@ -111,6 +120,7 @@ var All = map[string]Config{
 	},
 	"cerebras": {
 		APIKeyEnvVar: "CEREBRAS_API_KEY",
+		Scoreboard:   cerebras.Scoreboard,
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
 			p, err := cerebras.New(ctx, opts...)
 			if p == nil {
@@ -120,7 +130,8 @@ var All = map[string]Config{
 		},
 	},
 	"claudecode": {
-		IsCLI: true,
+		IsCLI:      true,
+		Scoreboard: claudecode.Scoreboard,
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
 			p, err := claudecode.New(ctx, opts...)
 			if p == nil {
@@ -130,7 +141,8 @@ var All = map[string]Config{
 		},
 	},
 	"codex": {
-		IsCLI: true,
+		IsCLI:      true,
+		Scoreboard: codex.Scoreboard,
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
 			p, err := codex.New(ctx, opts...)
 			if p == nil {
@@ -141,6 +153,7 @@ var All = map[string]Config{
 	},
 	"cloudflare": {
 		APIKeyEnvVar: "CLOUDFLARE_API_KEY",
+		Scoreboard:   cloudflare.Scoreboard,
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
 			p, err := cloudflare.New(ctx, opts...)
 			if p == nil {
@@ -151,6 +164,7 @@ var All = map[string]Config{
 	},
 	"cohere": {
 		APIKeyEnvVar: "COHERE_API_KEY",
+		Scoreboard:   cohere.Scoreboard,
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
 			p, err := cohere.New(ctx, opts...)
 			if p == nil {
@@ -161,6 +175,7 @@ var All = map[string]Config{
 	},
 	"deepseek": {
 		APIKeyEnvVar: "DEEPSEEK_API_KEY",
+		Scoreboard:   deepseek.Scoreboard,
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
 			p, err := deepseek.New(ctx, opts...)
 			if p == nil {
@@ -170,7 +185,8 @@ var All = map[string]Config{
 		},
 	},
 	"dsh": {
-		IsCLI: true,
+		IsCLI:      true,
+		Scoreboard: dsh.Scoreboard,
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
 			p, err := dsh.New(ctx, opts...)
 			if p == nil {
@@ -181,6 +197,7 @@ var All = map[string]Config{
 	},
 	"gemini": {
 		APIKeyEnvVar: "GEMINI_API_KEY",
+		Scoreboard:   gemini.Scoreboard,
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
 			p, err := gemini.New(ctx, opts...)
 			if p == nil {
@@ -191,6 +208,7 @@ var All = map[string]Config{
 	},
 	"groq": {
 		APIKeyEnvVar: "GROQ_API_KEY",
+		Scoreboard:   groq.Scoreboard,
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
 			p, err := groq.New(ctx, opts...)
 			if p == nil {
@@ -201,6 +219,7 @@ var All = map[string]Config{
 	},
 	"huggingface": {
 		APIKeyEnvVar: "HUGGINGFACE_API_KEY",
+		Scoreboard:   huggingface.Scoreboard,
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
 			p, err := huggingface.New(ctx, opts...)
 			if p == nil {
@@ -211,6 +230,7 @@ var All = map[string]Config{
 	},
 	"llamacpp": {
 		APIKeyEnvVar: "",
+		Scoreboard:   llamacpp.Scoreboard,
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
 			p, err := llamacpp.New(ctx, opts...)
 			if p == nil {
@@ -221,6 +241,7 @@ var All = map[string]Config{
 	},
 	"mistral": {
 		APIKeyEnvVar: "MISTRAL_API_KEY",
+		Scoreboard:   mistral.Scoreboard,
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
 			p, err := mistral.New(ctx, opts...)
 			if p == nil {
@@ -231,6 +252,7 @@ var All = map[string]Config{
 	},
 	"ollama": {
 		APIKeyEnvVar: "",
+		Scoreboard:   ollama.Scoreboard,
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
 			p, err := ollama.New(ctx, opts...)
 			if p == nil {
@@ -242,6 +264,7 @@ var All = map[string]Config{
 	"openai": {
 		APIKeyEnvVar: "OPENAI_API_KEY",
 		Alias:        "openairesponses",
+		Scoreboard:   openairesponses.Scoreboard,
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
 			p, err := openairesponses.New(ctx, opts...)
 			if p == nil {
@@ -252,6 +275,7 @@ var All = map[string]Config{
 	},
 	"openaichat": {
 		APIKeyEnvVar: "OPENAI_API_KEY",
+		Scoreboard:   openaichat.Scoreboard,
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
 			p, err := openaichat.New(ctx, opts...)
 			if p == nil {
@@ -262,6 +286,7 @@ var All = map[string]Config{
 	},
 	"openairesponses": {
 		APIKeyEnvVar: "OPENAI_API_KEY",
+		Scoreboard:   openairesponses.Scoreboard,
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
 			p, err := openairesponses.New(ctx, opts...)
 			if p == nil {
@@ -271,6 +296,7 @@ var All = map[string]Config{
 		},
 	},
 	"openaicompatible": {
+		Scoreboard: openaicompatible.Scoreboard,
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
 			p, err := openaicompatible.New(ctx, opts...)
 			if p == nil {
@@ -280,7 +306,8 @@ var All = map[string]Config{
 		},
 	},
 	"opencode": {
-		IsCLI: true,
+		IsCLI:      true,
+		Scoreboard: opencode.Scoreboard,
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
 			p, err := opencode.New(ctx, opts...)
 			if p == nil {
@@ -290,7 +317,8 @@ var All = map[string]Config{
 		},
 	},
 	"pi": {
-		IsCLI: true,
+		IsCLI:      true,
+		Scoreboard: pi.Scoreboard,
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
 			p, err := pi.New(ctx, opts...)
 			if p == nil {
@@ -301,6 +329,7 @@ var All = map[string]Config{
 	},
 	"openrouter": {
 		APIKeyEnvVar: "OPENROUTER_API_KEY",
+		Scoreboard:   openrouter.Scoreboard,
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
 			p, err := openrouter.New(ctx, opts...)
 			if p == nil {
@@ -311,6 +340,7 @@ var All = map[string]Config{
 	},
 	"pollinations": {
 		APIKeyEnvVar: "POLLINATIONS_API_KEY",
+		Scoreboard:   pollinations.Scoreboard,
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
 			p, err := pollinations.New(ctx, opts...)
 			if p == nil {
@@ -321,6 +351,7 @@ var All = map[string]Config{
 	},
 	"togetherai": {
 		APIKeyEnvVar: "TOGETHER_API_KEY",
+		Scoreboard:   togetherai.Scoreboard,
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
 			p, err := togetherai.New(ctx, opts...)
 			if p == nil {
@@ -331,6 +362,7 @@ var All = map[string]Config{
 	},
 	"typesafe": {
 		APIKeyEnvVar: "TYPESAFE_API_KEY",
+		Scoreboard:   typesafe.Scoreboard,
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
 			p, err := typesafe.New(ctx, opts...)
 			if p == nil {
@@ -341,6 +373,7 @@ var All = map[string]Config{
 	},
 	"xiaomi": {
 		APIKeyEnvVar: "MIMO_API_KEY",
+		Scoreboard:   xiaomi.Scoreboard,
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
 			p, err := xiaomi.New(ctx, opts...)
 			if p == nil {

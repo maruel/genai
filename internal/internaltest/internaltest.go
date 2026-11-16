@@ -495,3 +495,10 @@ func AssertEmbeddingRetrieval(t testing.TB, query, relevant, unrelated []float32
 		t.Fatalf("relevant cosine similarity %g must exceed unrelated similarity %g", sim, dis)
 	}
 }
+
+// init makes every test binary that uses the shared recording harness strict:
+// unknown wire fields and finish reasons fail, and genai.Usage.Validate checks
+// the token accounting contract. Production code stays lenient.
+func init() {
+	internal.BeLenient = false
+}

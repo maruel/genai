@@ -1388,15 +1388,9 @@ type ChatResponse struct {
 
 // ToResult converts the response to a genai.Result.
 func (c *ChatResponse) ToResult() (genai.Result, error) {
-	out := genai.Result{
-		Usage: genai.Usage{
-			InputTokens:       c.Usage.InputTokens,
-			InputCachedTokens: c.Usage.CacheReadInputTokens,
-			OutputTokens:      c.Usage.OutputTokens,
-			FinishReason:      c.StopReason.ToFinishReason(),
-			ServiceTier:       c.Usage.ServiceTier,
-		},
-	}
+	out := genai.Result{}
+	c.Usage.To(&out.Usage)
+	out.Usage.FinishReason = c.StopReason.ToFinishReason()
 	err := c.To(&out.Message)
 	return out, err
 }
@@ -1601,6 +1595,21 @@ type Usage struct {
 	OutputTokensDetails struct {
 		ThinkingTokens int64 `json:"thinking_tokens"`
 	} `json:"output_tokens_details"`
+}
+
+// To copies the usage into out, leaving the fields it does not report intact.
+//
+// Anthropic's input_tokens excludes the prompt tokens read from or written to
+// the cache: the whole prompt is input_tokens + cache_read_input_tokens +
+// cache_creation_input_tokens. genai.Usage.InputTokens is the whole prompt.
+func (u *Usage) To(out *genai.Usage) {
+	in := u.InputTokens + u.CacheReadInputTokens + u.CacheCreationInputTokens
+	out.InputTokens = in
+	out.InputCachedTokens = u.CacheReadInputTokens
+	out.InputCacheWriteTokens = u.CacheCreationInputTokens
+	out.OutputTokens = u.OutputTokens
+	out.TotalTokens = in + u.OutputTokens
+	out.ServiceTier = u.ServiceTier
 }
 
 // UsageSpeed is the inference speed mode used for a request.

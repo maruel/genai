@@ -300,11 +300,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 			}
 			for pkt := range chunks {
 				if pkt.Usage.TotalTokens != 0 {
-					u.InputTokens = pkt.Usage.PromptTokens
-					u.InputCachedTokens = max(pkt.Usage.CachedTokens, pkt.Usage.PromptTokensDetails.CachedTokens)
-					u.ReasoningTokens = max(pkt.Usage.ReasoningTokens, pkt.Usage.CompletionTokensDetails.ReasoningTokens)
-					u.OutputTokens = pkt.Usage.CompletionTokens
-					u.TotalTokens = pkt.Usage.TotalTokens
+					pkt.Usage.To(&u)
 				}
 				for _, w := range pkt.Warnings {
 					warnings = append(warnings, w.Message)

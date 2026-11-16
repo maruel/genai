@@ -361,13 +361,12 @@ type ChatResponse struct {
 
 // ToResult converts the response to a genai.Result.
 func (c *ChatResponse) ToResult() (genai.Result, error) {
-	out := genai.Result{
-		Usage: genai.Usage{
-			InputTokens:       c.Usage.PromptTokens,
-			InputCachedTokens: c.Usage.PromptCacheHitTokens,
-			ReasoningTokens:   c.Usage.ChatTokensDetails.ReasoningTokens,
-			OutputTokens:      c.Usage.CompletionTokens,
-		},
+	out := genai.Result{}
+	c.Usage.To(&out.Usage)
+	if !internal.BeLenient {
+		if err := c.Usage.Validate(); err != nil {
+			return out, err
+		}
 	}
 	if len(c.Choices) != 1 {
 		return out, fmt.Errorf("expected 1 choice, got %#v", c.Choices)
@@ -427,6 +426,26 @@ type Usage struct {
 	ChatTokensDetails struct {
 		ReasoningTokens int64 `json:"reasoning_tokens"`
 	} `json:"completion_tokens_details"`
+}
+
+// To copies the token counts into out, leaving the other fields intact.
+//
+// prompt_tokens = prompt_cache_hit_tokens + prompt_cache_miss_tokens.
+func (u *Usage) To(out *genai.Usage) {
+	out.InputTokens = u.PromptTokens
+	out.InputCachedTokens = u.PromptCacheHitTokens
+	out.ReasoningTokens = u.ChatTokensDetails.ReasoningTokens
+	out.OutputTokens = u.CompletionTokens
+}
+
+// Validate verifies that the cache hits and misses partition the prompt.
+// genai.Usage.InputCacheMissTokens derives the misses from this invariant.
+func (u *Usage) Validate() error {
+	if u.PromptCacheHitTokens+u.PromptCacheMissTokens != u.PromptTokens {
+		return fmt.Errorf("prompt_cache_hit_tokens %d + prompt_cache_miss_tokens %d != prompt_tokens %d",
+			u.PromptCacheHitTokens, u.PromptCacheMissTokens, u.PromptTokens)
+	}
+	return nil
 }
 
 // Logprobs is the provider-specific log probabilities.

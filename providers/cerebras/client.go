@@ -323,11 +323,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					return
 				}
 				if pkt.Usage.TotalTokens != 0 {
-					u.InputTokens = pkt.Usage.PromptTokens
-					u.InputCachedTokens = pkt.Usage.PromptTokensDetails.CachedTokens
-					u.ReasoningTokens = pkt.Usage.CompletionTokensDetails.ReasoningTokens
-					u.OutputTokens = pkt.Usage.CompletionTokens
-					u.TotalTokens = pkt.Usage.TotalTokens
+					pkt.Usage.To(&u)
 					u.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
 				}
 

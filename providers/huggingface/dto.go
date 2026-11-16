@@ -458,15 +458,12 @@ type ChatResponse struct {
 // ToResult converts the response to a genai.Result.
 func (c *ChatResponse) ToResult() (genai.Result, error) {
 	out := genai.Result{
-		// At the moment, Huggingface doesn't support caching.
-		Usage: genai.Usage{
-			InputTokens:       c.Usage.PromptTokens,
-			InputCachedTokens: c.Usage.PromptTokensDetails.CachedTokens,
-			ReasoningTokens:   c.Usage.CompletionTokensDetails.ReasoningTokens,
-			OutputTokens:      c.Usage.CompletionTokens,
-			TotalTokens:       c.Usage.TotalTokens,
-		},
+		// TODO: prompt_tokens_details also has cache_creation_input_tokens,
+		// cache_read_input_tokens and created_cache_tokens. No recording has a
+		// nonzero value, so whether prompt_tokens includes them is unverified.
+		// Map cache writes to InputCacheWriteTokens once a recording shows it.
 	}
+	c.Usage.To(&out.Usage)
 	if len(c.Choices) != 1 {
 		return out, fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(c.Choices))
 	}
@@ -608,6 +605,17 @@ type Usage struct {
 		AcceptedPredictionTokens int64 `json:"accepted_prediction_tokens"`
 		RejectedPredictionTokens int64 `json:"rejected_prediction_tokens"`
 	} `json:"completion_tokens_details"`
+}
+
+// To copies the token counts into out, leaving the other fields intact.
+//
+// prompt_tokens includes prompt_tokens_details.cached_tokens.
+func (u *Usage) To(out *genai.Usage) {
+	out.InputTokens = u.PromptTokens
+	out.InputCachedTokens = u.PromptTokensDetails.CachedTokens
+	out.ReasoningTokens = u.CompletionTokensDetails.ReasoningTokens
+	out.OutputTokens = u.CompletionTokens
+	out.TotalTokens = u.TotalTokens
 }
 
 // ContentFilterResults contains content filter results.

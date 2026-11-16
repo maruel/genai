@@ -504,11 +504,9 @@ func (s *RealtimeSession) translate(msg *LiveServerMessage) error {
 		if c := msg.ServerContent; c != nil && c.TurnComplete && !s.responseTools {
 			id = s.responseID
 		}
-		s.pending = append(s.pending, genai.RealtimeEvent{Kind: genai.RealtimeEventUsage, ResponseID: id, Usage: &genai.Usage{
-			InputTokens: u.PromptTokenCount, InputCachedTokens: u.CachedContentTokenCount,
-			OutputTokens: u.ResponseTokenCount, ReasoningTokens: u.ThoughtsTokenCount, TotalTokens: u.TotalTokenCount,
-			ServiceTier: string(u.ServiceTier),
-		}})
+		gu := &genai.Usage{}
+		u.To(gu)
+		s.pending = append(s.pending, genai.RealtimeEvent{Kind: genai.RealtimeEventUsage, ResponseID: id, Usage: gu})
 	}
 	if g := msg.GoAway; g != nil {
 		left, err := time.ParseDuration(g.TimeLeft)

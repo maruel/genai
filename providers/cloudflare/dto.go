@@ -415,15 +415,9 @@ type ChatResponse struct {
 
 // ToResult converts the response to a genai.Result.
 func (c *ChatResponse) ToResult() (genai.Result, error) {
-	out := genai.Result{
-		Usage: genai.Usage{
-			InputTokens:       c.Result.Usage.PromptTokens,
-			InputCachedTokens: c.Result.Usage.PromptTokensDetail.CachedTokens,
-			OutputTokens:      c.Result.Usage.CompletionTokens,
-			TotalTokens:       c.Result.Usage.TotalTokens,
-			// Cloudflare doesn't provide FinishReason (!?)
-		},
-	}
+	out := genai.Result{}
+	c.Result.Usage.To(&out.Usage)
+	// Cloudflare doesn't provide FinishReason (!?)
 	err := c.Result.To(&out.Message)
 	return out, err
 }
@@ -568,6 +562,16 @@ type Usage struct {
 	PromptTokensDetail struct {
 		CachedTokens int64 `json:"cached_tokens"`
 	} `json:"prompt_tokens_details,omitzero"`
+}
+
+// To copies the token counts into out, leaving the other fields intact.
+//
+// prompt_tokens includes prompt_tokens_details.cached_tokens.
+func (u *Usage) To(out *genai.Usage) {
+	out.InputTokens = u.PromptTokens
+	out.InputCachedTokens = u.PromptTokensDetail.CachedTokens
+	out.OutputTokens = u.CompletionTokens
+	out.TotalTokens = u.TotalTokens
 }
 
 // ToolCall can be populated differently depending on the model used.

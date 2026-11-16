@@ -369,12 +369,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					continue
 				}
 				if pkt.Usage.PromptTokens != 0 {
-					u.InputTokens = pkt.Usage.PromptTokens
-					u.InputCachedTokens = pkt.Usage.PromptTokensDetails.CachedTokens
-					u.ReasoningTokens = pkt.Usage.CompletionTokensDetails.ReasoningTokens
-					u.OutputTokens = pkt.Usage.CompletionTokens
-					u.TotalTokens = pkt.Usage.TotalTokens
-					u.ServiceTier = pkt.Usage.ServiceTier
+					pkt.Usage.To(&u)
 					u.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
 				}
 				switch role := pkt.Choices[0].Delta.Role; role {

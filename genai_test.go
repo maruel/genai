@@ -21,19 +21,21 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 
+	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/bb"
 )
 
 func TestUsage(t *testing.T) {
 	t.Run("String", func(t *testing.T) {
 		u := Usage{
-			InputTokens:       10,
-			InputCachedTokens: 5,
-			ReasoningTokens:   15,
-			OutputTokens:      20,
-			TotalTokens:       10 + 5 + 15 + 20,
-			ContextTokens:     100,
-			ContextWindow:     1000,
+			InputTokens:           10,
+			InputCachedTokens:     5,
+			InputCacheWriteTokens: 3,
+			ReasoningTokens:       15,
+			OutputTokens:          20,
+			TotalTokens:           10 + 5 + 15 + 20,
+			ContextTokens:         100,
+			ContextWindow:         1000,
 			Limits: []RateLimit{
 				{
 					Type:      Requests,
@@ -49,45 +51,79 @@ func TestUsage(t *testing.T) {
 				},
 			},
 		}
-		want := "in: 10 (cached 5), reasoning: 15, out: 20, total: 50, context: 100/1000, requests (minute): 99/100, tokens (day): 9980/10000"
+		want := "in: 10 (cached 5, written 3), reasoning: 15, out: 20, total: 50, context: 100/1000, requests (minute): 99/100, tokens (day): 9980/10000"
 		if got := u.String(); got != want {
 			t.Fatalf("Usage.String()\nwant %q\ngot  %q", want, got)
 		}
 	})
 	t.Run("Add", func(t *testing.T) {
 		u1 := Usage{
-			InputTokens:       10,
-			InputCachedTokens: 5,
-			ReasoningTokens:   15,
-			OutputTokens:      20,
-			TotalTokens:       50,
-			ContextTokens:     100,
-			ContextWindow:     1000,
-			Cost:              Cost{Total: 0.25, Currency: "USD"},
+			InputTokens:           10,
+			InputCachedTokens:     5,
+			InputCacheWriteTokens: 1,
+			ReasoningTokens:       15,
+			OutputTokens:          20,
+			TotalTokens:           50,
+			ContextTokens:         100,
+			ContextWindow:         1000,
+			Cost:                  Cost{Total: 0.25, Currency: "USD"},
 		}
 		u2 := Usage{
-			InputTokens:       20,
-			InputCachedTokens: 10,
-			ReasoningTokens:   30,
-			OutputTokens:      40,
-			TotalTokens:       100,
-			ContextTokens:     200,
-			ContextWindow:     2000,
-			Cost:              Cost{Total: 0.5, Currency: "USD"},
+			InputTokens:           20,
+			InputCachedTokens:     10,
+			InputCacheWriteTokens: 2,
+			ReasoningTokens:       30,
+			OutputTokens:          40,
+			TotalTokens:           100,
+			ContextTokens:         200,
+			ContextWindow:         2000,
+			Cost:                  Cost{Total: 0.5, Currency: "USD"},
 		}
 		expected := Usage{
-			InputTokens:       30,
-			InputCachedTokens: 15,
-			ReasoningTokens:   45,
-			OutputTokens:      60,
-			TotalTokens:       150,
-			ContextTokens:     100,
-			ContextWindow:     1000,
-			Cost:              Cost{Total: 0.75, Currency: "USD"},
+			InputTokens:           30,
+			InputCachedTokens:     15,
+			InputCacheWriteTokens: 3,
+			ReasoningTokens:       45,
+			OutputTokens:          60,
+			TotalTokens:           150,
+			ContextTokens:         100,
+			ContextWindow:         1000,
+			Cost:                  Cost{Total: 0.75, Currency: "USD"},
 		}
 		u1.Add(&u2)
 		if diff := cmp.Diff(expected, u1); diff != "" {
 			t.Fatalf("Usage.Add() mismatch (-want +got):\n%s", diff)
+		}
+	})
+	t.Run("Validate", func(t *testing.T) {
+		old := internal.BeLenient
+		internal.BeLenient = false
+		t.Cleanup(func() { internal.BeLenient = old })
+		t.Run("valid", func(t *testing.T) {
+			u := Usage{InputTokens: 100, InputCachedTokens: 30, InputCacheWriteTokens: 20, ReasoningTokens: 5, OutputTokens: 10, TotalTokens: 110}
+			if err := u.Validate(); err != nil {
+				t.Fatal(err)
+			}
+		})
+		t.Run("error", func(t *testing.T) {
+			for name, u := range map[string]Usage{
+				"cache":     {InputTokens: 10, InputCachedTokens: 8, InputCacheWriteTokens: 3},
+				"reasoning": {InputTokens: 10, ReasoningTokens: 6, OutputTokens: 5, TotalTokens: 15},
+				"total":     {InputTokens: 10, OutputTokens: 5, TotalTokens: 16},
+			} {
+				t.Run(name, func(t *testing.T) {
+					if err := u.Validate(); err == nil {
+						t.Fatal("expected error")
+					}
+				})
+			}
+		})
+	})
+	t.Run("InputCacheMissTokens", func(t *testing.T) {
+		// Cache writes are misses: they were not served from the cache.
+		u := Usage{InputTokens: 100, InputCachedTokens: 30, InputCacheWriteTokens: 20}
+		if got := u.InputCacheMissTokens(); got != 70 {
+			t.Fatalf("InputCacheMissTokens() = %d, want 70", got)
 		}
 	})
 }

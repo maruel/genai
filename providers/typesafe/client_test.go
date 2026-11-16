@@ -18,7 +18,6 @@ import (
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
-	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/typesafe"
 	"github.com/maruel/genai/scoreboard"
@@ -885,10 +884,6 @@ func testClientSystemOneInvalidResponse(t *testing.T) {
 type bogusOption struct{}
 
 func (bogusOption) Validate() error { return nil }
-
-func init() {
-	internal.BeLenient = false
-}
 
 func TestAccessors(t *testing.T) {
 	t.Parallel()

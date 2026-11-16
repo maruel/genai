@@ -15,7 +15,6 @@ import (
 	"time"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/bfl"
 	"github.com/maruel/genai/scoreboard"
@@ -168,8 +167,4 @@ func (i *imageModelClient) GenSync(ctx context.Context, msgs genai.Messages, opt
 	}
 	opts = append(opts, genai.GenOptionPollInterval(time.Millisecond))
 	return i.Client.GenSync(ctx, msgs, opts...)
-}
-
-func init() {
-	internal.BeLenient = false
 }

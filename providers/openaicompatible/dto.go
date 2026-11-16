@@ -361,13 +361,8 @@ type ChatResponse struct {
 
 // ToResult converts the response to a genai.Result.
 func (c *ChatResponse) ToResult() (genai.Result, error) {
-	out := genai.Result{
-		Usage: genai.Usage{
-			InputTokens:  c.Usage.PromptTokens,
-			OutputTokens: c.Usage.CompletionTokens,
-			TotalTokens:  c.Usage.TotalTokens,
-		},
-	}
+	out := genai.Result{}
+	c.Usage.To(&out.Usage)
 	if len(c.Choices) > 1 {
 		return out, fmt.Errorf("expected 1 choice, got %#v", c)
 	}
@@ -447,6 +442,13 @@ type Usage struct {
 	PromptTokens     int64 `json:"prompt_tokens"`
 	CompletionTokens int64 `json:"completion_tokens"`
 	TotalTokens      int64 `json:"total_tokens"`
+}
+
+// To copies the token counts into out, leaving the other fields intact.
+func (u *Usage) To(out *genai.Usage) {
+	out.InputTokens = u.PromptTokens
+	out.OutputTokens = u.CompletionTokens
+	out.TotalTokens = u.TotalTokens
 }
 
 //

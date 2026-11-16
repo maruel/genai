@@ -19,6 +19,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+
+	"github.com/maruel/genai"
 )
 
 // AgentError is the structured AGY_ERROR diagnostic emitted on stderr when
@@ -239,6 +241,19 @@ type JSONUsage struct {
 	ThinkingTokens  int64 `json:"thinking_tokens"`
 	CacheReadTokens int64 `json:"cache_read_tokens"`
 	TotalTokens     int64 `json:"total_tokens"`
+}
+
+// To copies the token counts into out, leaving the other fields intact.
+//
+// input_tokens and total_tokens exclude cache_read_tokens: recordings show
+// cache reads above input_tokens and total_tokens = input + output.
+// genai.Usage.InputTokens is the whole prompt.
+func (u *JSONUsage) To(out *genai.Usage) {
+	out.InputTokens = u.InputTokens + u.CacheReadTokens
+	out.InputCachedTokens = u.CacheReadTokens
+	out.ReasoningTokens = u.ThinkingTokens
+	out.OutputTokens = u.OutputTokens
+	out.TotalTokens = u.TotalTokens + u.CacheReadTokens
 }
 
 // Add accumulates u2 into u.

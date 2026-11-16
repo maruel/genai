@@ -491,7 +491,8 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 			if e := res.AsError(); e != nil {
 				return genai.Result{}, errors.Join(e, err)
 			}
-			return buildResult(&res, asstBlocks, summaries, initSessionID, contextUsage.TotalTokens, contextUsage.RawMaxTokens), err
+			r := buildResult(&res, asstBlocks, summaries, initSessionID, contextUsage.TotalTokens, contextUsage.RawMaxTokens)
+			return r, errors.Join(err, r.Usage.Validate())
 		default:
 		}
 	}
@@ -699,6 +700,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 				if result.Usage.ReasoningTokens == 0 {
 					result.Usage.ReasoningTokens = streamUsage.OutputTokensDetails.ThinkingTokens
 				}
+				finalErr = result.Usage.Validate()
 				return
 			case OutputControlRequest:
 				if err := handleControlRequest(ctx, stdin, co.controlHandler, line); err != nil {
@@ -998,18 +1000,10 @@ func docToInputBlock(doc genai.Doc) (InputContentBlock, error) {
 
 // buildResult converts a resultMsg and accumulated assistant content blocks into a genai.Result.
 func buildResult(res *OutputResultMsg, asstBlocks []OutputContentBlock, summaries []string, sessionID string, contextTokens, contextWindow int64) genai.Result {
-	r := genai.Result{
-		Usage: genai.Usage{
-			InputTokens:       res.Usage.InputTokens,
-			InputCachedTokens: res.Usage.CacheReadInputTokens,
-			ReasoningTokens:   res.Usage.OutputTokensDetails.ThinkingTokens,
-			OutputTokens:      res.Usage.OutputTokens,
-			TotalTokens:       res.Usage.InputTokens + res.Usage.OutputTokens,
-			Cost:              genai.Cost{Total: res.TotalCostUSD, Currency: "USD"},
-			FinishReason:      mapFinishReason(res.StopReason),
-			ServiceTier:       res.Usage.ServiceTier,
-		},
-	}
+	r := genai.Result{}
+	res.Usage.To(&r.Usage)
+	r.Usage.Cost = genai.Cost{Total: res.TotalCostUSD, Currency: "USD"}
+	r.Usage.FinishReason = mapFinishReason(res.StopReason)
 	r.Usage.ContextTokens = contextTokens
 	r.Usage.ContextWindow = contextWindow
 	if r.Usage.ContextWindow == 0 {

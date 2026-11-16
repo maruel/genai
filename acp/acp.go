@@ -660,17 +660,10 @@ func buildPromptResult(line []byte, text, thinking, sessionID string, usage *Usa
 			return r, fmt.Errorf("unmarshal session/prompt result: %w", err)
 		}
 		r.Usage.FinishReason = stopReasonToFinishReason(pr.StopReason)
-		r.Usage.InputTokens = int64(pr.Usage.InputTokens)
-		r.Usage.OutputTokens = int64(pr.Usage.OutputTokens)
-		r.Usage.ReasoningTokens = int64(pr.Usage.ThoughtTokens)
-		r.Usage.InputCachedTokens = int64(pr.Usage.CachedReadTokens)
-		// ACP totals include reasoning and both cache token categories.
-		r.Usage.TotalTokens = int64(pr.Usage.TotalTokens)
+		pr.Usage.To(&r.Usage)
 	}
 	if usage != nil {
-		r.Usage.ContextTokens = int64(usage.Used)
-		r.Usage.ContextWindow = int64(usage.Size)
-		r.Usage.Cost = genai.Cost{Total: usage.Cost.Amount, Currency: usage.Cost.Currency}
+		usage.To(&r.Usage)
 	}
 
 	if thinking != "" {
@@ -684,7 +677,7 @@ func buildPromptResult(line []byte, text, thinking, sessionID string, usage *Usa
 			Opaque: map[string]any{SessionIDKey: sessionID},
 		})
 	}
-	return r, nil
+	return r, r.Usage.Validate()
 }
 
 // stopReasonToFinishReason maps an ACP stop reason string to a

@@ -29,7 +29,6 @@ import (
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
-	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/internal/realtimetest"
 	"github.com/maruel/genai/providers/openaibase"
@@ -1448,10 +1447,6 @@ func (i *injectReasoning) GenSync(ctx context.Context, msgs genai.Messages, opts
 func (i *injectReasoning) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	res, err := i.Provider.GenStream(ctx, msgs, opts...)
 	return res, err
-}
-
-func init() {
-	internal.BeLenient = false
 }
 
 type embeddingNoTransport struct{ t *testing.T }

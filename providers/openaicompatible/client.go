@@ -207,9 +207,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 			var pending []ToolCall
 			for pkt := range chunks {
 				if pkt.Usage.TotalTokens != 0 {
-					u.InputTokens = pkt.Usage.PromptTokens
-					u.OutputTokens = pkt.Usage.CompletionTokens
-					u.TotalTokens = pkt.Usage.TotalTokens
+					pkt.Usage.To(&u)
 				}
 				if len(pkt.Choices) > 1 {
 					finalErr = &internal.BadError{Err: fmt.Errorf("expected at most one choice, got %d", len(pkt.Choices))}

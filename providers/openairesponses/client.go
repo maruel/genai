@@ -694,10 +694,7 @@ func ProcessStream(chunks iter.Seq[ResponseStreamChunkResponse]) (iter.Seq[genai
 				case ResponseCompleted:
 					// https://platform.openai.com/docs/api-reference/responses_streaming/response/completed
 					// This message contains all the data duplicated. :( It's clear they never thought about efficiency.
-					u.InputTokens = pkt.Response.Usage.InputTokens
-					u.InputCachedTokens = pkt.Response.Usage.InputTokensDetails.CachedTokens
-					u.ReasoningTokens = pkt.Response.Usage.OutputTokensDetails.ReasoningTokens
-					u.OutputTokens = pkt.Response.Usage.OutputTokens
+					pkt.Response.Usage.To(&u)
 					u.ServiceTier = string(pkt.Response.ServiceTier)
 					u.FinishReason = genai.FinishedStop
 					if len(pkt.Response.Output) == 0 {
@@ -743,10 +740,7 @@ func ProcessStream(chunks iter.Seq[ResponseStreamChunkResponse]) (iter.Seq[genai
 					return
 				case ResponseIncomplete:
 					// https://platform.openai.com/docs/api-reference/responses_streaming/response/incomplete
-					u.InputTokens = pkt.Response.Usage.InputTokens
-					u.InputCachedTokens = pkt.Response.Usage.InputTokensDetails.CachedTokens
-					u.ReasoningTokens = pkt.Response.Usage.OutputTokensDetails.ReasoningTokens
-					u.OutputTokens = pkt.Response.Usage.OutputTokens
+					pkt.Response.Usage.To(&u)
 					if pkt.Response.IncompleteDetails.Reason == "max_output_tokens" {
 						u.FinishReason = genai.FinishedLength
 					}

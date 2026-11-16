@@ -230,12 +230,8 @@ func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, er
 		return res, fmt.Errorf("error %s: %s", resp.Result.Error.Error.Type, resp.Result.Error.Error.Message)
 	}
 	err = resp.To(&res.Message)
-	res.Usage.InputTokens = resp.Result.Message.Usage.InputTokens
-	res.Usage.InputCachedTokens = resp.Result.Message.Usage.CacheReadInputTokens
-	res.Usage.OutputTokens = resp.Result.Message.Usage.OutputTokens
-	res.Usage.TotalTokens = res.Usage.InputTokens + res.Usage.InputCachedTokens + res.Usage.OutputTokens
+	resp.Result.Message.Usage.To(&res.Usage)
 	res.Usage.FinishReason = resp.Result.Message.StopReason.ToFinishReason()
-	res.Usage.ServiceTier = resp.Result.Message.Usage.ServiceTier
 	if err == nil {
 		err = res.Validate()
 	}
@@ -663,12 +659,8 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 						finalErr = &internal.BadError{Err: fmt.Errorf("unexpected role %q", pkt.Message.Role)}
 						return
 					}
-					u.InputTokens = pkt.Message.Usage.InputTokens
-					u.InputCachedTokens = pkt.Message.Usage.CacheReadInputTokens
-					// There's some tokens listed there. Still save it in case it breaks midway.
-					u.OutputTokens = pkt.Message.Usage.OutputTokens
-					u.TotalTokens = u.InputTokens + u.InputCachedTokens + u.OutputTokens
-					u.ServiceTier = pkt.Message.Usage.ServiceTier
+					// It includes some output tokens. Still save them in case the stream breaks midway.
+					pkt.Message.Usage.To(&u)
 					continue
 				case ChunkContentBlockStart:
 					switch pkt.ContentBlock.Type {
@@ -826,6 +818,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					// Includes finish reason and output tokens usage (but not input tokens!)
 					u.FinishReason = pkt.Delta.StopReason.ToFinishReason()
 					u.OutputTokens = pkt.Usage.OutputTokens
+					u.TotalTokens = u.InputTokens + u.OutputTokens
 				case ChunkMessageStop:
 					// Doesn't contain anything.
 					continue

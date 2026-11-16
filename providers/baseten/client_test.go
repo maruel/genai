@@ -12,7 +12,6 @@ import (
 	"testing"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/baseten"
 	"github.com/maruel/genai/scoreboard"
@@ -215,8 +214,4 @@ func TestEffortLevel(t *testing.T) {
 			t.Fatalf("thinking not explicitly disabled: %s", b)
 		}
 	})
-}
-
-func init() {
-	internal.BeLenient = false
 }

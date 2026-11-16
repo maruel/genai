@@ -545,16 +545,8 @@ type ChatResponse struct {
 
 // ToResult converts the ChatResponse to a genai.Result.
 func (c *ChatResponse) ToResult() (genai.Result, error) {
-	out := genai.Result{
-		Usage: genai.Usage{
-			InputTokens:       c.Usage.PromptTokens,
-			InputCachedTokens: c.Usage.PromptTokensDetails.CachedTokens,
-			OutputTokens:      c.Usage.CompletionTokens,
-			ReasoningTokens:   c.Usage.CompletionTokensDetails.ReasoningTokens,
-			TotalTokens:       c.Usage.TotalTokens,
-			ServiceTier:       c.Usage.ServiceTier,
-		},
-	}
+	out := genai.Result{}
+	c.Usage.To(&out.Usage)
 	if len(c.Choices) != 1 {
 		return out, fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(c.Choices))
 	}
@@ -606,6 +598,22 @@ type Usage struct {
 	CompletionTokensDetails struct {
 		ReasoningTokens int64 `json:"reasoning_tokens"`
 	} `json:"completion_tokens_details,omitzero"`
+}
+
+// To copies the usage into out, leaving the fields it does not report intact.
+//
+// prompt_tokens includes prompt_tokens_details.cached_tokens. With audio input,
+// prompt_tokens omits the audio tokens that total_tokens counts: voxtral
+// recordings report prompt 16, completion 2, total 393. Derive the input from
+// the total in that case.
+func (u *Usage) To(out *genai.Usage) {
+	in := max(u.PromptTokens, u.TotalTokens-u.CompletionTokens)
+	out.InputTokens = in
+	out.InputCachedTokens = u.PromptTokensDetails.CachedTokens
+	out.OutputTokens = u.CompletionTokens
+	out.ReasoningTokens = u.CompletionTokensDetails.ReasoningTokens
+	out.TotalTokens = u.TotalTokens
+	out.ServiceTier = u.ServiceTier
 }
 
 // responseContent decodes either legacy text or typed content chunks.

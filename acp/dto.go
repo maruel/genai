@@ -24,6 +24,7 @@ package acp
 import (
 	"encoding/json"
 
+	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 )
 
@@ -592,6 +593,14 @@ type UsageUpdateUpdate struct {
 	Meta          json.RawMessage `json:"_meta,omitzero"`
 }
 
+// To copies the context window state and cost into out, leaving the token
+// counts intact.
+func (u *UsageUpdateUpdate) To(out *genai.Usage) {
+	out.ContextTokens = int64(u.Used)
+	out.ContextWindow = int64(u.Size)
+	out.Cost = genai.Cost{Total: u.Cost.Amount, Currency: u.Cost.Currency}
+}
+
 // CurrentModeUpdate is a mode change notification.
 type CurrentModeUpdate struct {
 	SessionUpdate UpdateType      `json:"sessionUpdate"`
@@ -883,6 +892,21 @@ type PromptUsage struct {
 	ThoughtTokens     int `json:"thoughtTokens,omitzero"`
 	CachedReadTokens  int `json:"cachedReadTokens,omitzero"`
 	CachedWriteTokens int `json:"cachedWriteTokens,omitzero"`
+}
+
+// To copies the token counts into out, leaving the other fields intact.
+//
+// ACP's inputTokens excludes cachedReadTokens and cachedWriteTokens, and
+// outputTokens excludes thoughtTokens; totalTokens includes all of them.
+// genai.Usage.InputTokens is the whole prompt and OutputTokens includes the
+// reasoning tokens.
+func (u *PromptUsage) To(out *genai.Usage) {
+	out.InputTokens = int64(u.InputTokens + u.CachedReadTokens + u.CachedWriteTokens)
+	out.InputCachedTokens = int64(u.CachedReadTokens)
+	out.InputCacheWriteTokens = int64(u.CachedWriteTokens)
+	out.OutputTokens = int64(u.OutputTokens + u.ThoughtTokens)
+	out.ReasoningTokens = int64(u.ThoughtTokens)
+	out.TotalTokens = int64(u.TotalTokens)
 }
 
 // JSONRPCResponse is a JSON-RPC 2.0 response sent back to the agent (e.g. for

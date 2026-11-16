@@ -20,7 +20,6 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/acp"
 	"github.com/maruel/genai/base"
-	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/genai/smoke"
@@ -515,8 +514,4 @@ func TestGenOption(t *testing.T) {
 			t.Fatalf("empty GenOptionText: %v", err)
 		}
 	})
-}
-
-func init() {
-	internal.BeLenient = false
 }

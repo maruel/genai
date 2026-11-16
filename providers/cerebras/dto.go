@@ -755,16 +755,8 @@ type ChatResponse struct {
 
 // ToResult converts the response to a genai.Result.
 func (c *ChatResponse) ToResult() (genai.Result, error) {
-	out := genai.Result{
-		// At the moment, Cerebras doesn't support cached tokens.
-		Usage: genai.Usage{
-			InputTokens:       c.Usage.PromptTokens,
-			InputCachedTokens: c.Usage.PromptTokensDetails.CachedTokens,
-			ReasoningTokens:   c.Usage.CompletionTokensDetails.ReasoningTokens,
-			OutputTokens:      c.Usage.CompletionTokens,
-			TotalTokens:       c.Usage.TotalTokens,
-		},
-	}
+	out := genai.Result{}
+	c.Usage.To(&out.Usage)
 	if len(c.Choices) != 1 {
 		return out, fmt.Errorf("expected 1 choice, got %#v", c.Choices)
 	}
@@ -884,6 +876,21 @@ type Usage struct {
 		ReasoningTokens          int64 `json:"reasoning_tokens"`
 		RejectedPredictionTokens int64 `json:"rejected_prediction_tokens"`
 	} `json:"completion_tokens_details"`
+}
+
+// To copies the usage into out, leaving the fields it does not report intact.
+//
+// prompt_tokens includes prompt_tokens_details.cached_tokens. On requests that
+// end on a stop sequence, total_tokens exceeds prompt_tokens +
+// completion_tokens by 2 or 3: qwen-3.8-27b recordings report prompt 64,
+// completion 16, total 82. Hypothesis: completion_tokens omits the generated
+// stop sequence tokens. Derive the output from the total in that case.
+func (u *Usage) To(out *genai.Usage) {
+	out.InputTokens = u.PromptTokens
+	out.InputCachedTokens = u.PromptTokensDetails.CachedTokens
+	out.ReasoningTokens = u.CompletionTokensDetails.ReasoningTokens
+	out.OutputTokens = max(u.CompletionTokens, u.TotalTokens-u.PromptTokens)
+	out.TotalTokens = u.TotalTokens
 }
 
 // Model is the provider-specific model metadata.

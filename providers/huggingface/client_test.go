@@ -11,7 +11,6 @@ import (
 	"testing"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/huggingface"
 	"github.com/maruel/genai/scoreboard"
@@ -165,10 +164,6 @@ func getAPIKeyTest(t testing.TB) string {
 		t.Fatal(err)
 	}
 	return apiKey
-}
-
-func init() {
-	internal.BeLenient = false
 }
 
 func TestEffortLevel(t *testing.T) {

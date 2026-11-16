@@ -637,10 +637,7 @@ func makeProcessStream(audioFormat string) func(iter.Seq[ChatStreamChunkResponse
 						return
 					}
 					if pkt.Usage.PromptTokens != 0 {
-						u.InputTokens = pkt.Usage.PromptTokens
-						u.InputCachedTokens = pkt.Usage.PromptTokensDetails.CachedTokens
-						u.ReasoningTokens = pkt.Usage.CompletionTokensDetails.ReasoningTokens
-						u.OutputTokens = pkt.Usage.CompletionTokens
+						pkt.Usage.To(&u)
 						u.ServiceTier = pkt.ServiceTier
 					}
 					if len(pkt.Choices) != 1 {

@@ -611,6 +611,18 @@ type LiveUsage struct {
 	TrafficType                LiveTrafficType          `json:"trafficType,omitempty"`
 }
 
+// To copies the usage into out, leaving the fields it does not report intact.
+//
+// promptTokenCount includes cachedContentTokenCount.
+func (u *LiveUsage) To(out *genai.Usage) {
+	out.InputTokens = u.PromptTokenCount
+	out.InputCachedTokens = u.CachedContentTokenCount
+	out.ReasoningTokens = u.ThoughtsTokenCount
+	out.OutputTokens = u.ResponseTokenCount
+	out.TotalTokens = u.TotalTokenCount
+	out.ServiceTier = string(u.ServiceTier)
+}
+
 // LiveServiceTier is the quality of service that processed the session.
 //
 // Source: go-genai types.go (see the file header).

@@ -23,7 +23,6 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/acp"
 	"github.com/maruel/genai/base"
-	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/genai/smoke"
@@ -625,10 +624,6 @@ type nopWriteCloser struct {
 }
 
 func (nopWriteCloser) Close() error { return nil }
-
-func init() {
-	internal.BeLenient = false
-}
 
 func TestParseOpts(t *testing.T) {
 	t.Run("thinking", func(t *testing.T) {

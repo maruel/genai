@@ -18,7 +18,6 @@ import (
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
-	"github.com/maruel/genai/internal"
 )
 
 func TestProviderOption(t *testing.T) {
@@ -327,8 +326,4 @@ func TestTimeS(t *testing.T) {
 			t.Errorf("CreatedAt.AsTime() = %v", got.CreatedAt.AsTime())
 		}
 	})
-}
-
-func init() {
-	internal.BeLenient = false
 }

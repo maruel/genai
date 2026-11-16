@@ -437,6 +437,16 @@ type RealtimeUsage struct {
 	InputDetails TokenDetails `json:"input_token_details,omitzero"`
 }
 
+// To copies the token counts into out, leaving the other fields intact.
+//
+// input_tokens includes input_token_details.cached_tokens.
+func (u *RealtimeUsage) To(out *genai.Usage) {
+	out.InputTokens = u.InputTokens
+	out.InputCachedTokens = u.InputDetails.CachedTokens
+	out.OutputTokens = u.OutputTokens
+	out.TotalTokens = u.TotalTokens
+}
+
 // TokenDetails is input token accounting detail.
 type TokenDetails struct {
 	CachedTokens int64 `json:"cached_tokens,omitzero"`

@@ -992,15 +992,8 @@ type ChatResponse struct {
 
 // ToResult converts the response to a genai.Result.
 func (c *ChatResponse) ToResult() (genai.Result, error) {
-	out := genai.Result{
-		Usage: genai.Usage{
-			InputTokens:       c.UsageMetadata.PromptTokenCount,
-			InputCachedTokens: c.UsageMetadata.CachedContentTokenCount,
-			ReasoningTokens:   c.UsageMetadata.ThoughtsTokenCount,
-			OutputTokens:      c.UsageMetadata.CandidatesTokenCount + c.UsageMetadata.ToolUsePromptTokenCount + c.UsageMetadata.ThoughtsTokenCount,
-			TotalTokens:       c.UsageMetadata.TotalTokenCount,
-		},
-	}
+	out := genai.Result{}
+	c.UsageMetadata.To(&out.Usage)
 	if len(c.Candidates) != 1 {
 		return out, fmt.Errorf("unexpected number of candidates; expected 1, got %d", len(c.Candidates))
 	}
@@ -1328,6 +1321,17 @@ type UsageMetadata struct {
 	CandidatesTokensDetails    []ModalityTokenCount `json:"candidatesTokensDetails"`
 	ToolUsePromptTokensDetails []ModalityTokenCount `json:"toolUsePromptTokensDetails"`
 	ServiceTier                string               `json:"serviceTier,omitzero"`
+}
+
+// To copies the token counts into out, leaving the other fields intact.
+//
+// promptTokenCount includes cachedContentTokenCount.
+func (u *UsageMetadata) To(out *genai.Usage) {
+	out.InputTokens = u.PromptTokenCount
+	out.InputCachedTokens = u.CachedContentTokenCount
+	out.ReasoningTokens = u.ThoughtsTokenCount
+	out.OutputTokens = u.CandidatesTokenCount + u.ToolUsePromptTokenCount + u.ThoughtsTokenCount
+	out.TotalTokens = u.TotalTokenCount
 }
 
 // ModalityTokenCount is documented at

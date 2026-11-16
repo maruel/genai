@@ -305,16 +305,9 @@ func (r *Response) SetStream(stream bool) {
 
 // ToResult implements base.ResultConverter.
 func (r *Response) ToResult() (genai.Result, error) {
-	res := genai.Result{
-		Usage: genai.Usage{
-			InputTokens:       r.Usage.InputTokens,
-			InputCachedTokens: r.Usage.InputTokensDetails.CachedTokens,
-			ReasoningTokens:   r.Usage.OutputTokensDetails.ReasoningTokens,
-			OutputTokens:      r.Usage.OutputTokens,
-			TotalTokens:       r.Usage.TotalTokens,
-			ServiceTier:       string(r.ServiceTier),
-		},
-	}
+	res := genai.Result{}
+	r.Usage.To(&res.Usage)
+	res.Usage.ServiceTier = string(r.ServiceTier)
 	for oi := range r.Output {
 		if err := r.Output[oi].To(&res.Message); err != nil {
 			return res, err
@@ -1049,6 +1042,18 @@ type Usage struct {
 		ReasoningTokens int64 `json:"reasoning_tokens"`
 	} `json:"output_tokens_details"`
 	TotalTokens int64 `json:"total_tokens"`
+}
+
+// To copies the token counts into out, leaving the other fields intact.
+//
+// input_tokens includes input_tokens_details.cached_tokens and cache_write_tokens.
+func (u *Usage) To(out *genai.Usage) {
+	out.InputTokens = u.InputTokens
+	out.InputCachedTokens = u.InputTokensDetails.CachedTokens
+	out.InputCacheWriteTokens = u.InputTokensDetails.CacheWriteTokens
+	out.ReasoningTokens = u.OutputTokensDetails.ReasoningTokens
+	out.OutputTokens = u.OutputTokens
+	out.TotalTokens = u.TotalTokens
 }
 
 // TokenDetails provides detailed token usage breakdown.

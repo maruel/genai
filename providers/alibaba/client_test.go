@@ -15,7 +15,6 @@ import (
 	"testing"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/alibaba"
 	"github.com/maruel/genai/scoreboard"
@@ -271,10 +270,6 @@ func TestClient(t *testing.T) {
 			})
 		})
 	}
-}
-
-func init() {
-	internal.BeLenient = false
 }
 
 func TestEffortLevel(t *testing.T) {

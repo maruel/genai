@@ -15,7 +15,6 @@ import (
 	"testing"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/xiaomi"
 	"github.com/maruel/genai/scoreboard"
@@ -277,8 +276,4 @@ func TestClient(t *testing.T) {
 		}
 		internaltest.TestClientProviderErrors(t, f, data)
 	})
-}
-
-func init() {
-	internal.BeLenient = false
 }

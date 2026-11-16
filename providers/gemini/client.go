@@ -1435,10 +1435,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 				}
 				if pkt.UsageMetadata.TotalTokenCount != 0 {
 					// Not 100% sure.
-					u.InputTokens = pkt.UsageMetadata.PromptTokenCount
-					u.ReasoningTokens = pkt.UsageMetadata.ThoughtsTokenCount
-					u.OutputTokens = pkt.UsageMetadata.CandidatesTokenCount + pkt.UsageMetadata.ToolUsePromptTokenCount + pkt.UsageMetadata.ThoughtsTokenCount
-					u.TotalTokens = pkt.UsageMetadata.TotalTokenCount
+					pkt.UsageMetadata.To(&u)
 				}
 				if pkt.Candidates[0].FinishReason != "" {
 					u.FinishReason = pkt.Candidates[0].FinishReason.ToFinishReason()

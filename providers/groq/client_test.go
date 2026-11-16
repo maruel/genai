@@ -25,7 +25,6 @@ import (
 	"time"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/groq"
 	"github.com/maruel/genai/scoreboard"
@@ -539,10 +538,6 @@ func (h *handleGroqReasoning) GenStream(ctx context.Context, msgs genai.Messages
 
 func (h *handleGroqReasoning) Unwrap() genai.Provider {
 	return h.Provider
-}
-
-func init() {
-	internal.BeLenient = false
 }
 
 func TestChatRequest(t *testing.T) {

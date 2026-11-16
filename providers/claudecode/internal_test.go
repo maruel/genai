@@ -341,10 +341,6 @@ func TestProviderOption(t *testing.T) {
 	})
 }
 
-func init() {
-	internal.BeLenient = false
-}
-
 func TestUserMessageContent(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
 		for _, data := range []string{`""`, `"pasted text"`, `[]`, `[{"type":"text","text":"pasted block"}]`} {

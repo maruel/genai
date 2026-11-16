@@ -266,10 +266,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 						finalErr = &internal.BadError{Err: fmt.Errorf("expected no content %#v", pkt)}
 						return
 					}
-					u.InputTokens = pkt.Delta.Usage.Tokens.InputTokens
-					u.InputCachedTokens = pkt.Delta.Usage.CachedTokens
-					u.ReasoningTokens = pkt.Delta.Usage.Tokens.ReasoningTokens
-					u.OutputTokens = pkt.Delta.Usage.Tokens.OutputTokens
+					pkt.Delta.Usage.To(&u)
 					u.FinishReason = pkt.Delta.FinishReason.ToFinishReason()
 				case ChunkContentStart:
 					if len(pkt.Delta.Message.Content) != 1 {

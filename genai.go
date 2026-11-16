@@ -186,10 +186,8 @@ func (r *Result) Validate() error {
 	if err := r.Message.Validate(); err != nil {
 		errs = append(errs, err)
 	}
-	for i := range r.Usage.Limits {
-		if err := r.Usage.Limits[i].Validate(); err != nil {
-			errs = append(errs, fmt.Errorf("limit #%d: %w", i, err))
-		}
+	if err := r.Usage.Validate(); err != nil {
+		errs = append(errs, err)
 	}
 	for i, tokens := range r.Logprobs {
 		for j := range tokens {
@@ -279,12 +277,21 @@ func (c Cost) String() string {
 
 // Usage from the LLM provider.
 type Usage struct {
-	// Token usage for the current request.
-	InputTokens       int64
+	// InputTokens is the number of prompt tokens of the current request,
+	// including the tokens read from or written to a provider cache.
+	//
+	// Providers disagree on this convention: OpenAI-style APIs report the whole
+	// prompt, while Anthropic-style APIs report only the uncached remainder.
+	// Each provider normalizes to the whole prompt.
+	InputTokens int64
+	// InputCachedTokens is the subset of InputTokens read from a provider cache.
 	InputCachedTokens int64
-	ReasoningTokens   int64
-	OutputTokens      int64
-	TotalTokens       int64
+	// InputCacheWriteTokens is the subset of InputTokens written to a provider
+	// cache. Zero when the provider does not report cache writes.
+	InputCacheWriteTokens int64
+	ReasoningTokens       int64
+	OutputTokens          int64
+	TotalTokens           int64
 	// Cost is what the provider charged for the request. It is the zero value
 	// when the provider does not report a cost.
 	Cost Cost
@@ -304,10 +311,45 @@ type Usage struct {
 	Limits []RateLimit
 }
 
+// InputCacheMissTokens returns the number of input tokens not served from a
+// provider cache. It includes InputCacheWriteTokens: a token written to the
+// cache was a miss for this request.
+func (u *Usage) InputCacheMissTokens() int64 {
+	return u.InputTokens - u.InputCachedTokens
+}
+
+// Validate ensures the rate limits are valid. When strict, it also verifies
+// that the cached and cache-written tokens are subsets of InputTokens.
+func (u *Usage) Validate() error {
+	var errs []error
+	if !internal.BeLenient {
+		if u.InputCachedTokens+u.InputCacheWriteTokens > u.InputTokens {
+			errs = append(errs, fmt.Errorf("cached %d + written %d input tokens exceed input %d",
+				u.InputCachedTokens, u.InputCacheWriteTokens, u.InputTokens))
+		}
+		if u.ReasoningTokens > u.OutputTokens {
+			errs = append(errs, fmt.Errorf("reasoning %d tokens exceed output %d", u.ReasoningTokens, u.OutputTokens))
+		}
+		if u.TotalTokens != 0 && u.TotalTokens != u.InputTokens+u.OutputTokens {
+			errs = append(errs, fmt.Errorf("total %d tokens != input %d + output %d",
+				u.TotalTokens, u.InputTokens, u.OutputTokens))
+		}
+	}
+	for i := range u.Limits {
+		if err := u.Limits[i].Validate(); err != nil {
+			errs = append(errs, fmt.Errorf("limit #%d: %w", i, err))
+		}
+	}
+	return errors.Join(errs...)
+}
+
 func (u *Usage) String() string {
 	var s strings.Builder
-	fmt.Fprintf(&s, "in: %d (cached %d), reasoning: %d, out: %d, total: %d",
-		u.InputTokens, u.InputCachedTokens, u.ReasoningTokens, u.OutputTokens, u.TotalTokens)
+	fmt.Fprintf(&s, "in: %d (cached %d", u.InputTokens, u.InputCachedTokens)
+	if u.InputCacheWriteTokens != 0 {
+		fmt.Fprintf(&s, ", written %d", u.InputCacheWriteTokens)
+	}
+	fmt.Fprintf(&s, "), reasoning: %d, out: %d, total: %d", u.ReasoningTokens, u.OutputTokens, u.TotalTokens)
 	if u.ContextTokens != 0 || u.ContextWindow != 0 {
 		fmt.Fprintf(&s, ", context: %d/%d", u.ContextTokens, u.ContextWindow)
 	}
@@ -325,6 +367,7 @@ func (u *Usage) String() string {
 func (u *Usage) Add(r *Usage) {
 	u.InputTokens += r.InputTokens
 	u.InputCachedTokens += r.InputCachedTokens
+	u.InputCacheWriteTokens += r.InputCacheWriteTokens
 	u.ReasoningTokens += r.ReasoningTokens
 	u.OutputTokens += r.OutputTokens
 	u.TotalTokens += r.TotalTokens

@@ -698,13 +698,9 @@ type ChatResponse struct {
 func (c *ChatResponse) ToResult() (genai.Result, error) {
 	out := genai.Result{
 		// At the moment, Groq does not support cached tokens.
-		Usage: genai.Usage{
-			InputTokens:  c.Usage.PromptTokens,
-			OutputTokens: c.Usage.CompletionTokens,
-			TotalTokens:  c.Usage.TotalTokens,
-			ServiceTier:  string(c.ServiceTier),
-		},
 	}
+	c.Usage.To(&out.Usage)
+	out.Usage.ServiceTier = string(c.ServiceTier)
 	if len(c.Choices) != 1 {
 		return out, &internal.BadError{Err: fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(c.Choices))}
 	}
@@ -754,6 +750,13 @@ type Usage struct {
 	TotalTime               float64                 `json:"total_time"`
 	PromptTokensDetails     PromptTokensDetails     `json:"prompt_tokens_details,omitzero"`
 	CompletionTokensDetails CompletionTokensDetails `json:"completion_tokens_details,omitzero"`
+}
+
+// To copies the token counts into out, leaving the other fields intact.
+func (u *Usage) To(out *genai.Usage) {
+	out.InputTokens = u.PromptTokens
+	out.OutputTokens = u.CompletionTokens
+	out.TotalTokens = u.TotalTokens
 }
 
 // PromptTokensDetails breaks down input token usage.

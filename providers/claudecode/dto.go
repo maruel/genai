@@ -14,6 +14,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/providers/anthropic"
 )
@@ -1972,6 +1973,22 @@ type MsgUsage struct {
 
 	OutputTokensDetails OutputTokensDetails `json:"output_tokens_details,omitzero"`
 	FallbackCredit      FallbackCredit      `json:"fallback_credit,omitzero"`
+}
+
+// To copies the usage into out, leaving the fields it does not report intact.
+//
+// Claude Code relays Anthropic's usage, whose input_tokens excludes the prompt
+// tokens read from or written to the cache. genai.Usage.InputTokens is the
+// whole prompt.
+func (m *MsgUsage) To(out *genai.Usage) {
+	in := m.InputTokens + m.CacheReadInputTokens + m.CacheCreationInputTokens
+	out.InputTokens = in
+	out.InputCachedTokens = m.CacheReadInputTokens
+	out.InputCacheWriteTokens = m.CacheCreationInputTokens
+	out.ReasoningTokens = m.OutputTokensDetails.ThinkingTokens
+	out.OutputTokens = m.OutputTokens
+	out.TotalTokens = in + m.OutputTokens
+	out.ServiceTier = m.ServiceTier
 }
 
 // IsZero reports whether m carries no usage data.

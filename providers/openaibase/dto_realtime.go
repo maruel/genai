@@ -1033,6 +1033,17 @@ type Usage struct {
 	OutputDetails OutputTokenDetails `json:"output_token_details"`
 }
 
+// To copies the token counts into out, leaving the other fields intact.
+//
+// input_tokens includes input_token_details.cached_tokens.
+func (u *Usage) To(out *genai.Usage) {
+	out.InputTokens = u.InputTokens
+	out.InputCachedTokens = u.InputDetails.CachedTokens
+	out.ReasoningTokens = u.OutputDetails.ReasoningTokens
+	out.OutputTokens = u.OutputTokens
+	out.TotalTokens = u.TotalTokens
+}
+
 // InputTokenDetails splits response input tokens.
 type InputTokenDetails struct {
 	CachedTokens  int64               `json:"cached_tokens,omitzero"`

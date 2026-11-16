@@ -656,6 +656,23 @@ type Usage struct {
 	IsByok                  bool                    `json:"is_byok,omitzero"`
 }
 
+// To copies the usage into out, leaving the fields it does not report intact.
+//
+// prompt_tokens includes prompt_tokens_details.cached_tokens and
+// cache_write_tokens. When max_tokens truncates the reply, the upstream can
+// report reasoning_tokens above completion_tokens: qwen3.5-35b-a3b recordings
+// report completion 16, reasoning 22. Reasoning is a subset of the output, so
+// cap it.
+func (u *Usage) To(out *genai.Usage) {
+	out.InputTokens = u.PromptTokens
+	out.InputCachedTokens = u.PromptTokensDetails.CachedTokens
+	out.InputCacheWriteTokens = u.PromptTokensDetails.CacheWriteTokens
+	out.ReasoningTokens = min(u.CompletionTokensDetails.ReasoningTokens, u.CompletionTokens)
+	out.OutputTokens = u.CompletionTokens
+	out.TotalTokens = u.TotalTokens
+	out.Cost = genai.Cost{Total: u.Cost, Currency: "USD"}
+}
+
 // Logprobs is the provider-specific log probabilities.
 type Logprobs struct {
 	Content []TokenLogprob `json:"content"`
@@ -725,17 +742,9 @@ type ChatResponse struct {
 
 // ToResult converts the response to a genai.Result.
 func (c *ChatResponse) ToResult() (genai.Result, error) {
-	out := genai.Result{
-		Usage: genai.Usage{
-			InputTokens:       c.Usage.PromptTokens,
-			InputCachedTokens: c.Usage.PromptTokensDetails.CachedTokens,
-			ReasoningTokens:   c.Usage.CompletionTokensDetails.ReasoningTokens,
-			OutputTokens:      c.Usage.CompletionTokens,
-			TotalTokens:       c.Usage.TotalTokens,
-			Cost:              genai.Cost{Total: c.Usage.Cost, Currency: "USD"},
-			ServiceTier:       c.ServiceTier,
-		},
-	}
+	out := genai.Result{}
+	c.Usage.To(&out.Usage)
+	out.Usage.ServiceTier = c.ServiceTier
 	if c.Error != nil {
 		return out, fmt.Errorf("upstream error: %s", c.Error.Message)
 	}

@@ -633,16 +633,10 @@ type ChatResponse struct {
 
 // ToResult converts the ChatResponse to a genai.Result.
 func (c *ChatResponse) ToResult() (genai.Result, error) {
-	out := genai.Result{
-		Usage: genai.Usage{
-			// What about BilledUnits, especially for SearchUnits and Classifications?
-			InputTokens:       c.Usage.Tokens.InputTokens,
-			InputCachedTokens: c.Usage.CachedTokens,
-			ReasoningTokens:   c.Usage.Tokens.ReasoningTokens,
-			OutputTokens:      c.Usage.Tokens.OutputTokens,
-			FinishReason:      c.FinishReason.ToFinishReason(),
-		},
-	}
+	out := genai.Result{}
+	// What about BilledUnits, especially for SearchUnits and Classifications?
+	c.Usage.To(&out.Usage)
+	out.Usage.FinishReason = c.FinishReason.ToFinishReason()
 	if len(c.Logprobs) != 0 {
 		out.Logprobs = make([][]genai.Logprob, len(c.Logprobs))
 		for i, lp := range c.Logprobs {
@@ -719,6 +713,16 @@ type Usage struct {
 		ReasoningTokens int64 `json:"reasoning_tokens,omitzero"`
 	} `json:"tokens"`
 	CachedTokens int64 `json:"cached_tokens,omitzero"`
+}
+
+// To copies the token counts into out, leaving the other fields intact.
+//
+// tokens.input_tokens includes cached_tokens, the prompt tokens that hit the inference cache.
+func (u *Usage) To(out *genai.Usage) {
+	out.InputTokens = u.Tokens.InputTokens
+	out.InputCachedTokens = u.CachedTokens
+	out.ReasoningTokens = u.Tokens.ReasoningTokens
+	out.OutputTokens = u.Tokens.OutputTokens
 }
 
 // MessageResponse handles all the various forms that Cohere can reply.

@@ -15,7 +15,6 @@ import (
 	"testing"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/openaibase"
 	"github.com/maruel/genai/providers/openairesponses"
@@ -488,10 +487,6 @@ func assertCitationSources(t *testing.T, got, want []genai.CitationSource) {
 			t.Errorf("source %d = %#v, want %#v", i, got[i], want[i])
 		}
 	}
-}
-
-func init() {
-	internal.BeLenient = false
 }
 
 type embeddingNoTransport struct{ t *testing.T }

@@ -247,11 +247,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 			pendingToolCall := ToolCall{}
 			for pkt := range chunks {
 				if pkt.Usage.PromptTokens != 0 {
-					u.InputTokens = pkt.Usage.PromptTokens
-					u.InputCachedTokens = pkt.Usage.PromptTokensDetails.CachedTokens
-					u.ReasoningTokens = pkt.Usage.CompletionTokensDetails.ReasoningTokens
-					u.OutputTokens = pkt.Usage.CompletionTokens
-					u.TotalTokens = pkt.Usage.TotalTokens
+					pkt.Usage.To(&u)
 				}
 				if len(pkt.Choices) != 1 {
 					continue

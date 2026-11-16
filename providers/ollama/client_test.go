@@ -411,10 +411,6 @@ func (o *ollamaThinkOff) Unwrap() genai.Provider {
 	return o.Provider
 }
 
-func init() {
-	internal.BeLenient = false
-}
-
 // TestEmbeddingSelection verifies model metadata selects embedding output for unqualified IDs and aliases.
 func TestEmbeddingSelection(t *testing.T) {
 	t.Run("mismatched modality", func(t *testing.T) {

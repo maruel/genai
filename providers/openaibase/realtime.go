@@ -580,7 +580,8 @@ func (s *Session) translateLocked(m *ServerMessage) error {
 				return errors.New("invalid realtime usage")
 			}
 			e.Kind = genai.RealtimeEventUsage
-			e.Usage = &genai.Usage{InputTokens: u.InputTokens, InputCachedTokens: u.InputDetails.CachedTokens, ReasoningTokens: u.OutputDetails.ReasoningTokens, OutputTokens: u.OutputTokens, TotalTokens: u.TotalTokens}
+			e.Usage = &genai.Usage{}
+			u.To(e.Usage)
 			s.pending = append(s.pending, e)
 			e.Usage = nil
 		}

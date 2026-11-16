@@ -292,10 +292,7 @@ func makeProcessStream(audioFormat string) func(iter.Seq[ChatStreamChunkResponse
 				for pkt := range chunks {
 					// Extract usage from the final chunk (which has empty choices but populated usage).
 					if pkt.Usage.CompletionTokens != 0 {
-						u.InputTokens = pkt.Usage.PromptTokens
-						u.InputCachedTokens = pkt.Usage.PromptTokensDetails.CachedTokens
-						u.ReasoningTokens = pkt.Usage.CompletionTokensDetails.ReasoningTokens
-						u.OutputTokens = pkt.Usage.CompletionTokens
+						pkt.Usage.To(&u)
 					}
 					if len(pkt.Choices) != 1 {
 						continue

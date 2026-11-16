@@ -1265,10 +1265,6 @@ func startServerTest(t testing.TB, ctx context.Context, exe, model, apiKey strin
 	return srv
 }
 
-func init() {
-	internal.BeLenient = false
-}
-
 func TestClientSystemOne(t *testing.T) {
 	q := genai.Questions{
 		"billing": {Type: genai.QuestionNoul, Instructions: genai.Text("Is this about billing?")},

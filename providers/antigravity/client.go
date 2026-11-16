@@ -737,7 +737,8 @@ func readTurn(sc *bufio.Scanner, onText func(string) bool) (genai.Result, error)
 			if err := ev.Result.AsError(); err != nil {
 				return genai.Result{}, err
 			}
-			return buildResult(&ev.Result, text.String(), &usage), nil
+			r := buildResult(&ev.Result, text.String(), &usage)
+			return r, r.Usage.Validate()
 		default:
 			return genai.Result{}, fmt.Errorf("unexpected agy event %q", ev.Event)
 		}
@@ -749,16 +750,9 @@ func readTurn(sc *bufio.Scanner, onText func(string) bool) (genai.Result, error)
 }
 
 func buildResult(r *JSONOutput, text string, u *JSONUsage) genai.Result {
-	res := genai.Result{
-		Usage: genai.Usage{
-			InputTokens:       u.InputTokens,
-			InputCachedTokens: u.CacheReadTokens,
-			ReasoningTokens:   u.ThinkingTokens,
-			OutputTokens:      u.OutputTokens,
-			TotalTokens:       u.TotalTokens,
-			FinishReason:      genai.FinishedStop,
-		},
-	}
+	res := genai.Result{}
+	u.To(&res.Usage)
+	res.Usage.FinishReason = genai.FinishedStop
 	if len(r.StructuredOutput) != 0 {
 		text = string(r.StructuredOutput)
 	}

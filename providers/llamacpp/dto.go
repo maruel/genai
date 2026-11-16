@@ -353,14 +353,8 @@ type ChatResponse struct {
 
 // ToResult converts the chat response to a genai.Result.
 func (c *ChatResponse) ToResult() (genai.Result, error) {
-	out := genai.Result{
-		Usage: genai.Usage{
-			InputTokens:       c.Usage.PromptTokens,
-			InputCachedTokens: c.Usage.PromptTokensDetails.CachedTokens,
-			OutputTokens:      c.Usage.CompletionTokens,
-			TotalTokens:       c.Usage.TotalTokens,
-		},
-	}
+	out := genai.Result{}
+	c.Usage.To(&out.Usage)
 	if len(c.Choices) == 1 {
 		out.Usage.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
 		if err := c.Choices[0].Message.To(&out.Message); err != nil {
@@ -426,6 +420,16 @@ type Usage struct {
 	PromptTokensDetails struct {
 		CachedTokens int64 `json:"cached_tokens"`
 	} `json:"prompt_tokens_details,omitzero"`
+}
+
+// To copies the token counts into out, leaving the other fields intact.
+//
+// prompt_tokens includes prompt_tokens_details.cached_tokens.
+func (u *Usage) To(out *genai.Usage) {
+	out.InputTokens = u.PromptTokens
+	out.InputCachedTokens = u.PromptTokensDetails.CachedTokens
+	out.OutputTokens = u.CompletionTokens
+	out.TotalTokens = u.TotalTokens
 }
 
 // FinishReason describes why the model stopped generating tokens.
@@ -685,9 +689,12 @@ func (c *CompletionResponse) ToResult() (genai.Result, error) {
 	out := genai.Result{
 		Replies: []genai.Reply{{Text: c.Content}},
 		Usage: genai.Usage{
-			InputTokens:       c.TokensPredicted,
-			InputCachedTokens: c.TokensCached,
-			OutputTokens:      c.TokensEvaluated,
+			// tokens_evaluated is the whole prompt and tokens_predicted the
+			// generated tokens. tokens_cached is the slot's KV cache size after
+			// generation, not a cache hit count; timings.cache_n is.
+			InputTokens:       c.TokensEvaluated,
+			InputCachedTokens: c.Timings.CacheN,
+			OutputTokens:      c.TokensPredicted,
 			FinishReason:      c.StopType.ToFinishReason(),
 		},
 	}
@@ -734,6 +741,16 @@ type Timings struct {
 	PredictedPerSecond float64         `json:"predicted_per_second"`
 	DraftN             int64           `json:"draft_n"`
 	DraftNAccepted     int64           `json:"draft_n_accepted"`
+}
+
+// To copies the token counts into out, leaving the other fields intact.
+//
+// prompt_n counts only the evaluated prompt tokens; cache_n counts those
+// reused from the KV cache.
+func (t *Timings) To(out *genai.Usage) {
+	out.InputTokens = t.PromptN + t.CacheN
+	out.InputCachedTokens = t.CacheN
+	out.OutputTokens = t.PredictedN
 }
 
 // PromptProgress reports streaming prompt processing progress.

@@ -221,10 +221,13 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					l = append(l, pkt.Choices[0].Logprobs.To()...)
 				}
 				if pkt.Usage.CompletionTokens != 0 {
-					u.InputTokens = pkt.Usage.PromptTokens
-					u.InputCachedTokens = pkt.Usage.PromptCacheHitTokens
-					u.ReasoningTokens = pkt.Usage.ChatTokensDetails.ReasoningTokens
-					u.OutputTokens = pkt.Usage.CompletionTokens
+					if !internal.BeLenient {
+						if err := pkt.Usage.Validate(); err != nil {
+							finalErr = &internal.BadError{Err: err}
+							return
+						}
+					}
+					pkt.Usage.To(&u)
 					u.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
 				}
 				if len(pkt.Choices[0].Delta.ToolCalls) > 1 {

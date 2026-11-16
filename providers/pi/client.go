@@ -778,11 +778,7 @@ func buildResult(line []byte, text, thinking string, contextTokens, contextWindo
 		if msg.Role != RoleAssistant {
 			continue
 		}
-		r.Usage.InputTokens = msg.Usage.Input
-		r.Usage.OutputTokens = msg.Usage.Output
-		r.Usage.InputCachedTokens = msg.Usage.CacheRead
-		r.Usage.ReasoningTokens = msg.Usage.Reasoning
-		r.Usage.TotalTokens = msg.Usage.TotalTokens
+		msg.Usage.To(&r.Usage)
 		r.Usage.Cost = genai.Cost{
 			Input:      msg.Usage.Cost.Input,
 			Output:     msg.Usage.Cost.Output,
@@ -810,7 +806,7 @@ func buildResult(line []byte, text, thinking string, contextTokens, contextWindo
 	if text != "" {
 		r.Replies = append(r.Replies, genai.Reply{Text: text})
 	}
-	return r, nil
+	return r, r.Usage.Validate()
 }
 
 // extractContent extracts text and thinking from an assistant message's content blocks.

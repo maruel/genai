@@ -869,16 +869,9 @@ type ChatResponse struct {
 
 // ToResult converts the response to a genai.Result.
 func (c *ChatResponse) ToResult() (genai.Result, error) {
-	out := genai.Result{
-		Usage: genai.Usage{
-			InputTokens:       c.Usage.PromptTokens,
-			InputCachedTokens: c.Usage.PromptTokensDetails.CachedTokens,
-			ReasoningTokens:   c.Usage.CompletionTokensDetails.ReasoningTokens,
-			OutputTokens:      c.Usage.CompletionTokens,
-			TotalTokens:       c.Usage.TotalTokens,
-			ServiceTier:       c.ServiceTier,
-		},
-	}
+	out := genai.Result{}
+	c.Usage.To(&out.Usage)
+	out.Usage.ServiceTier = c.ServiceTier
 	if len(c.Choices) != 1 {
 		return out, fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(c.Choices))
 	}
@@ -945,6 +938,18 @@ type Usage struct {
 		RejectedPredictionTokens int64 `json:"rejected_prediction_tokens"`
 		TextTokens               int64 `json:"text_tokens"`
 	} `json:"completion_tokens_details"`
+}
+
+// To copies the token counts into out, leaving the other fields intact.
+//
+// prompt_tokens includes prompt_tokens_details.cached_tokens and cache_write_tokens.
+func (u *Usage) To(out *genai.Usage) {
+	out.InputTokens = u.PromptTokens
+	out.InputCachedTokens = u.PromptTokensDetails.CachedTokens
+	out.InputCacheWriteTokens = u.PromptTokensDetails.CacheWriteTokens
+	out.ReasoningTokens = u.CompletionTokensDetails.ReasoningTokens
+	out.OutputTokens = u.CompletionTokens
+	out.TotalTokens = u.TotalTokens
 }
 
 // Logprobs is the provider-specific log probabilities.

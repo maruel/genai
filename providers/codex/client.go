@@ -555,6 +555,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 					return
 				}
 				result = buildResult(replies, &usage, newThreadID)
+				finalErr = result.Usage.Validate()
 				return
 			case MethodErrorNotification:
 				var p ErrorNotification
@@ -943,7 +944,8 @@ func readTurnSync(sc *bufio.Scanner, threadID string) (genai.Result, error) {
 				}
 				return genai.Result{}, errors.New(errMsg)
 			}
-			return buildResult(replies, &usage, threadID), nil
+			r := buildResult(replies, &usage, threadID)
+			return r, r.Usage.Validate()
 		case MethodErrorNotification:
 			var p ErrorNotification
 			if err := internal.UnmarshalJSON(msg.Params, &p); err != nil {
@@ -1001,11 +1003,9 @@ func parseCompletedItem(params json.RawMessage) (genai.Reply, bool, error) {
 
 // accumulateUsage adds the incremental (Last) token usage into the running total.
 func accumulateUsage(usage *genai.Usage, tu *ThreadTokenUsage) {
-	usage.InputTokens += tu.Last.InputTokens
-	usage.InputCachedTokens += tu.Last.CachedInputTokens
-	usage.OutputTokens += tu.Last.OutputTokens
-	usage.ReasoningTokens += tu.Last.ReasoningOutputTokens
-	usage.TotalTokens = usage.InputTokens + usage.OutputTokens
+	var last genai.Usage
+	tu.Last.To(&last)
+	usage.Add(&last)
 	if tu.ModelContextWindow != nil {
 		usage.ContextWindow = *tu.ModelContextWindow
 	}

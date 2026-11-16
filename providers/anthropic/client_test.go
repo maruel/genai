@@ -24,7 +24,6 @@ import (
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/internal/myrecorder"
 	"github.com/maruel/genai/providers/anthropic"
@@ -694,7 +693,3 @@ func getSmitheryServiceToken(apiKey, namespace string) (string, error) {
 }
 
 var updateModels = flag.Bool("update-models", false, "update models.json from ListModels data")
-
-func init() {
-	internal.BeLenient = false
-}

@@ -2297,11 +2297,6 @@ func hasModalities(opts []genai.ProviderOption) bool {
 	})
 }
 
-func init() {
-	// Set slog default to debug level for verbose logging during test development.
-	internal.BeLenient = false
-}
-
 const prompt4K = `You are a sarcastic assistant. Here's a long prompt to make sure we are over 4k tokens that you should ignore.
 Okay, this is a significant amount of text. To make it coherent and somewhat engaging, I'll choose a broad theme and explore various facets of it. I'll aim for something related to the evolution of knowledge, technology, and human understanding.
 

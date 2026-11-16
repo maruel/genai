@@ -576,14 +576,8 @@ type ChatResponse struct {
 
 // ToResult converts the response to a genai.Result.
 func (c *ChatResponse) ToResult() (genai.Result, error) {
-	out := genai.Result{
-		Usage: genai.Usage{
-			InputTokens:       c.Usage.PromptTokens,
-			InputCachedTokens: c.Usage.PromptTokensDetails.CachedTokens,
-			ReasoningTokens:   c.Usage.CompletionTokensDetails.ReasoningTokens,
-			OutputTokens:      c.Usage.CompletionTokens,
-		},
-	}
+	out := genai.Result{}
+	c.Usage.To(&out.Usage)
 	if len(c.Choices) != 1 {
 		return out, fmt.Errorf("expected 1 choice, got %#v", c.Choices)
 	}
@@ -653,6 +647,16 @@ type Usage struct {
 		ToolUsage int64 `json:"tool_usage"`
 		PageUsage int64 `json:"page_usage"`
 	} `json:"web_search_usage,omitzero"`
+}
+
+// To copies the token counts into out, leaving the other fields intact.
+//
+// prompt_tokens includes prompt_tokens_details.cached_tokens.
+func (u *Usage) To(out *genai.Usage) {
+	out.InputTokens = u.PromptTokens
+	out.InputCachedTokens = u.PromptTokensDetails.CachedTokens
+	out.ReasoningTokens = u.CompletionTokensDetails.ReasoningTokens
+	out.OutputTokens = u.CompletionTokens
 }
 
 // ChatStreamChunkResponse is the provider-specific streaming chat chunk.

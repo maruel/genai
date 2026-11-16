@@ -21,6 +21,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 )
 
@@ -1707,6 +1708,20 @@ type TokenUsageBreakdown struct {
 	CacheWriteInputTokens int64 `json:"cacheWriteInputTokens"`
 	OutputTokens          int64 `json:"outputTokens"`
 	ReasoningOutputTokens int64 `json:"reasoningOutputTokens"`
+}
+
+// To copies the token counts into out, leaving the other fields intact.
+//
+// inputTokens includes cachedInputTokens (recordings: total = input + output).
+// cacheWriteInputTokens follows the Responses API, which includes cache writes
+// in input_tokens.
+func (t *TokenUsageBreakdown) To(out *genai.Usage) {
+	out.InputTokens = t.InputTokens
+	out.InputCachedTokens = t.CachedInputTokens
+	out.InputCacheWriteTokens = t.CacheWriteInputTokens
+	out.ReasoningTokens = t.ReasoningOutputTokens
+	out.OutputTokens = t.OutputTokens
+	out.TotalTokens = t.TotalTokens
 }
 
 // TurnPlanStepStatus is a plan step lifecycle state.

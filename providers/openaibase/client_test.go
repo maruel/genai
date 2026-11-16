@@ -213,3 +213,9 @@ func (e embeddingNoTransport) RoundTrip(*http.Request) (*http.Response, error) {
 	e.t.Fatal("unexpected HTTP request")
 	return nil, errors.New("unexpected HTTP request")
 }
+
+// openaibase tests do not use internaltest, which sets strict mode for the
+// other provider tests.
+func init() {
+	internal.BeLenient = false
+}

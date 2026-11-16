@@ -874,6 +874,7 @@ func (cs *callState) callGen(ctx context.Context, name string, msgs genai.Messag
 	}
 	cs.usage.InputTokens += res.Usage.InputTokens
 	cs.usage.InputCachedTokens += res.Usage.InputCachedTokens
+	cs.usage.InputCacheWriteTokens += res.Usage.InputCacheWriteTokens
 	cs.usage.OutputTokens += res.Usage.OutputTokens
 	cs.usage.Cost = cs.usage.Cost.Add(res.Usage.Cost)
 	return res, err
@@ -929,6 +930,7 @@ func exerciseGenImage(ctx context.Context, pf ProviderFactory, name string, out 
 	resp, err := c.GenSync(ctx, msgs, &genai.GenOptionImage{}, genai.GenOptionSeed(42))
 	usage.InputTokens += resp.Usage.InputTokens
 	usage.InputCachedTokens += resp.Usage.InputCachedTokens
+	usage.InputCacheWriteTokens += resp.Usage.InputCacheWriteTokens
 	usage.OutputTokens += resp.Usage.OutputTokens
 	out.GenSync.Seed = true
 	if uerr, ok := errors.AsType[*base.ErrNotSupported](err); ok {
@@ -937,6 +939,7 @@ func exerciseGenImage(ctx context.Context, pf ProviderFactory, name string, out 
 			resp, err = c.GenSync(ctx, msgs, &genai.GenOptionImage{})
 			usage.InputTokens += resp.Usage.InputTokens
 			usage.InputCachedTokens += resp.Usage.InputCachedTokens
+			usage.InputCacheWriteTokens += resp.Usage.InputCacheWriteTokens
 			usage.OutputTokens += resp.Usage.OutputTokens
 		}
 	}
@@ -1022,6 +1025,7 @@ func exerciseGenAudio(ctx context.Context, pf ProviderFactory, name string, out 
 	resp, err := c.GenSync(ctx, msgs, &genai.GenOptionAudio{}, genai.GenOptionSeed(42))
 	usage.InputTokens += resp.Usage.InputTokens
 	usage.InputCachedTokens += resp.Usage.InputCachedTokens
+	usage.InputCacheWriteTokens += resp.Usage.InputCacheWriteTokens
 	usage.OutputTokens += resp.Usage.OutputTokens
 	out.GenSync.Seed = true
 	if uerr, ok := errors.AsType[*base.ErrNotSupported](err); ok {
@@ -1030,6 +1034,7 @@ func exerciseGenAudio(ctx context.Context, pf ProviderFactory, name string, out 
 			resp, err = c.GenSync(ctx, msgs, &genai.GenOptionAudio{})
 			usage.InputTokens += resp.Usage.InputTokens
 			usage.InputCachedTokens += resp.Usage.InputCachedTokens
+			usage.InputCacheWriteTokens += resp.Usage.InputCacheWriteTokens
 			usage.OutputTokens += resp.Usage.OutputTokens
 		}
 	}
@@ -1214,6 +1219,7 @@ func isZeroUsage(u *genai.Usage) bool {
 	// TotalTokens being set. Good enough.
 	return u.InputTokens == 0 &&
 		u.InputCachedTokens == 0 &&
+		u.InputCacheWriteTokens == 0 &&
 		u.ReasoningTokens == 0 &&
 		u.OutputTokens == 0 &&
 		u.TotalTokens == 0

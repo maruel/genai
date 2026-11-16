@@ -23,6 +23,7 @@ import (
 	"encoding/json"
 	"strings"
 
+	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 )
 
@@ -1195,6 +1196,19 @@ type MessageUsage struct {
 	Cost         UsageCost `json:"cost,omitzero"`
 }
 
+// To copies the token counts into out, leaving the other fields intact.
+//
+// pi-ai normalizes every backend to disjoint buckets: input excludes cacheRead
+// and cacheWrite. genai.Usage.InputTokens is the whole prompt.
+func (u *MessageUsage) To(out *genai.Usage) {
+	out.InputTokens = u.Input + u.CacheRead + u.CacheWrite
+	out.InputCachedTokens = u.CacheRead
+	out.InputCacheWriteTokens = u.CacheWrite
+	out.ReasoningTokens = u.Reasoning
+	out.OutputTokens = u.Output
+	out.TotalTokens = u.TotalTokens
+}
+
 // EntryAppendedEvent reports an entry added to Pi's session history.
 type EntryAppendedEvent struct {
 	Type  EventType    `json:"type"`
@@ -1255,6 +1269,9 @@ type UsageCost struct {
 	CacheRead  float64 `json:"cacheRead"`
 	CacheWrite float64 `json:"cacheWrite"`
 	Total      float64 `json:"total"`
+	// TotalFromProvider is true when Total is the cost the provider billed,
+	// false when it is pi's catalog estimate.
+	TotalFromProvider bool `json:"totalFromProvider,omitzero"`
 }
 
 // ---------- Content blocks ----------

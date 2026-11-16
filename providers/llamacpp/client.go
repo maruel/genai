@@ -1045,17 +1045,12 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (fragments iter.Seq
 			pendingToolCall := ToolCall{}
 			for pkt := range chunks {
 				if pkt.Usage.PromptTokens != 0 {
-					u.InputTokens = pkt.Usage.PromptTokens
-					u.InputCachedTokens = pkt.Usage.PromptTokensDetails.CachedTokens
-					u.OutputTokens = pkt.Usage.CompletionTokens
-					u.TotalTokens = pkt.Usage.TotalTokens
+					pkt.Usage.To(&u)
 				} else if pkt.Timings.PredictedN != 0 {
 					// llama-server doesn't include usage in streaming responses
 					// by default; fall back to the timings field which is always
 					// present in the final chunk.
-					u.InputTokens = pkt.Timings.PromptN
-					u.InputCachedTokens = pkt.Timings.CacheN
-					u.OutputTokens = pkt.Timings.PredictedN
+					pkt.Timings.To(&u)
 				}
 				if len(pkt.Choices) != 1 {
 					continue
@@ -1123,8 +1118,7 @@ func ProcessCompletionStream(chunks iter.Seq[CompletionStreamChunkResponse]) (fr
 	return func(yield func(genai.Reply) bool) {
 			for pkt := range chunks {
 				if pkt.Timings.PredictedN != 0 {
-					u.InputTokens = pkt.Timings.PromptN
-					u.OutputTokens = pkt.Timings.PredictedN
+					pkt.Timings.To(&u)
 				}
 				if pkt.StopType != "" {
 					u.FinishReason = pkt.StopType.ToFinishReason()

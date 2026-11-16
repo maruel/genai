@@ -625,15 +625,8 @@ type ChatResponse struct {
 
 // ToResult converts the response to a genai.Result.
 func (c *ChatResponse) ToResult() (genai.Result, error) {
-	out := genai.Result{
-		Usage: genai.Usage{
-			InputTokens:       c.Usage.PromptTokens,
-			InputCachedTokens: max(c.Usage.CachedTokens, c.Usage.PromptTokensDetails.CachedTokens),
-			ReasoningTokens:   max(c.Usage.ReasoningTokens, c.Usage.CompletionTokensDetails.ReasoningTokens),
-			OutputTokens:      c.Usage.CompletionTokens,
-			TotalTokens:       c.Usage.TotalTokens,
-		},
-	}
+	out := genai.Result{}
+	c.Usage.To(&out.Usage)
 	if len(c.Choices) != 1 {
 		return out, fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(c.Choices))
 	}
@@ -793,6 +786,17 @@ type Usage struct {
 		AcceptedPredictionTokens int64 `json:"accepted_prediction_tokens"`
 		RejectedPredictionTokens int64 `json:"rejected_prediction_tokens"`
 	} `json:"completion_tokens_details"`
+}
+
+// To copies the token counts into out, leaving the other fields intact.
+//
+// prompt_tokens includes cached_tokens or prompt_tokens_details.cached_tokens.
+func (u *Usage) To(out *genai.Usage) {
+	out.InputTokens = u.PromptTokens
+	out.InputCachedTokens = max(u.CachedTokens, u.PromptTokensDetails.CachedTokens)
+	out.ReasoningTokens = max(u.ReasoningTokens, u.CompletionTokensDetails.ReasoningTokens)
+	out.OutputTokens = u.CompletionTokens
+	out.TotalTokens = u.TotalTokens
 }
 
 // ChoiceError is the choice-level error in a streaming chat chunk.

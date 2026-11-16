@@ -8,6 +8,7 @@ package llamacpp_test
 
 import (
 	"bytes"
+	"cmp"
 	"context"
 	"crypto/rand"
 	"encoding/base64"
@@ -34,8 +35,6 @@ import (
 	"github.com/coder/websocket"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
-
-	"github.com/maruel/roundtrippers"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
@@ -637,11 +636,122 @@ func TestClient(t *testing.T) {
 	})
 
 	t.Run("New", func(t *testing.T) {
+		t.Run("valid", func(t *testing.T) {
+			t.Run("API key", func(t *testing.T) {
+				// health returns the Authorization header of a /health request.
+				health := func(t *testing.T, opts ...genai.ProviderOption) string {
+					got := make(chan string, 1)
+					srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+						got <- r.Header.Get("Authorization")
+						w.Header().Set("Content-Type", "application/json")
+						if _, err := io.WriteString(w, `{"status":"ok","slots_idle":1,"slots_processing":0}`); err != nil {
+							t.Error(err)
+						}
+					}))
+					t.Cleanup(srv.Close)
+					c, err := llamacpp.New(t.Context(), append(opts, genai.ProviderOptionRemote(srv.URL))...)
+					if err != nil {
+						t.Fatal(err)
+					}
+					internaltest.CleanupCloser(t, c)
+					if _, err := c.GetHealth(t.Context()); err != nil {
+						t.Fatal(err)
+					}
+					return <-got
+				}
+				t.Run("option overrides environment", func(t *testing.T) {
+					t.Setenv("LLAMA_API_KEY", "env-key")
+					if got := health(t, genai.ProviderOptionAPIKey("option-key")); got != "Bearer option-key" {
+						t.Fatalf("Authorization %q", got)
+					}
+				})
+				t.Run("environment", func(t *testing.T) {
+					t.Setenv("LLAMA_API_KEY", "env-key")
+					if got := health(t); got != "Bearer env-key" {
+						t.Fatalf("Authorization %q", got)
+					}
+				})
+				t.Run("absent", func(t *testing.T) {
+					t.Setenv("LLAMA_API_KEY", "")
+					if got := health(t); got != "" {
+						t.Fatalf("Authorization %q", got)
+					}
+				})
+				t.Run("WebSocket upgrades", func(t *testing.T) {
+					t.Setenv("LLAMA_API_KEY", "")
+					for _, key := range []string{"", "option-key"} {
+						var opts []genai.ProviderOption
+						want := ""
+						if key != "" {
+							opts = append(opts, genai.ProviderOptionAPIKey(key))
+							want = "Bearer " + key
+						}
+						for _, tc := range []struct {
+							name    string
+							connect func(context.Context, *llamacpp.Client) error
+						}{
+							{"ConnectRealtime", func(ctx context.Context, c *llamacpp.Client) error {
+								_, err := c.ConnectRealtime(ctx, genai.Modalities{genai.ModalityText})
+								return err
+							}},
+							{"ConnectTranscriptionRaw", func(ctx context.Context, c *llamacpp.Client) error {
+								_, err := c.ConnectTranscriptionRaw(ctx)
+								return err
+							}},
+						} {
+							t.Run(tc.name+"/"+cmp.Or(key, "absent"), func(t *testing.T) {
+								// The peer cancels the connection once it sees the upgrade
+								// request; only its headers matter.
+								ctx, cancel := context.WithCancel(t.Context())
+								t.Cleanup(cancel)
+								got := make(chan string, 1)
+								remote := realtimetest.Peer(t, func(r *http.Request) {
+									got <- r.Header.Get("Authorization")
+									cancel()
+								}, func(context.Context, *websocket.Conn) {})
+								c, err := llamacpp.New(t.Context(), append(opts, genai.ProviderOptionRemote(remote))...)
+								if err != nil {
+									t.Fatal(err)
+								}
+								internaltest.CleanupCloser(t, c)
+								if err := tc.connect(ctx, c); err == nil {
+									t.Fatal("connected to a peer that sent no session")
+								}
+								select {
+								case h := <-got:
+									if h != want {
+										t.Fatalf("Authorization %q, want %q", h, want)
+									}
+								default:
+									t.Fatal("no WebSocket upgrade")
+								}
+							})
+						}
+					}
+				})
+			})
+		})
 		t.Run("error", func(t *testing.T) {
 			t.Run("embedding preference", func(t *testing.T) {
 				c, err := llamacpp.New(t.Context(), genai.ModelCheap, genai.ProviderOptionModalities{genai.ModalityEmbedding}, genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return compactNoTransport{t: t} }))
 				if err == nil || c != nil {
 					t.Fatalf("client %v, error %v", c, err)
+				}
+			})
+			t.Run("API key redirect to another origin", func(t *testing.T) {
+				other := httptest.NewServer(http.HandlerFunc(func(http.ResponseWriter, *http.Request) {
+					t.Error("credentials followed a cross-origin redirect")
+				}))
+				t.Cleanup(other.Close)
+				srv := httptest.NewServer(http.RedirectHandler(other.URL+"/health", http.StatusFound))
+				t.Cleanup(srv.Close)
+				c, err := llamacpp.New(t.Context(), genai.ProviderOptionRemote(srv.URL), genai.ProviderOptionAPIKey("key"))
+				if err != nil {
+					t.Fatal(err)
+				}
+				internaltest.CleanupCloser(t, c)
+				if _, err := c.GetHealth(t.Context()); err == nil {
+					t.Fatal("followed a cross-origin redirect")
 				}
 			})
 		})
@@ -866,8 +976,8 @@ func TestClient(t *testing.T) {
 
 	t.Run("SpeechRaw", func(t *testing.T) {
 		c, err := llamacpp.New(t.Context(), genai.ProviderOptionTransportWrapper(func(h http.RoundTripper) http.RoundTripper {
-			return testRecorder.Record(t, &roundtrippers.Header{Header: http.Header{"Authorization": {"Bearer " + apiKey}}, Transport: h}, recorder.WithHook(trimSpeechAudio, recorder.AfterCaptureHook))
-		}), genai.ProviderOptionRemote(s.lazyStartModel(t, scoreboard.Model{Model: "LiquidAI/LFM3-Audio-2B-GGUF:Q4_K_M"})), genai.ProviderOptionModel("tts"))
+			return testRecorder.Record(t, h, recorder.WithHook(trimSpeechAudio, recorder.AfterCaptureHook))
+		}), genai.ProviderOptionAPIKey(apiKey), genai.ProviderOptionRemote(s.lazyStartModel(t, scoreboard.Model{Model: "LiquidAI/LFM3-Audio-2B-GGUF:Q4_K_M"})), genai.ProviderOptionModel("tts"))
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -946,11 +1056,8 @@ func TestClient(t *testing.T) {
 
 	t.Run("Capabilities", func(t *testing.T) {
 		c, err := llamacpp.New(t.Context(), genai.ProviderOptionTransportWrapper(func(h http.RoundTripper) http.RoundTripper {
-			return testRecorder.Record(t, &roundtrippers.Header{
-				Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
-				Transport: h,
-			})
-		}), genai.ProviderOptionRemote(s.lazyStart(t)))
+			return testRecorder.Record(t, h)
+		}), genai.ProviderOptionAPIKey(apiKey), genai.ProviderOptionRemote(s.lazyStart(t)))
 		if c != nil {
 			internaltest.CleanupCloser(t, c)
 		}
@@ -969,25 +1076,16 @@ func TestClient(t *testing.T) {
 		smoketest.Run(t, smoke.HTTPSession(testRecorder.Records, func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 			embedding := model.Model == embeddingModel
 			remote := s.lazyStartModel(t, model) //nolint:contextcheck // uses l.t.Context() for server lifecycle
-			opts := []genai.ProviderOption{genai.ProviderOptionRemote(remote)}
+			opts := []genai.ProviderOption{genai.ProviderOptionAPIKey(apiKey), genai.ProviderOptionRemote(remote)}
+			if fn != nil {
+				opts = append(opts, genai.ProviderOptionTransportWrapper(fn))
+			}
 			if embedding {
 				opts = append(opts, genai.ProviderOptionModalities{genai.ModalityEmbedding})
 			}
 			if model.Model != "" {
 				opts = append(opts, genai.ProviderOptionModel(model.Model))
 			}
-			// Realtime families pass no HTTP recorder but still dial the
-			// authenticated server.
-			opts = append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(func(h http.RoundTripper) http.RoundTripper {
-				var rt http.RoundTripper = &roundtrippers.Header{
-					Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
-					Transport: h,
-				}
-				if fn != nil {
-					rt = fn(rt)
-				}
-				return rt
-			})}, opts...)
 			c2, err2 := llamacpp.New(ctx, opts...)
 			if c2 != nil {
 				internaltest.CleanupCloser(t, c2)
@@ -1047,11 +1145,8 @@ func TestClient(t *testing.T) {
 	t.Run("TextOutputDocInput", func(t *testing.T) {
 		internaltest.TestTextOutputDocInput(t, func(t *testing.T) genai.Provider {
 			c, err := llamacpp.New(t.Context(), genai.ProviderOptionTransportWrapper(func(h http.RoundTripper) http.RoundTripper {
-				return testRecorder.Record(t, &roundtrippers.Header{
-					Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
-					Transport: h,
-				})
-			}), genai.ProviderOptionRemote(s.lazyStart(t)), genai.ModelCheap)
+				return testRecorder.Record(t, h)
+			}), genai.ProviderOptionAPIKey(apiKey), genai.ProviderOptionRemote(s.lazyStart(t)), genai.ModelCheap)
 			if c != nil {
 				internaltest.CleanupCloser(t, c)
 			}
@@ -1065,11 +1160,8 @@ func TestClient(t *testing.T) {
 	t.Run("ListModels", func(t *testing.T) {
 		ctx := t.Context()
 		c, err := llamacpp.New(ctx, genai.ProviderOptionTransportWrapper(func(h http.RoundTripper) http.RoundTripper {
-			return testRecorder.Record(t, &roundtrippers.Header{
-				Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
-				Transport: h,
-			})
-		}), genai.ProviderOptionRemote(s.lazyStart(t)))
+			return testRecorder.Record(t, h)
+		}), genai.ProviderOptionAPIKey(apiKey), genai.ProviderOptionRemote(s.lazyStart(t)))
 		if c != nil {
 			internaltest.CleanupCloser(t, c)
 		}
@@ -1089,11 +1181,8 @@ func TestClient(t *testing.T) {
 	t.Run("Metrics", func(t *testing.T) {
 		ctx := t.Context()
 		c, err := llamacpp.New(ctx, genai.ProviderOptionTransportWrapper(func(h http.RoundTripper) http.RoundTripper {
-			return testRecorder.Record(t, &roundtrippers.Header{
-				Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
-				Transport: h,
-			})
-		}), genai.ProviderOptionRemote(s.lazyStart(t)))
+			return testRecorder.Record(t, h)
+		}), genai.ProviderOptionAPIKey(apiKey), genai.ProviderOptionRemote(s.lazyStart(t)))
 		if c != nil {
 			internaltest.CleanupCloser(t, c)
 		}

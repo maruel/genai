@@ -13,6 +13,7 @@ import (
 	"io"
 	"log/slog"
 	"mime"
+	"net/http"
 	"reflect"
 	"strings"
 
@@ -101,6 +102,21 @@ func DecodeJSON(d *json.Decoder, out any, r io.ReadSeeker) (bool, error) {
 }
 
 //
+
+// SameOriginRedirect is an http.Client CheckRedirect policy for a client whose
+// transport attaches credentials to every request. It refuses a redirect that
+// changes the scheme or host, so the credentials stay with the configured
+// server, and keeps net/http's default limit of 10 redirects.
+func SameOriginRedirect(req *http.Request, via []*http.Request) error {
+	first := via[0].URL
+	if req.URL.Scheme != first.Scheme || !strings.EqualFold(req.URL.Host, first.Host) {
+		return errors.New("refusing redirect to a different origin")
+	}
+	if len(via) >= 10 {
+		return errors.New("stopped after 10 redirects")
+	}
+	return nil
+}
 
 // MimeByExt returns the mime type for the given extension.
 //

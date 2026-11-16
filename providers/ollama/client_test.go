@@ -54,6 +54,49 @@ func TestClient(t *testing.T) {
 	})
 
 	t.Run("New", func(t *testing.T) {
+		t.Run("valid", func(t *testing.T) {
+			t.Run("API key", func(t *testing.T) {
+				// version returns the Authorization header of a /api/version request.
+				version := func(t *testing.T, opts ...genai.ProviderOption) string {
+					got := make(chan string, 1)
+					srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+						got <- r.Header.Get("Authorization")
+						w.Header().Set("Content-Type", "application/json")
+						if _, err := io.WriteString(w, `{"version":"1.0.0"}`); err != nil {
+							t.Error(err)
+						}
+					}))
+					t.Cleanup(srv.Close)
+					c, err := ollama.New(t.Context(), append(opts, genai.ProviderOptionRemote(srv.URL))...)
+					if err != nil {
+						t.Fatal(err)
+					}
+					internaltest.CleanupCloser(t, c)
+					if _, err := c.Version(t.Context()); err != nil {
+						t.Fatal(err)
+					}
+					return <-got
+				}
+				t.Run("option overrides environment", func(t *testing.T) {
+					t.Setenv("OLLAMA_API_KEY", "env-key")
+					if got := version(t, genai.ProviderOptionAPIKey("option-key")); got != "Bearer option-key" {
+						t.Fatalf("Authorization %q", got)
+					}
+				})
+				t.Run("environment", func(t *testing.T) {
+					t.Setenv("OLLAMA_API_KEY", "env-key")
+					if got := version(t); got != "Bearer env-key" {
+						t.Fatalf("Authorization %q", got)
+					}
+				})
+				t.Run("absent", func(t *testing.T) {
+					t.Setenv("OLLAMA_API_KEY", "")
+					if got := version(t); got != "" {
+						t.Fatalf("Authorization %q", got)
+					}
+				})
+			})
+		})
 		t.Run("error", func(t *testing.T) {
 			t.Run("embedding preference", func(t *testing.T) {
 				c, err := ollama.New(t.Context(), genai.ModelCheap, genai.ProviderOptionModalities{genai.ModalityEmbedding}, genai.ProviderOptionTransportWrapper(func(http.RoundTripper) http.RoundTripper { return embeddingNoTransport{t: t} }))

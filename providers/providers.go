@@ -46,8 +46,13 @@ import (
 
 // Config is a registry entry.
 type Config struct {
+	// APIKeyEnvVar is the environment variable Factory reads when
+	// ProviderOptionAPIKey is absent. Empty means the provider takes no key.
 	APIKeyEnvVar string
-	Alias        string
+	// APIKeyOptional is true when Factory succeeds without a key, as for a
+	// local server that only some deployments protect.
+	APIKeyOptional bool
+	Alias          string
 	// IsCLI is true for providers that launch a subprocess instead of making
 	// HTTP requests. CLI providers accept ProviderOptionStarterWrapper but not
 	// ProviderOptionTransportWrapper.
@@ -229,8 +234,9 @@ var All = map[string]Config{
 		},
 	},
 	"llamacpp": {
-		APIKeyEnvVar: "",
-		Scoreboard:   llamacpp.Scoreboard,
+		APIKeyEnvVar:   "LLAMA_API_KEY",
+		APIKeyOptional: true,
+		Scoreboard:     llamacpp.Scoreboard,
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
 			p, err := llamacpp.New(ctx, opts...)
 			if p == nil {
@@ -251,8 +257,9 @@ var All = map[string]Config{
 		},
 	},
 	"ollama": {
-		APIKeyEnvVar: "",
-		Scoreboard:   ollama.Scoreboard,
+		APIKeyEnvVar:   "OLLAMA_API_KEY",
+		APIKeyOptional: true,
+		Scoreboard:     ollama.Scoreboard,
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
 			p, err := ollama.New(ctx, opts...)
 			if p == nil {
@@ -339,8 +346,9 @@ var All = map[string]Config{
 		},
 	},
 	"pollinations": {
-		APIKeyEnvVar: "POLLINATIONS_API_KEY",
-		Scoreboard:   pollinations.Scoreboard,
+		APIKeyEnvVar:   "POLLINATIONS_API_KEY",
+		APIKeyOptional: true,
+		Scoreboard:     pollinations.Scoreboard,
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
 			p, err := pollinations.New(ctx, opts...)
 			if p == nil {

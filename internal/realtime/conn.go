@@ -13,11 +13,12 @@ import (
 	"io"
 	"net"
 	"net/http"
-	"strings"
 	"sync"
 	"time"
 
 	"github.com/coder/websocket"
+
+	"github.com/maruel/genai/internal"
 )
 
 // Conn owns one connection, its lifetime cancellation, and an optional keepalive worker.
@@ -44,15 +45,11 @@ func Dial(ctx context.Context, url string, hc *http.Client, maxReadBytes int, pi
 	// origin. Copy the client so the caller's redirect policy remains unchanged.
 	client := *hc
 	client.CheckRedirect = func(req *http.Request, via []*http.Request) error {
-		first := via[0].URL
-		if req.URL.Scheme != first.Scheme || !strings.EqualFold(req.URL.Host, first.Host) {
-			return errors.New("realtime WebSocket upgrade redirect changed origin")
+		if err := internal.SameOriginRedirect(req, via); err != nil {
+			return fmt.Errorf("realtime WebSocket upgrade: %w", err)
 		}
 		if hc.CheckRedirect != nil {
 			return hc.CheckRedirect(req, via)
-		}
-		if len(via) >= 10 {
-			return errors.New("too many realtime WebSocket redirects")
 		}
 		return nil
 	}

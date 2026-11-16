@@ -66,6 +66,7 @@ import (
 	"math"
 	"net/http"
 	"net/url"
+	"os"
 	"path/filepath"
 	"reflect"
 	"slices"
@@ -195,7 +196,13 @@ type Client struct {
 //
 // ProviderOptionRemote defaults to "http://localhost:8080".
 //
-// llama-server doesn't have any mean of authentication so ProviderOptionAPIKey is not supported.
+// ProviderOptionAPIKey sets the key that llama-server checks when started with --api-key or
+// LLAMA_API_KEY. Without the option, New reads the LLAMA_API_KEY environment variable, so a managed
+// llama-server that inherits this process environment and its client use the same key. Set a single
+// key: llama-server accepts a comma-separated list, but the client sends the value verbatim. An empty
+// key sends no Authorization header. A key is sent as "Authorization: Bearer" on every HTTP request
+// and realtime WebSocket upgrade, including to RealtimeOption.Endpoint. Redirects to another origin
+// are refused.
 //
 // Automatic model selection via ModelCheap, ModelGood, ModelSOTA is not supported. It will ask llama-server
 // to determine which model is already loaded.
@@ -205,7 +212,7 @@ type Client struct {
 // models. Selected models default to text; the model list does not reliably report
 // embedding capability.
 func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
-	var baseURL, model string
+	var apiKey, baseURL, model string
 	var modalities genai.Modalities
 	var preloadedModels []genai.Model
 	var wrapper func(http.RoundTripper) http.RoundTripper
@@ -217,6 +224,8 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 			return nil, err
 		}
 		switch v := opt.(type) {
+		case genai.ProviderOptionAPIKey:
+			apiKey = string(v)
 		case genai.ProviderOptionRemote:
 			baseURL = string(v)
 		case genai.ProviderOptionModel:
@@ -248,6 +257,14 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	if wrapper != nil {
 		t = wrapper(t)
 	}
+	hc := http.Client{Transport: &roundtrippers.RequestID{Transport: t}}
+	if apiKey == "" {
+		apiKey = os.Getenv("LLAMA_API_KEY")
+	}
+	if apiKey != "" {
+		hc.Transport = &roundtrippers.Header{Header: http.Header{"Authorization": {"Bearer " + apiKey}}, Transport: hc.Transport}
+		hc.CheckRedirect = internal.SameOriginRedirect
+	}
 	c := &Client{
 		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			GenSyncURL:      baseURL + "/chat/completions",
@@ -256,9 +273,7 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 			ProviderBase: base.ProviderBase[*ErrorResponse]{
 				ModelOptional: true,
 				Lenient:       internal.BeLenient,
-				Client: http.Client{
-					Transport: &roundtrippers.RequestID{Transport: t},
-				},
+				Client:        hc,
 			},
 		},
 		baseURL:        baseURL,

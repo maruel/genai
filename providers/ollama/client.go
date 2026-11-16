@@ -41,6 +41,7 @@ import (
 	"iter"
 	"mime/multipart"
 	"net/http"
+	"os"
 	"slices"
 	"strconv"
 	"strings"
@@ -87,7 +88,10 @@ type Client struct {
 //
 // ProviderOptionRemote defaults to "http://localhost:11434".
 //
-// Ollama doesn't have any mean of authentication so ProviderOptionAPIKey is not supported.
+// A local Ollama server needs no API key; the hosted API at https://ollama.com requires one. See
+// https://docs.ollama.com/api/authentication. Without ProviderOptionAPIKey, New reads the
+// OLLAMA_API_KEY environment variable. An empty key sends no Authorization header. A key is sent
+// as "Authorization: Bearer" on every request. Redirects to another origin are refused.
 //
 // To use multiple models, create multiple clients.
 // Use one of the model from https://ollama.com/library
@@ -96,7 +100,7 @@ type Client struct {
 // hardcoded model ID, it will ask ollama to determine if a model is already loaded and it will use that
 // instead.
 func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
-	var baseURL, model string
+	var apiKey, baseURL, model string
 	var modalities genai.Modalities
 	var preloadedModels []genai.Model
 	var wrapper func(http.RoundTripper) http.RoundTripper
@@ -108,6 +112,8 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 			return nil, err
 		}
 		switch v := opt.(type) {
+		case genai.ProviderOptionAPIKey:
+			apiKey = string(v)
 		case genai.ProviderOptionRemote:
 			baseURL = string(v)
 		case genai.ProviderOptionModel:
@@ -139,12 +145,18 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	if wrapper != nil {
 		t = wrapper(t)
 	}
+	hc := http.Client{Transport: &roundtrippers.RequestID{Transport: t}}
+	if apiKey == "" {
+		apiKey = os.Getenv("OLLAMA_API_KEY")
+	}
+	if apiKey != "" {
+		hc.Transport = &roundtrippers.Header{Header: http.Header{"Authorization": {"Bearer " + apiKey}}, Transport: hc.Transport}
+		hc.CheckRedirect = internal.SameOriginRedirect
+	}
 	c := &Client{
 		impl: base.ProviderBase[*ErrorResponse]{
 			Lenient: internal.BeLenient,
-			Client: http.Client{
-				Transport: &roundtrippers.RequestID{Transport: t},
-			},
+			Client:  hc,
 		},
 		preloadedModels: preloadedModels,
 		baseURL:         baseURL,

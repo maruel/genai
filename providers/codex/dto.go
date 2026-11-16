@@ -27,6 +27,7 @@ package codex
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
@@ -935,6 +936,25 @@ type Capabilities struct {
 	McpServerOpenaiForm       bool                       `json:"mcpServerOpenaiFormElicitation,omitzero"`
 	OptOutNotificationMethods []Method                   `json:"optOutNotificationMethods"`
 	Extensions                map[string]json.RawMessage `json:"extensions,omitzero"`
+}
+
+// InitializeResponse is the result object from an initialize JSON-RPC response.
+type InitializeResponse struct {
+	// UserAgent is "<originator>/<version> (<os> <os version>; <arch>) ...",
+	// where version is the running app-server build.
+	UserAgent      string `json:"userAgent"`
+	CodexHome      string `json:"codexHome"`
+	PlatformFamily string `json:"platformFamily"`
+	PlatformOS     string `json:"platformOs"`
+}
+
+// Version returns the running app-server build version from UserAgent, or ""
+// when UserAgent has none. Unlike Thread.CLIVersion, which names the version
+// that created a thread, it reflects an upgrade after a resume.
+func (r *InitializeResponse) Version() string {
+	product, _, _ := strings.Cut(r.UserAgent, " ")
+	_, version, _ := strings.Cut(product, "/")
+	return version
 }
 
 // Thread management request params.

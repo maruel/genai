@@ -327,3 +327,19 @@ func TestTimeS(t *testing.T) {
 		}
 	})
 }
+
+func TestInitializeResponseVersion(t *testing.T) {
+	for _, tc := range []struct {
+		userAgent string
+		want      string
+	}{
+		{"caic/0.169.0 (Debian 13.0.0; x86_64) unknown (caic; 1.0.0)", "0.169.0"},
+		{"codex_cli_rs/0.164.0", "0.164.0"},
+		{"", ""},
+	} {
+		r := InitializeResponse{UserAgent: tc.userAgent}
+		if got := r.Version(); got != tc.want {
+			t.Errorf("Version(%q) = %q, want %q", tc.userAgent, got, tc.want)
+		}
+	}
+}

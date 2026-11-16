@@ -952,6 +952,11 @@ func (c *Client) GetPropsRaw(ctx context.Context) (PropsResponse, error) {
 	return out, err
 }
 
+// TokenizeRaw tokenizes text with the loaded model's vocabulary.
+func (c *Client) TokenizeRaw(ctx context.Context, in *TokenizeRequest, out *TokenizeResponse) error {
+	return c.impl.DoRequest(ctx, http.MethodPost, c.baseURL+"/tokenize", in, out)
+}
+
 // GetHealthRaw returns the raw health response from the server.
 func (c *Client) GetHealthRaw(ctx context.Context) (HealthResponse, error) {
 	msg := HealthResponse{}

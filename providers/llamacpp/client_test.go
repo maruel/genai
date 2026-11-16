@@ -1054,6 +1054,41 @@ func TestClient(t *testing.T) {
 		})
 	})
 
+	t.Run("TokenizeRaw", func(t *testing.T) {
+		c, err := llamacpp.New(t.Context(), genai.ProviderOptionTransportWrapper(func(h http.RoundTripper) http.RoundTripper {
+			return testRecorder.Record(t, h)
+		}), genai.ProviderOptionAPIKey(apiKey), genai.ProviderOptionRemote(s.lazyStartModel(t, scoreboard.Model{Model: "ggml-org/Qwen3-TTS-12Hz-1.7B-Base-GGUF:Q4_K_M"})), genai.ProviderOptionModel("tts"))
+		if err != nil {
+			t.Fatal(err)
+		}
+		internaltest.CleanupCloser(t, c)
+		const special = "<|codec_language_french|>"
+		t.Run("pieces", func(t *testing.T) {
+			// The hieroglyph splits into byte tokens whose pieces are not UTF-8.
+			const content = special + "\U00013000"
+			var out llamacpp.TokenizeResponse
+			if err := c.TokenizeRaw(t.Context(), &llamacpp.TokenizeRequest{Content: content, WithPieces: true}, &out); err != nil {
+				t.Fatal(err)
+			}
+			var joined strings.Builder
+			for _, tok := range out.Tokens {
+				joined.WriteString(tok.Piece)
+			}
+			if len(out.Tokens) < 3 || out.Tokens[0].Piece != special || joined.String() != content {
+				t.Fatalf("tokens %+v", out.Tokens)
+			}
+		})
+		t.Run("plain special", func(t *testing.T) {
+			var out llamacpp.TokenizeResponse
+			if err := c.TokenizeRaw(t.Context(), &llamacpp.TokenizeRequest{Content: special, ParseSpecial: new(false)}, &out); err != nil {
+				t.Fatal(err)
+			}
+			if len(out.Tokens) < 2 || out.Tokens[0].Piece != "" {
+				t.Fatalf("tokens %+v", out.Tokens)
+			}
+		})
+	})
+
 	t.Run("Capabilities", func(t *testing.T) {
 		c, err := llamacpp.New(t.Context(), genai.ProviderOptionTransportWrapper(func(h http.RoundTripper) http.RoundTripper {
 			return testRecorder.Record(t, h)

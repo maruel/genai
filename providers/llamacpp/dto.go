@@ -503,6 +503,64 @@ type HealthResponse struct {
 	SlotsProcessing int64  `json:"slots_processing"`
 }
 
+// TokenizeRequest is documented at
+// https://github.com/ggml-org/llama.cpp/blob/v1.0.0/tools/server/README.md#post-tokenize-tokenize-a-given-text
+type TokenizeRequest struct {
+	Content    string `json:"content"`
+	AddSpecial bool   `json:"add_special,omitzero"`
+	// ParseSpecial false tokenizes the text of special tokens as plain text.
+	// nil keeps the server default, true.
+	ParseSpecial *bool `json:"parse_special,omitzero"`
+	WithPieces   bool  `json:"with_pieces,omitzero"`
+}
+
+// TokenizeResponse is documented at
+// https://github.com/ggml-org/llama.cpp/blob/v1.0.0/tools/server/README.md#post-tokenize-tokenize-a-given-text
+type TokenizeResponse struct {
+	Tokens []Token `json:"tokens"`
+}
+
+// Token is a vocabulary entry. Piece is set only when
+// TokenizeRequest.WithPieces is set; the server sends a piece that is not
+// valid UTF-8 as its bytes.
+type Token struct {
+	ID    int64
+	Piece string
+}
+
+// UnmarshalJSON accepts a bare token ID or an object with its piece.
+func (t *Token) UnmarshalJSON(b []byte) error {
+	if len(b) == 0 || b[0] != '{' {
+		*t = Token{}
+		return json.Unmarshal(b, &t.ID)
+	}
+	var w tokenWithPiece
+	d := json.NewDecoder(bytes.NewReader(b))
+	if !internal.BeLenient {
+		d.DisallowUnknownFields()
+	}
+	if err := d.Decode(&w); err != nil {
+		return err
+	}
+	*t = Token{ID: w.ID}
+	if len(w.Piece) != 0 && w.Piece[0] == '[' {
+		var raw []byte
+		if err := json.Unmarshal(w.Piece, &raw); err != nil {
+			return fmt.Errorf("token %d piece: %w", w.ID, err)
+		}
+		t.Piece = string(raw)
+		return nil
+	}
+	return json.Unmarshal(w.Piece, &t.Piece)
+}
+
+// tokenWithPiece is a Token as sent when TokenizeRequest.WithPieces is set.
+// Piece is a string or a byte array.
+type tokenWithPiece struct {
+	ID    int64           `json:"id"`
+	Piece json.RawMessage `json:"piece"`
+}
+
 // CompletionRequest is documented at
 // https://github.com/ggml-org/llama.cpp/blob/v1.0.0/tools/server/README.md#post-completion-given-a-prompt-it-returns-the-predicted-completion
 type CompletionRequest struct {

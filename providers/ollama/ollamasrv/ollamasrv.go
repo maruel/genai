@@ -25,6 +25,7 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal/ghrelease"
+	"github.com/maruel/genai/internal/linewriter"
 	"github.com/maruel/genai/providers/ollama"
 )
 
@@ -54,7 +55,9 @@ type Server struct {
 //
 // Use env to specify the OLLAMA_xxx environment variables. They are documented with "ollama help serve".
 //
-// Output is redirected to logOutput if non-nil.
+// logOutput, if non-nil, receives the server's stdout and stderr, one complete
+// line per Write and one Write at a time, so a log.Logger writer emits a record
+// per line. A line longer than 64 KiB is split. Nil uses the process streams.
 func New(ctx context.Context, exe string, logOutput io.Writer, hostPort string, env []string) (*Server, error) {
 	if !filepath.IsAbs(exe) {
 		return nil, errors.New("exe must be an absolute path")
@@ -88,9 +91,9 @@ func New(ctx context.Context, exe string, logOutput io.Writer, hostPort string, 
 	}
 	u := "http://" + host + ":" + strconv.Itoa(port)
 	cmd := exec.CommandContext(ctx, exe, "serve")
+	flush := func() error { return nil }
 	if logOutput != nil {
-		cmd.Stdout = logOutput
-		cmd.Stderr = logOutput
+		flush = linewriter.Attach(cmd, logOutput)
 	} else {
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
@@ -128,7 +131,7 @@ func New(ctx context.Context, exe string, logOutput io.Writer, hostPort string, 
 	}
 	srv := &Server{url: u, cmd: cmd, done: make(chan struct{})}
 	go func() {
-		srv.err = base.ServerExit(cmd.Wait(), cmd.ProcessState, requested.Load(), os.Interrupt)
+		srv.err = errors.Join(base.ServerExit(cmd.Wait(), cmd.ProcessState, requested.Load(), os.Interrupt), flush())
 		close(srv.done)
 	}()
 

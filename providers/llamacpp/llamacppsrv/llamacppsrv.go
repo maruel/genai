@@ -28,6 +28,7 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal/ghrelease"
+	"github.com/maruel/genai/internal/linewriter"
 	"github.com/maruel/genai/providers/llamacpp"
 )
 
@@ -90,9 +91,9 @@ func New(ctx context.Context, exe string, cfg *Config) (*Server, error) {
 	// Make sure dynamic libraries will be found.
 	cmd.Dir = filepath.Dir(exe)
 	cmd.Env = serverEnv(cmd.Dir)
+	flush := func() error { return nil }
 	if cfg.LogOutput != nil {
-		cmd.Stdout = cfg.LogOutput
-		cmd.Stderr = cfg.LogOutput
+		flush = linewriter.Attach(cmd, cfg.LogOutput)
 	} else {
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
@@ -123,6 +124,7 @@ func New(ctx context.Context, exe string, cfg *Config) (*Server, error) {
 		// or SIGTERM; a second one forces exit(1), which is reported. Before its
 		// handler is installed, SIGINT terminates it.
 		srv.err = base.ServerExit(err2, cmd.ProcessState, shutdownRequested.Load(), os.Interrupt)
+		srv.err = errors.Join(srv.err, flush())
 		close(srv.done)
 	}()
 
@@ -200,7 +202,9 @@ type Config struct {
 	ContextSize int
 	// Args are appended verbatim after the generated arguments.
 	Args []string
-	// LogOutput receives server stdout and stderr. Nil uses the process streams.
+	// LogOutput receives server stdout and stderr, one complete line per Write
+	// and one Write at a time, so a log.Logger writer emits a record per line.
+	// A line longer than 64 KiB is split. Nil uses the process streams.
 	LogOutput io.Writer
 }
 

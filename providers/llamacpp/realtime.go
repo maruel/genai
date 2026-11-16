@@ -40,7 +40,8 @@ var ErrNoActiveResponse = errors.New("llama.cpp realtime has no active response"
 // selection; a persistent socket reserves one model slot, including idle.
 type RealtimeOption struct {
 	// Endpoint replaces the derived /v1/realtime WebSocket URL, for a trusted
-	// proxy. Leave empty to derive it from the provider's remote URL.
+	// proxy. The client's authentication transport is used for this endpoint
+	// too. Leave empty to derive it from the provider's remote URL.
 	Endpoint string
 	// MaxOutputTokens limits each response. Zero leaves the server default.
 	MaxOutputTokens int64

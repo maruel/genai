@@ -555,7 +555,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 					return
 				}
 				result = buildResult(replies, &usage, newThreadID)
-				finalErr = result.Usage.Validate()
+				finalErr = base.ValidateUsage(&result.Usage)
 				return
 			case MethodErrorNotification:
 				var p ErrorNotification
@@ -945,7 +945,7 @@ func readTurnSync(sc *bufio.Scanner, threadID string) (genai.Result, error) {
 				return genai.Result{}, errors.New(errMsg)
 			}
 			r := buildResult(replies, &usage, threadID)
-			return r, r.Usage.Validate()
+			return r, base.ValidateUsage(&r.Usage)
 		case MethodErrorNotification:
 			var p ErrorNotification
 			if err := internal.UnmarshalJSON(msg.Params, &p); err != nil {

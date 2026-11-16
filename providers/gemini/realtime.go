@@ -506,6 +506,9 @@ func (s *RealtimeSession) translate(msg *LiveServerMessage) error {
 		}
 		gu := &genai.Usage{}
 		u.To(gu)
+		if err := base.ValidateUsage(gu); err != nil {
+			return err
+		}
 		s.pending = append(s.pending, genai.RealtimeEvent{Kind: genai.RealtimeEventUsage, ResponseID: id, Usage: gu})
 	}
 	if g := msg.GoAway; g != nil {

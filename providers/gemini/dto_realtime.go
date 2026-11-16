@@ -613,13 +613,17 @@ type LiveUsage struct {
 
 // To copies the usage into out, leaving the fields it does not report intact.
 //
-// promptTokenCount includes cachedContentTokenCount.
+// promptTokenCount includes cachedContentTokenCount. responseTokenCount
+// excludes thoughtsTokenCount, and totalTokenCount is inconsistent about them:
+// gemini-3.8-live recordings report prompt 2957, response 22, thoughts 41,
+// total 2979, but also prompt 6210, response 59, thoughts 877, total 7146.
+// Count thoughts as output and derive the total.
 func (u *LiveUsage) To(out *genai.Usage) {
 	out.InputTokens = u.PromptTokenCount
 	out.InputCachedTokens = u.CachedContentTokenCount
 	out.ReasoningTokens = u.ThoughtsTokenCount
-	out.OutputTokens = u.ResponseTokenCount
-	out.TotalTokens = u.TotalTokenCount
+	out.OutputTokens = u.ResponseTokenCount + u.ThoughtsTokenCount
+	out.TotalTokens = out.InputTokens + out.OutputTokens
 	out.ServiceTier = string(u.ServiceTier)
 }
 

@@ -492,7 +492,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 				return genai.Result{}, errors.Join(e, err)
 			}
 			r := buildResult(&res, asstBlocks, summaries, initSessionID, contextUsage.TotalTokens, contextUsage.RawMaxTokens)
-			return r, errors.Join(err, r.Usage.Validate())
+			return r, errors.Join(err, base.ValidateUsage(&r.Usage))
 		default:
 		}
 	}
@@ -700,7 +700,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 				if result.Usage.ReasoningTokens == 0 {
 					result.Usage.ReasoningTokens = streamUsage.OutputTokensDetails.ThinkingTokens
 				}
-				finalErr = result.Usage.Validate()
+				finalErr = base.ValidateUsage(&result.Usage)
 				return
 			case OutputControlRequest:
 				if err := handleControlRequest(ctx, stdin, co.controlHandler, line); err != nil {

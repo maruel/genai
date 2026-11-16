@@ -453,6 +453,7 @@ type ChatResponse struct {
 	// ECTransferParams contains backend-specific encoder-cache transfer metadata.
 	ECTransferParams map[string]json.RawMessage `json:"ec_transfer_params,omitzero"`
 	Metrics          *RequestMetrics            `json:"metrics,omitzero"`
+	NVExt            NVExt                      `json:"nvext,omitzero"`
 }
 
 // ToResult converts the response to a genai.Result.
@@ -475,6 +476,13 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	}
 	out.Logprobs = c.Choices[0].Logprobs.To()
 	return out, err
+}
+
+// NVExt is the NVIDIA extension some routed backends add to a response.
+type NVExt struct {
+	// MatchedStop is the stop condition that ended generation: the stop string
+	// in recordings ("is"); a token ID for an EOS stop (hypothesis, from SGLang).
+	MatchedStop json.RawMessage `json:"matched_stop,omitzero"`
 }
 
 // RequestMetrics reports vLLM per-request timing and throughput measurements.
@@ -597,6 +605,7 @@ type Usage struct {
 		CacheCreationInputTokens int64            `json:"cache_creation_input_tokens"`
 		CacheReadInputTokens     int64            `json:"cache_read_input_tokens"`
 		CreatedCacheTokens       int64            `json:"created_cache_tokens,omitzero"`
+		ImageTokens              int64            `json:"image_tokens,omitzero"`
 		MultimodalTokens         map[string]int64 `json:"multimodal_tokens,omitzero"`
 	} `json:"prompt_tokens_details"`
 	CompletionTokensDetails struct {
@@ -704,6 +713,7 @@ type ChatStreamChunkResponse struct {
 		TokenIDs             []int64              `json:"token_ids,omitzero"`
 	} `json:"choices"`
 	Usage      Usage `json:"usage"`
+	NVExt      NVExt `json:"nvext,omitzero"`
 	SLAMetrics struct {
 		TSUs int64           `json:"ts_us"`
 		TTFT base.DurationMS `json:"ttft_ms"`

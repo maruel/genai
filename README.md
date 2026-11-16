@@ -69,7 +69,7 @@ genai is _intentional_. Curious why it was created? See the release announcement
 | [dsh](docs/dsh.md)                         | 🇨🇳   | Sync, Stream🧠                             | 💬📄       | 💬      | ❌       | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ❌    | ✅     |
 | [gemini](docs/gemini.md)                   | 🇺🇸   | Embed, Realtime, Sync, Stream🧠            | 🎤🎥💬📄📸 | 🎤💬🧬   | ✅🪨🕸️🔀 | ✅[] | ❌    | ✅   | ❌   | 🌱🛑  | ❌    | ❌     | ✅    | ✅     |
 | [groq](docs/groq.md)                       | 🇺🇸   | Sync, Stream🧠                             | 💬📸       | 💬      | ✅🪨🔀🕸️ | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| [huggingface](docs/huggingface.md)         | 🇺🇸   | Sync, Stream🧠                             | 💬📸       | 💬      | ✅🪨🔀   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
+| [huggingface](docs/huggingface.md)         | 🇺🇸   | Sync, Stream🧠                             | 💬📸       | 💬      | 💨🪨     | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
 | [llamacpp](docs/llamacpp.md)               | 🏠   | Embed, SystemOne, Realtime, Sync, Stream🧠 | 🎤🎥💬📸   | 🎤🎯💬🧬  | ✅🪨🔀   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
 | [mistral](docs/mistral.md)                 | 🇫🇷   | Realtime, Sync, Stream🧠                   | 🎤💬📄📸   | 💬      | ✅🪨     | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
 | [ollama](docs/ollama.md)                   | 🏠   | Embed, SystemOne, Sync, Stream🧠           | 💬📸       | 🎯💬🧬    | ✅🔀     | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |

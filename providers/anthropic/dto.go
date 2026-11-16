@@ -1607,9 +1607,12 @@ func (u *Usage) To(out *genai.Usage) {
 	out.InputTokens = in
 	out.InputCachedTokens = u.CacheReadInputTokens
 	out.InputCacheWriteTokens = u.CacheCreationInputTokens
+	out.ReasoningTokens = u.OutputTokensDetails.ThinkingTokens
 	out.OutputTokens = u.OutputTokens
 	out.TotalTokens = in + u.OutputTokens
-	out.ServiceTier = u.ServiceTier
+	if u.ServiceTier != "" {
+		out.ServiceTier = u.ServiceTier
+	}
 }
 
 // UsageSpeed is the inference speed mode used for a request.

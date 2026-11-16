@@ -1,0 +1,81 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 497
+        host: router.huggingface.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","stream":false,"messages":[{"role":"user","content":"Name two fruits with their color. Do not include an explanation. Reply ONLY as JSON."}],"response_format":{"type":"json_schema","json_schema":{"name":"response","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","items":{"properties":{"name":{"type":"string"},"color":{"type":"string"}},"additionalProperties":false,"type":"object","required":["name","color"]},"type":"array"}}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 776
+        body: '{"id":"chatcmpl-39dc5ec2582b45bdbf7a92b5da883771","choices":[{"index":0,"message":{"content":"[{\"name\":\"Apple\",\"color\":\"Red\"},{\"name\":\"Banana\",\"color\":\"Yellow\"}]","role":"assistant","reasoning_content":"We need answer JSON array two fruits name color. No explanation. Need valid JSON only. Choose Apple red, Banana yellow. Ensure schema. Final only JSON."},"finish_reason":"stop"}],"created":1794839670,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion","usage":{"prompt_tokens":130,"completion_tokens":55,"total_tokens":185,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"image_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":38,"audio_tokens":0,"reasoning_tokens":32,"rejected_prediction_tokens":13}}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-HF-Warning,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash,RateLimit,RateLimit-Policy
+            Content-Length:
+                - "776"
+            Content-Type:
+                - application/json
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Strict-Transport-Security:
+                - max-age=31536000
+            Vary:
+                - Origin, Origin
+            Via:
+                - 1.1 google, 1.1 7d45d7c7b87b27c8abb2f2c3c89146c6.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - XCXbApGXiccQ1Dt-Eggu4y_vqxozYtLwBs7LXl13pDKjRPA62YZHpQ==
+            X-Amz-Cf-Pop:
+                - YTO53-P3
+            X-Baseten-Accepted-At:
+                - "1794839670294"
+            X-Baseten-Dyn-Decode-Dp-Rank:
+                - "3"
+            X-Baseten-Dyn-Prefill-Dp-Rank:
+                - "3"
+            X-Baseten-Dyn-Prefill-Worker-Id:
+                - "5755215324352425297"
+            X-Baseten-Dyn-Worker-Id:
+                - "5755215324352425112"
+            X-Baseten-Received-At:
+                - "1794839670294"
+            X-Baseten-Request-Id:
+                - 54ca701a1e4c7ee1671a290a8b3b46339c47e
+            X-Baseten-Sent-At:
+                - "1794839670942"
+            X-Cache:
+                - Miss from cloudfront
+            X-Inference-Provider:
+                - baseten
+            X-Powered-By:
+                - huggingface-moon
+            X-Ratelimit-Limit-Requests:
+                - "200"
+            X-Ratelimit-Limit-Tokens:
+                - "3000000"
+            X-Ratelimit-Remaining-Requests:
+                - "98"
+            X-Ratelimit-Remaining-Tokens:
+                - "2771570"
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 731ms

@@ -1,0 +1,117 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 473
+        host: router.huggingface.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","stream":true,"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}],"response_format":{"type":"json_schema","json_schema":{"name":"response","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}},"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-23a37b4375b242f183522c049ec55f84","choices":[{"index":0,"delta":{"content":"","role":"assistant","reasoning_content":"We"}}],"created":1794839669,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":112,"completion_tokens":1,"total_tokens":113,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"image_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":1,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-23a37b4375b242f183522c049ec55f84","choices":[{"index":0,"delta":{"content":"","reasoning_content":" need answer JSON only"}}],"created":1794839669,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":112,"completion_tokens":5,"total_tokens":117,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"image_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":5,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-23a37b4375b242f183522c049ec55f84","choices":[{"index":0,"delta":{"content":"","reasoning_content":" schema"}}],"created":1794839669,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":112,"completion_tokens":6,"total_tokens":118,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"image_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":6,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-23a37b4375b242f183522c049ec55f84","choices":[{"index":0,"delta":{"content":"","reasoning_content":" is"}}],"created":1794839669,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":112,"completion_tokens":7,"total_tokens":119,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"image_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":7,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-23a37b4375b242f183522c049ec55f84","choices":[{"index":0,"delta":{"content":"","reasoning_content":"_fruit boolean."}}],"created":1794839669,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":112,"completion_tokens":11,"total_tokens":123,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"image_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":11,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-23a37b4375b242f183522c049ec55f84","choices":[{"index":0,"delta":{"content":"","reasoning_content":" Banana"}}],"created":1794839669,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":112,"completion_tokens":12,"total_tokens":124,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"image_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":12,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-23a37b4375b242f183522c049ec55f84","choices":[{"index":0,"delta":{"content":"","reasoning_content":" fruit yes"}}],"created":1794839669,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":112,"completion_tokens":14,"total_tokens":126,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"image_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":14,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-23a37b4375b242f183522c049ec55f84","choices":[{"index":0,"delta":{"content":"","reasoning_content":"."}}],"created":1794839669,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":112,"completion_tokens":15,"total_tokens":127,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"image_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":15,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-23a37b4375b242f183522c049ec55f84","choices":[{"index":0,"delta":{"content":"","reasoning_content":" Return"}}],"created":1794839669,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":112,"completion_tokens":16,"total_tokens":128,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"image_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":16,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-23a37b4375b242f183522c049ec55f84","choices":[{"index":0,"delta":{"content":"","reasoning_content":" {\"is_fruit"}}],"created":1794839669,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":112,"completion_tokens":20,"total_tokens":132,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"image_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":20,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-23a37b4375b242f183522c049ec55f84","choices":[{"index":0,"delta":{"content":"","reasoning_content":"\":true"}}],"created":1794839669,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":112,"completion_tokens":22,"total_tokens":134,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"image_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":22,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-23a37b4375b242f183522c049ec55f84","choices":[{"index":0,"delta":{"content":"","reasoning_content":"}. No explanation"}}],"created":1794839669,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":112,"completion_tokens":25,"total_tokens":137,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"image_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":25,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-23a37b4375b242f183522c049ec55f84","choices":[{"index":0,"delta":{"content":"","reasoning_content":"."}}],"created":1794839669,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":112,"completion_tokens":29,"total_tokens":141,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"image_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":26,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-23a37b4375b242f183522c049ec55f84","choices":[{"index":0,"delta":{"content":"{\"is_fruit\":true"}}],"created":1794839669,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":112,"completion_tokens":33,"total_tokens":145,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"image_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":26,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-23a37b4375b242f183522c049ec55f84","choices":[{"index":0,"delta":{"content":"}"}}],"created":1794839669,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":112,"completion_tokens":35,"total_tokens":147,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"image_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":21,"audio_tokens":0,"reasoning_tokens":26,"rejected_prediction_tokens":21}}}
+
+            data: {"id":"chatcmpl-23a37b4375b242f183522c049ec55f84","choices":[{"index":0,"delta":{},"finish_reason":"stop"}],"created":1794839669,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":112,"completion_tokens":35,"total_tokens":147,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"image_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":21,"audio_tokens":0,"reasoning_tokens":26,"rejected_prediction_tokens":21}}}
+
+            data: {"id":"chatcmpl-23a37b4375b242f183522c049ec55f84","choices":[],"created":1794839669,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":112,"completion_tokens":35,"total_tokens":147,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"image_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":21,"audio_tokens":0,"reasoning_tokens":26,"rejected_prediction_tokens":21}}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-HF-Warning,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash,RateLimit,RateLimit-Policy
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Strict-Transport-Security:
+                - max-age=31536000
+            Vary:
+                - Origin, Origin
+            Via:
+                - 1.1 google, 1.1 7d45d7c7b87b27c8abb2f2c3c89146c6.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - 7lrHXwnPY1R51lCmw9mIYsscbW2sApLXjMrxzK5iP4sZELzGEaGaAA==
+            X-Amz-Cf-Pop:
+                - YTO53-P3
+            X-Baseten-Accepted-At:
+                - "1794839669563"
+            X-Baseten-Dyn-Decode-Dp-Rank:
+                - "3"
+            X-Baseten-Dyn-Prefill-Dp-Rank:
+                - "3"
+            X-Baseten-Dyn-Prefill-Worker-Id:
+                - "9209194763567724924"
+            X-Baseten-Dyn-Worker-Id:
+                - "5073482930758056851"
+            X-Baseten-Received-At:
+                - "1794839669563"
+            X-Baseten-Request-Id:
+                - 54ca701a1e4c7eb3b75feb02b5c32fc5092fd
+            X-Baseten-Sent-At:
+                - "1794839670161"
+            X-Cache:
+                - Miss from cloudfront
+            X-Inference-Provider:
+                - baseten
+            X-Powered-By:
+                - huggingface-moon
+            X-Ratelimit-Limit-Requests:
+                - "200"
+            X-Ratelimit-Limit-Tokens:
+                - "3000000"
+            X-Ratelimit-Remaining-Requests:
+                - "100"
+            X-Ratelimit-Remaining-Tokens:
+                - "2735492"
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 704ms

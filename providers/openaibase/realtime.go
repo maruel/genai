@@ -582,6 +582,9 @@ func (s *Session) translateLocked(m *ServerMessage) error {
 			e.Kind = genai.RealtimeEventUsage
 			e.Usage = &genai.Usage{}
 			u.To(e.Usage)
+			if err := base.ValidateUsage(e.Usage); err != nil {
+				return err
+			}
 			s.pending = append(s.pending, e)
 			e.Usage = nil
 		}

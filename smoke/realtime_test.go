@@ -524,6 +524,26 @@ func TestRunRealtime(t *testing.T) {
 			}
 		})
 
+		t.Run("audio tool answer within tool-call response", func(t *testing.T) {
+			// Gemini Live keeps one turn across the tool round trip, so the answer
+			// carries the tool-call response ID.
+			f := newFakeRealtimeFactory(t)
+			f.info.Capabilities.AudioCommit = true
+			f.audioTool = fakeToolCalls
+			f.audioToolResults = []genai.RealtimeEvent{
+				{Kind: genai.RealtimeEventTranscriptOutput, ResponseID: "call_response", Content: genai.RealtimeContent{Text: "violet seven"}},
+				{Kind: genai.RealtimeEventContentAudio, ResponseID: "call_response", Content: genai.RealtimeContent{Audio: []byte{1, 0}}},
+				{Kind: genai.RealtimeEventTurnDone, ResponseID: "call_response"},
+			}
+			report, err := smoke.RunRealtime(t.Context(), f.open)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if r := probeResult(t, &report, smoke.RealtimeProbeAudioTool); r.Skipped || r.Failed {
+				t.Fatalf("probe audio_tool=%+v", r)
+			}
+		})
+
 		t.Run("manual audio requires commit", func(t *testing.T) {
 			f := newFakeRealtimeFactory(t)
 			f.audioTool = fakeToolCalls

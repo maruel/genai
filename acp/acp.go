@@ -30,6 +30,7 @@ import (
 	"strings"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/msgutil"
 )
@@ -677,7 +678,7 @@ func buildPromptResult(line []byte, text, thinking, sessionID string, usage *Usa
 			Opaque: map[string]any{SessionIDKey: sessionID},
 		})
 	}
-	return r, r.Usage.Validate()
+	return r, base.ValidateUsage(&r.Usage)
 }
 
 // stopReasonToFinishReason maps an ACP stop reason string to a

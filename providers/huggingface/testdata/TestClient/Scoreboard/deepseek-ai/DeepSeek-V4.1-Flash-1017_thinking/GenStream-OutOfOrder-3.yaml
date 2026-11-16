@@ -1,0 +1,113 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 2328
+        host: router.huggingface.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","stream":true,"messages":[{"role":"system","content":"You are a terse voice assistant. Speak naturally. Follow the latest request. Never claim a task's state or reference without its tool result."},{"role":"user","content":"Check the status and reference of tasks 3, 7 and 11."},{"role":"user","content":"Start the checks together if possible."},{"role":"assistant","tool_calls":[{"id":"chatcmpl-tool-ca21548283384ae9b6f7fcba48601176","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 3}"}},{"id":"chatcmpl-tool-2ab923399e6047c697405876eab15c9c","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 7}"}},{"id":"chatcmpl-tool-65b3b0e721d94944a63613d322dc6dba","type":"function","function":{"name":"task_status","arguments":"{\"task_id\": 11}"}}]},{"role":"user","content":"Actually, I only need task 7's reference. The other checks can finish in the background."},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."},{"role":"assistant","content":"Still waiting on task 7's reference — the check hasn't come back yet. I'll only report that one when it does."},{"role":"tool","content":"{\"id\":11,\"status\":\"paused\",\"reference\":\"cyan\"}","name":"task_status","tool_call_id":"chatcmpl-tool-65b3b0e721d94944a63613d322dc6dba"},{"role":"tool","content":"{\"id\":7,\"status\":\"waiting\",\"reference\":\"violet\"}","name":"task_status","tool_call_id":"chatcmpl-tool-2ab923399e6047c697405876eab15c9c"},{"role":"tool","content":"{\"id\":3,\"status\":\"running\",\"reference\":\"amber\"}","name":"task_status","tool_call_id":"chatcmpl-tool-ca21548283384ae9b6f7fcba48601176"},{"role":"user","content":"Do you have task 7's reference yet? If not, just let me know you're still waiting. Don't give me the other tasks' references."}],"stream_options":{"include_usage":true},"tool_choice":"auto","tools":[{"type":"function","function":{"name":"task_status","description":"Read a task's current status and reference; does not change anything.","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"task_id":{"type":"integer"}},"additionalProperties":false,"type":"object","required":["task_id"]}}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-3a2cd28310ed4939a3f0aedeaabe7d45","choices":[{"index":0,"delta":{"content":"","role":"assistant","reasoning_content":"The"}}],"created":1794839686,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":661,"completion_tokens":1,"total_tokens":662,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"image_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":1,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-3a2cd28310ed4939a3f0aedeaabe7d45","choices":[{"index":0,"delta":{"content":"","reasoning_content":" results came"}}],"created":1794839686,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":661,"completion_tokens":3,"total_tokens":664,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"image_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":3,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-3a2cd28310ed4939a3f0aedeaabe7d45","choices":[{"index":0,"delta":{"content":"","reasoning_content":" back. Task "}}],"created":1794839686,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":661,"completion_tokens":7,"total_tokens":668,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"image_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":7,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-3a2cd28310ed4939a3f0aedeaabe7d45","choices":[{"index":0,"delta":{"content":"","reasoning_content":"7's"}}],"created":1794839686,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":661,"completion_tokens":9,"total_tokens":670,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"image_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":9,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-3a2cd28310ed4939a3f0aedeaabe7d45","choices":[{"index":0,"delta":{"content":"","reasoning_content":" reference is \"v"}}],"created":1794839686,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":661,"completion_tokens":13,"total_tokens":674,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"image_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":13,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-3a2cd28310ed4939a3f0aedeaabe7d45","choices":[{"index":0,"delta":{"content":"","reasoning_content":"iolet\","}}],"created":1794839686,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":661,"completion_tokens":15,"total_tokens":676,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"image_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":15,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-3a2cd28310ed4939a3f0aedeaabe7d45","choices":[{"index":0,"delta":{"content":"","reasoning_content":" status waiting"}}],"created":1794839686,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":661,"completion_tokens":17,"total_tokens":678,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"image_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":17,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-3a2cd28310ed4939a3f0aedeaabe7d45","choices":[{"index":0,"delta":{"content":"","reasoning_content":". Report only that"}}],"created":1794839686,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":661,"completion_tokens":21,"total_tokens":682,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"image_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":21,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-3a2cd28310ed4939a3f0aedeaabe7d45","choices":[{"index":0,"delta":{"content":"","reasoning_content":"."}}],"created":1794839686,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":661,"completion_tokens":24,"total_tokens":685,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"image_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":22,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-3a2cd28310ed4939a3f0aedeaabe7d45","choices":[{"index":0,"delta":{"content":"Yes — task 7"}}],"created":1794839686,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":661,"completion_tokens":28,"total_tokens":689,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"image_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":22,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-3a2cd28310ed4939a3f0aedeaabe7d45","choices":[{"index":0,"delta":{"content":"'s reference is violet"}}],"created":1794839686,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":661,"completion_tokens":32,"total_tokens":693,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"image_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":22,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-3a2cd28310ed4939a3f0aedeaabe7d45","choices":[{"index":0,"delta":{"content":". Its status is"}}],"created":1794839686,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":661,"completion_tokens":36,"total_tokens":697,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"image_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":22,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-3a2cd28310ed4939a3f0aedeaabe7d45","choices":[{"index":0,"delta":{"content":" waiting."}}],"created":1794839686,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":661,"completion_tokens":39,"total_tokens":700,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"image_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":27,"audio_tokens":0,"reasoning_tokens":22,"rejected_prediction_tokens":9}}}
+
+            data: {"id":"chatcmpl-3a2cd28310ed4939a3f0aedeaabe7d45","choices":[{"index":0,"delta":{},"finish_reason":"stop"}],"created":1794839686,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":661,"completion_tokens":39,"total_tokens":700,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"image_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":27,"audio_tokens":0,"reasoning_tokens":22,"rejected_prediction_tokens":9}}}
+
+            data: {"id":"chatcmpl-3a2cd28310ed4939a3f0aedeaabe7d45","choices":[],"created":1794839686,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":661,"completion_tokens":39,"total_tokens":700,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"image_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":27,"audio_tokens":0,"reasoning_tokens":22,"rejected_prediction_tokens":9}}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-HF-Warning,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash,RateLimit,RateLimit-Policy
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Strict-Transport-Security:
+                - max-age=31536000
+            Vary:
+                - Origin, Origin
+            Via:
+                - 1.1 google, 1.1 7d45d7c7b87b27c8abb2f2c3c89146c6.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - cp_ZD-t59H_7lKkR8w75xxjJxLjeErmh4v8H1BnjNtn51KNqpx73_g==
+            X-Amz-Cf-Pop:
+                - YTO53-P3
+            X-Baseten-Accepted-At:
+                - "1794839686399"
+            X-Baseten-Dyn-Decode-Dp-Rank:
+                - "1"
+            X-Baseten-Dyn-Prefill-Dp-Rank:
+                - "3"
+            X-Baseten-Dyn-Prefill-Worker-Id:
+                - "5073482930758058055"
+            X-Baseten-Dyn-Worker-Id:
+                - "5755215324352424795"
+            X-Baseten-Received-At:
+                - "1794839686399"
+            X-Baseten-Request-Id:
+                - 54ca701a1e4c82cff7c2b95a562da8230d59f
+            X-Baseten-Sent-At:
+                - "1794839687085"
+            X-Cache:
+                - Miss from cloudfront
+            X-Inference-Provider:
+                - baseten
+            X-Powered-By:
+                - huggingface-moon
+            X-Ratelimit-Limit-Requests:
+                - "200"
+            X-Ratelimit-Limit-Tokens:
+                - "3000000"
+            X-Ratelimit-Remaining-Requests:
+                - "100"
+            X-Ratelimit-Remaining-Tokens:
+                - "2999419"
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 779ms

@@ -43,8 +43,7 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "seed": true,
-        "outOfOrder": "true",
-        "tools": "true",
+        "tools": "flaky",
         "toolsBiased": "true",
         "toolCallRequired": true,
         "json": true,
@@ -52,7 +51,6 @@
           "object": "true",
           "array": "true"
         },
-        "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
       },
@@ -70,7 +68,6 @@
           "object": "true",
           "array": "true"
         },
-        "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
       }

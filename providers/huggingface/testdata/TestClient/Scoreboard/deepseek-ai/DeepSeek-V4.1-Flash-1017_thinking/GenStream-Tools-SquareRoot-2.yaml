@@ -1,0 +1,101 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 899
+        host: router.huggingface.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","stream":true,"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"id":"chatcmpl-tool-d96f30e3006149288941e525a0072a37","type":"function","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":"363.89","name":"square_root","tool_call_id":"chatcmpl-tool-d96f30e3006149288941e525a0072a37"}],"stream_options":{"include_usage":true},"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-c760392a509d4b998c2aa9cad781684b","choices":[{"index":0,"delta":{"content":"","role":"assistant","reasoning_content":"The"}}],"created":1794839673,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":111,"completion_tokens":1,"total_tokens":112,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"image_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":1,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-c760392a509d4b998c2aa9cad781684b","choices":[{"index":0,"delta":{"content":"","reasoning_content":" tool returned"}}],"created":1794839673,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":111,"completion_tokens":3,"total_tokens":114,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"image_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":3,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-c760392a509d4b998c2aa9cad781684b","choices":[{"index":0,"delta":{"content":"","reasoning_content":" 363.89"}}],"created":1794839673,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":111,"completion_tokens":7,"total_tokens":118,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"image_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":7,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-c760392a509d4b998c2aa9cad781684b","choices":[{"index":0,"delta":{"content":"","reasoning_content":". I should reply"}}],"created":1794839673,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":111,"completion_tokens":11,"total_tokens":122,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"image_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":11,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-c760392a509d4b998c2aa9cad781684b","choices":[{"index":0,"delta":{"content":"","reasoning_content":" with only"}}],"created":1794839673,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":111,"completion_tokens":13,"total_tokens":124,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"image_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":13,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-c760392a509d4b998c2aa9cad781684b","choices":[{"index":0,"delta":{"content":"","reasoning_content":" the result."}}],"created":1794839673,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":111,"completion_tokens":17,"total_tokens":128,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"image_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":16,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-c760392a509d4b998c2aa9cad781684b","choices":[{"index":0,"delta":{"content":"363.89"}}],"created":1794839673,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":111,"completion_tokens":21,"total_tokens":132,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"image_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":14,"audio_tokens":0,"reasoning_tokens":16,"rejected_prediction_tokens":4}}}
+
+            data: {"id":"chatcmpl-c760392a509d4b998c2aa9cad781684b","choices":[{"index":0,"delta":{},"finish_reason":"stop"}],"created":1794839673,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":111,"completion_tokens":21,"total_tokens":132,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"image_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":14,"audio_tokens":0,"reasoning_tokens":16,"rejected_prediction_tokens":4}}}
+
+            data: {"id":"chatcmpl-c760392a509d4b998c2aa9cad781684b","choices":[],"created":1794839673,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion.chunk","usage":{"prompt_tokens":111,"completion_tokens":21,"total_tokens":132,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"image_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":14,"audio_tokens":0,"reasoning_tokens":16,"rejected_prediction_tokens":4}}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-HF-Warning,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash,RateLimit,RateLimit-Policy
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Strict-Transport-Security:
+                - max-age=31536000
+            Vary:
+                - Origin, Origin
+            Via:
+                - 1.1 google, 1.1 7d45d7c7b87b27c8abb2f2c3c89146c6.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - 11-XXVcays21hqRjf5t7NhZMxC7qDIBcvXaevf-Y7ABfuUD4a-9S_g==
+            X-Amz-Cf-Pop:
+                - YTO53-P3
+            X-Baseten-Accepted-At:
+                - "1794839673193"
+            X-Baseten-Dyn-Decode-Dp-Rank:
+                - "3"
+            X-Baseten-Dyn-Prefill-Dp-Rank:
+                - "2"
+            X-Baseten-Dyn-Prefill-Worker-Id:
+                - "5073482930758057223"
+            X-Baseten-Dyn-Worker-Id:
+                - "5073482930758057197"
+            X-Baseten-Received-At:
+                - "1794839673193"
+            X-Baseten-Request-Id:
+                - 54ca701a1e4c7f969783dbea527731036c373
+            X-Baseten-Sent-At:
+                - "1794839673820"
+            X-Cache:
+                - Miss from cloudfront
+            X-Inference-Provider:
+                - baseten
+            X-Powered-By:
+                - huggingface-moon
+            X-Ratelimit-Limit-Requests:
+                - "200"
+            X-Ratelimit-Limit-Tokens:
+                - "3000000"
+            X-Ratelimit-Remaining-Requests:
+                - "99"
+            X-Ratelimit-Remaining-Tokens:
+                - "2902633"
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 748ms

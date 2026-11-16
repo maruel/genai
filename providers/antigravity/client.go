@@ -738,7 +738,7 @@ func readTurn(sc *bufio.Scanner, onText func(string) bool) (genai.Result, error)
 				return genai.Result{}, err
 			}
 			r := buildResult(&ev.Result, text.String(), &usage)
-			return r, r.Usage.Validate()
+			return r, base.ValidateUsage(&r.Usage)
 		default:
 			return genai.Result{}, fmt.Errorf("unexpected agy event %q", ev.Event)
 		}

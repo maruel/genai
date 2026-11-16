@@ -517,6 +517,11 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 		// Catch provider implementation bugs.
 		return res, &internal.BadError{Err: err}
 	}
+	if !c.Lenient {
+		if err := res.Usage.Validate(); err != nil {
+			return res, &internal.BadError{Err: err}
+		}
+	}
 	if c.ProcessHeaders != nil && lastResp != nil {
 		res.Usage.Limits = c.ProcessHeaders(lastResp)
 	}
@@ -600,9 +605,27 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 			// Catch provider implementation bugs.
 			return res, &internal.BadError{Err: err}
 		}
+		if !c.Lenient {
+			if err := res.Usage.Validate(); err != nil {
+				return res, &internal.BadError{Err: err}
+			}
+		}
 		return res, nil
 	}
 	return fnFragments, fnFinish
+}
+
+// ValidateUsage checks the token accounting contract of u when
+// internal.BeLenient is false, for providers without a per-client Lenient
+// option. A violation is a provider mapping bug, reported as internal.BadError.
+func ValidateUsage(u *genai.Usage) error {
+	if internal.BeLenient {
+		return nil
+	}
+	if err := u.Validate(); err != nil {
+		return &internal.BadError{Err: err}
+	}
+	return nil
 }
 
 // GenSyncRaw is the generic raw implementation for the generation API endpoint.

@@ -1,0 +1,81 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 565
+        host: router.huggingface.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","stream":false,"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 794
+        body: '{"id":"chatcmpl-aa702f5629d448b28dfe79aba4b00043","choices":[{"index":0,"message":{"content":null,"tool_calls":[{"id":"chatcmpl-tool-e305fb22144540fca2a15bd901d581f6","type":"function","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}],"role":"assistant","reasoning_content":"The user wants me to use the square_root tool on 132413 and reply with only the result."},"finish_reason":"tool_calls"}],"created":1794839671,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion","usage":{"prompt_tokens":347,"completion_tokens":61,"total_tokens":408,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"image_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":45,"audio_tokens":0,"reasoning_tokens":21,"rejected_prediction_tokens":3}}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-HF-Warning,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash,RateLimit,RateLimit-Policy
+            Content-Length:
+                - "794"
+            Content-Type:
+                - application/json
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Strict-Transport-Security:
+                - max-age=31536000
+            Vary:
+                - Origin, Origin
+            Via:
+                - 1.1 google, 1.1 7d45d7c7b87b27c8abb2f2c3c89146c6.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - TQ3IWAX1T9v70fX4qPX3QwwJPmkVD1eeJDf4Ys9DdhxPsk83oEQWyg==
+            X-Amz-Cf-Pop:
+                - YTO53-P3
+            X-Baseten-Accepted-At:
+                - "1794839671032"
+            X-Baseten-Dyn-Decode-Dp-Rank:
+                - "2"
+            X-Baseten-Dyn-Prefill-Dp-Rank:
+                - "3"
+            X-Baseten-Dyn-Prefill-Worker-Id:
+                - "9209194763567724639"
+            X-Baseten-Dyn-Worker-Id:
+                - "5755215324352424785"
+            X-Baseten-Received-At:
+                - "1794839671032"
+            X-Baseten-Request-Id:
+                - 54ca701a1e4c7f0f87463b2aadf32197ec4cd
+            X-Baseten-Sent-At:
+                - "1794839671680"
+            X-Cache:
+                - Miss from cloudfront
+            X-Inference-Provider:
+                - baseten
+            X-Powered-By:
+                - huggingface-moon
+            X-Ratelimit-Limit-Requests:
+                - "200"
+            X-Ratelimit-Limit-Tokens:
+                - "3000000"
+            X-Ratelimit-Remaining-Requests:
+                - "98"
+            X-Ratelimit-Remaining-Tokens:
+                - "2807891"
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 737ms

@@ -503,8 +503,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 	return func(yield func(genai.Reply) bool) {
 			for pkt := range chunks {
 				if pkt.EvalCount != 0 {
-					u.InputTokens = pkt.PromptEvalCount
-					u.OutputTokens = pkt.EvalCount
+					pkt.To(&u)
 					u.FinishReason = pkt.DoneReason.ToFinishReason()
 				}
 				l = append(l, ToGenaiLogprobs(pkt.Logprobs)...)

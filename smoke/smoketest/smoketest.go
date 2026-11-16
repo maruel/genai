@@ -426,9 +426,11 @@ func runSection[T any, PT interface {
 				PT(&kept).Base().Refused = unsupportedReason(err)
 				t.Logf("%T: refuses: %s", fam, PT(&kept).Base().Refused)
 			} else {
-				// The model is unknown again: a failed probe is not a refusal.
+				// The model is unknown again: a failed probe is not a refusal. A row
+				// the scoreboard already holds must measure again, so the failure is a
+				// test failure, not only a log line.
 				PT(&kept).Base().Refused = ""
-				t.Logf("%T: %v", fam, err)
+				t.Errorf("%T: %v", fam, err)
 			}
 			out = append(out, kept)
 		}

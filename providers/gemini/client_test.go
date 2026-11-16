@@ -163,18 +163,18 @@ func TestClient(t *testing.T) {
 				realtimetest.Write(t, ctx, ws, `{"serverContent":{"modelTurn":{"parts":[{"inlineData":{"mimeType":"audio/pcm;rate=24000","data":"AQACAA=="}},{"text":"answer"},{"text":"weighing","thought":true}]},"interimInputTranscription":{"text":"hel"},"inputTranscription":{"text":"hello "},"outputTranscription":{"text":"good "},"generationComplete":true}}`)
 				realtimetest.Write(t, ctx, ws, `{"serverContent":{"inputTranscription":{"text":"world","finished":true},"outputTranscription":{"text":"day","finished":true},"turnComplete":true},"usageMetadata":{"promptTokenCount":3,"responseTokenCount":5,"totalTokenCount":8},"goAway":{"timeLeft":"30s"},"sessionResumptionUpdate":{"newHandle":"resume","resumable":true}}`)
 				for _, frame := range []string{
-					`{"usageMetadata":{"totalTokenCount":1}}`,
+					`{"usageMetadata":{"promptTokenCount":1,"totalTokenCount":1}}`,
 					`{"serverContent":{"outputTranscription":{"text":"early","finished":true}}}`,
 					`{"serverContent":{"modelTurn":{"parts":[{"text":"first"}]}}}`,
-					`{"serverContent":{"modelTurn":{"parts":[{"text":" chunk"}]}},"usageMetadata":{"totalTokenCount":2}}`,
+					`{"serverContent":{"modelTurn":{"parts":[{"text":" chunk"}]}},"usageMetadata":{"promptTokenCount":2,"totalTokenCount":2}}`,
 					`{"serverContent":{"generationComplete":true}}`,
-					`{"serverContent":{"turnComplete":true},"usageMetadata":{"totalTokenCount":3}}`,
+					`{"serverContent":{"turnComplete":true},"usageMetadata":{"promptTokenCount":3,"totalTokenCount":3}}`,
 					`{"serverContent":{"outputTranscription":{"text":"late","finished":true}}}`,
-					`{"usageMetadata":{"totalTokenCount":4}}`,
+					`{"usageMetadata":{"promptTokenCount":4,"totalTokenCount":4}}`,
 					`{"serverContent":{"modelTurn":{"parts":[{"text":"second"}]}}}`,
-					`{"usageMetadata":{"totalTokenCount":5}}`,
+					`{"usageMetadata":{"promptTokenCount":5,"totalTokenCount":5}}`,
 					`{"serverContent":{"interrupted":true}}`,
-					`{"serverContent":{"turnComplete":true},"usageMetadata":{"totalTokenCount":6}}`,
+					`{"serverContent":{"turnComplete":true},"usageMetadata":{"promptTokenCount":6,"totalTokenCount":6}}`,
 					`{"toolCall":{"functionCalls":[{"id":"call","name":"lookup","args":{}}]}}`,
 				} {
 					realtimetest.Write(t, ctx, ws, frame)
@@ -185,9 +185,9 @@ func TestClient(t *testing.T) {
 				}
 				for _, frame := range []string{
 					`{"serverContent":{"modelTurn":{"parts":[{"text":"tool continuation"}]},"generationComplete":true}}`,
-					`{"serverContent":{"turnComplete":true},"usageMetadata":{"totalTokenCount":7}}`,
-					`{"serverContent":{"turnComplete":true},"usageMetadata":{"totalTokenCount":8}}`,
-					`{"serverContent":{"modelTurn":{"parts":[{"text":"third"}]},"turnComplete":true},"usageMetadata":{"totalTokenCount":9}}`,
+					`{"serverContent":{"turnComplete":true},"usageMetadata":{"promptTokenCount":7,"totalTokenCount":7}}`,
+					`{"serverContent":{"turnComplete":true},"usageMetadata":{"promptTokenCount":8,"totalTokenCount":8}}`,
+					`{"serverContent":{"modelTurn":{"parts":[{"text":"third"}]},"turnComplete":true},"usageMetadata":{"promptTokenCount":9,"totalTokenCount":9}}`,
 				} {
 					realtimetest.Write(t, ctx, ws, frame)
 				}

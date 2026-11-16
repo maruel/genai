@@ -1434,7 +1434,8 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					continue
 				}
 				if pkt.UsageMetadata.TotalTokenCount != 0 {
-					// Not 100% sure.
+					// Each chunk repeats the cumulative usage; the last one is final.
+					// All stream recordings show non-decreasing totals.
 					pkt.UsageMetadata.To(&u)
 				}
 				if pkt.Candidates[0].FinishReason != "" {

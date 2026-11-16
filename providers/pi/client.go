@@ -806,7 +806,7 @@ func buildResult(line []byte, text, thinking string, contextTokens, contextWindo
 	if text != "" {
 		r.Replies = append(r.Replies, genai.Reply{Text: text})
 	}
-	return r, r.Usage.Validate()
+	return r, base.ValidateUsage(&r.Usage)
 }
 
 // extractContent extracts text and thinking from an assistant message's content blocks.

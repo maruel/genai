@@ -815,10 +815,10 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					}
 					pendingJSON = ""
 				case ChunkMessageDelta:
-					// Includes finish reason and output tokens usage (but not input tokens!)
+					// Includes the finish reason and the cumulative usage, input and
+					// cache tokens included; all recordings show them.
 					u.FinishReason = pkt.Delta.StopReason.ToFinishReason()
-					u.OutputTokens = pkt.Usage.OutputTokens
-					u.TotalTokens = u.InputTokens + u.OutputTokens
+					pkt.Usage.To(&u)
 				case ChunkMessageStop:
 					// Doesn't contain anything.
 					continue

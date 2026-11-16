@@ -186,8 +186,10 @@ func (r *Result) Validate() error {
 	if err := r.Message.Validate(); err != nil {
 		errs = append(errs, err)
 	}
-	if err := r.Usage.Validate(); err != nil {
-		errs = append(errs, err)
+	for i := range r.Usage.Limits {
+		if err := r.Usage.Limits[i].Validate(); err != nil {
+			errs = append(errs, fmt.Errorf("limit #%d: %w", i, err))
+		}
 	}
 	for i, tokens := range r.Logprobs {
 		for j := range tokens {
@@ -318,27 +320,25 @@ func (u *Usage) InputCacheMissTokens() int64 {
 	return u.InputTokens - u.InputCachedTokens
 }
 
-// Validate ensures the rate limits are valid. When strict, it also verifies
-// that the cached and cache-written tokens are subsets of InputTokens.
+// Validate verifies the token accounting contract: the cached and
+// cache-written tokens are subsets of InputTokens, the reasoning tokens a
+// subset of OutputTokens, and a reported TotalTokens is InputTokens +
+// OutputTokens.
+//
+// Result.Validate does not call it: upstream APIs break this contract, so
+// providers call it only when strict, to catch mapping bugs in tests.
 func (u *Usage) Validate() error {
 	var errs []error
-	if !internal.BeLenient {
-		if u.InputCachedTokens+u.InputCacheWriteTokens > u.InputTokens {
-			errs = append(errs, fmt.Errorf("cached %d + written %d input tokens exceed input %d",
-				u.InputCachedTokens, u.InputCacheWriteTokens, u.InputTokens))
-		}
-		if u.ReasoningTokens > u.OutputTokens {
-			errs = append(errs, fmt.Errorf("reasoning %d tokens exceed output %d", u.ReasoningTokens, u.OutputTokens))
-		}
-		if u.TotalTokens != 0 && u.TotalTokens != u.InputTokens+u.OutputTokens {
-			errs = append(errs, fmt.Errorf("total %d tokens != input %d + output %d",
-				u.TotalTokens, u.InputTokens, u.OutputTokens))
-		}
+	if u.InputCachedTokens+u.InputCacheWriteTokens > u.InputTokens {
+		errs = append(errs, fmt.Errorf("cached %d + written %d input tokens exceed input %d",
+			u.InputCachedTokens, u.InputCacheWriteTokens, u.InputTokens))
 	}
-	for i := range u.Limits {
-		if err := u.Limits[i].Validate(); err != nil {
-			errs = append(errs, fmt.Errorf("limit #%d: %w", i, err))
-		}
+	if u.ReasoningTokens > u.OutputTokens {
+		errs = append(errs, fmt.Errorf("reasoning %d tokens exceed output %d", u.ReasoningTokens, u.OutputTokens))
+	}
+	if u.TotalTokens != 0 && u.TotalTokens != u.InputTokens+u.OutputTokens {
+		errs = append(errs, fmt.Errorf("total %d tokens != input %d + output %d",
+			u.TotalTokens, u.InputTokens, u.OutputTokens))
 	}
 	return errors.Join(errs...)
 }

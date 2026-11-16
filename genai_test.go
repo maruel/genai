@@ -21,7 +21,6 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 
-	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/bb"
 )
 
@@ -96,9 +95,6 @@ func TestUsage(t *testing.T) {
 		}
 	})
 	t.Run("Validate", func(t *testing.T) {
-		old := internal.BeLenient
-		internal.BeLenient = false
-		t.Cleanup(func() { internal.BeLenient = old })
 		t.Run("valid", func(t *testing.T) {
 			u := Usage{InputTokens: 100, InputCachedTokens: 30, InputCacheWriteTokens: 20, ReasoningTokens: 5, OutputTokens: 10, TotalTokens: 110}
 			if err := u.Validate(); err != nil {

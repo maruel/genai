@@ -1,0 +1,81 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 273
+        host: router.huggingface.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","stream":false,"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"response_format":{"type":"json_object"}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://router.huggingface.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 656
+        body: '{"id":"chatcmpl-1b679b867adc41368501a18262b7c047","choices":[{"index":0,"message":{"content":"{\"is_fruit\": true}","role":"assistant","reasoning_content":"We need answer JSON only schema. Banana fruit yes. {\"is_fruit\": true}. Ensure no explanation."},"finish_reason":"stop"}],"created":1794839661,"model":"deepseek-ai/DeepSeek-V4.1-Flash-1017","object":"chat.completion","usage":{"prompt_tokens":73,"completion_tokens":31,"total_tokens":104,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0,"image_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":19,"audio_tokens":0,"reasoning_tokens":22,"rejected_prediction_tokens":14}}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Repo-Commit,X-HF-Warning,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash,RateLimit,RateLimit-Policy
+            Content-Length:
+                - "656"
+            Content-Type:
+                - application/json
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Strict-Transport-Security:
+                - max-age=31536000
+            Vary:
+                - Origin, Origin
+            Via:
+                - 1.1 google, 1.1 941baa2a9a5265e359d360ec8826594c.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - 8adzumHPflK2K2xmV_GadnFpXSgwycG9m9iRokHFTIUYrBrLg45zBQ==
+            X-Amz-Cf-Pop:
+                - YTO53-P3
+            X-Baseten-Accepted-At:
+                - "1794839661390"
+            X-Baseten-Dyn-Decode-Dp-Rank:
+                - "3"
+            X-Baseten-Dyn-Prefill-Dp-Rank:
+                - "1"
+            X-Baseten-Dyn-Prefill-Worker-Id:
+                - "5073482930758057223"
+            X-Baseten-Dyn-Worker-Id:
+                - "5755215324352424795"
+            X-Baseten-Received-At:
+                - "1794839661390"
+            X-Baseten-Request-Id:
+                - 54ca701a1e4c7cb4e7b509a4582f8094c3b7f
+            X-Baseten-Sent-At:
+                - "1794839662059"
+            X-Cache:
+                - Miss from cloudfront
+            X-Inference-Provider:
+                - baseten
+            X-Powered-By:
+                - huggingface-moon
+            X-Ratelimit-Limit-Requests:
+                - "200"
+            X-Ratelimit-Limit-Tokens:
+                - "3000000"
+            X-Ratelimit-Remaining-Requests:
+                - "100"
+            X-Ratelimit-Remaining-Tokens:
+                - "2738676"
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 806ms

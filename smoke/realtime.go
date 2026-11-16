@@ -700,19 +700,18 @@ func realtimeToolResults(ctx context.Context, ev *realtimeEvents, s genai.Realti
 }
 
 // realtimeToolAnswer consumes the turn that answers a tool result and requires
-// the access code in its output. The tool-call response may leave a queued
-// TurnDone behind; output and completion that carry the tool-call response ID
-// are not part of the answer.
+// the access code in its output. Output after the tool call is the answer,
+// whatever its response ID: a provider whose turn spans the tool round trip,
+// such as Gemini Live, answers within the tool-call response. A provider that
+// ends the tool-call response may leave its TurnDone queued before the answer;
+// the first await skips it.
 func realtimeToolAnswer(probe RealtimeProbe, ev *realtimeEvents, calls *genai.RealtimeEvent, wantAudio bool) error {
 	var text, transcript strings.Builder
 	sawAudio := false
-	stale := func(e *genai.RealtimeEvent) bool {
+	queued := func(e *genai.RealtimeEvent) bool {
 		return calls.ResponseID != "" && e.ResponseID == calls.ResponseID
 	}
 	collect := func(e *genai.RealtimeEvent) {
-		if stale(e) {
-			return
-		}
 		switch e.Kind {
 		case genai.RealtimeEventContentAudio:
 			sawAudio = sawAudio || len(e.Content.Audio) != 0
@@ -733,20 +732,15 @@ func realtimeToolAnswer(probe RealtimeProbe, ev *realtimeEvents, calls *genai.Re
 		case genai.RealtimeEventContentReasoning, genai.RealtimeEventError, genai.RealtimeEventGenerationDone, genai.RealtimeEventInputSpeechEnd, genai.RealtimeEventInputSpeechStart, genai.RealtimeEventTranscriptInput, genai.RealtimeEventTranscriptInputInterim, genai.RealtimeEventInterrupted, genai.RealtimeEventProvider, genai.RealtimeEventContentToolCalls, genai.RealtimeEventTurnDone, genai.RealtimeEventUsage:
 		}
 	}
-	// The first await skips a queued tool-call TurnDone and stale output from the
-	// tool-call response.
 	started := false
 	_, err := ev.await(probe, func(e *genai.RealtimeEvent) bool {
 		collect(e)
-		if stale(e) {
-			return false
-		}
 		if wantAudio {
 			started = len(e.Content.Audio) != 0 || (e.Kind == genai.RealtimeEventTranscriptOutput && e.Content.Text != "")
 		} else {
 			started = e.Kind == genai.RealtimeEventContentText && e.Content.Text != ""
 		}
-		return started || e.Kind == genai.RealtimeEventTurnDone
+		return started || e.Kind == genai.RealtimeEventTurnDone && !queued(e)
 	}, realtimeAbort("tool result answer was interrupted", genai.RealtimeEventInterrupted))
 	if err != nil {
 		return err
@@ -759,7 +753,7 @@ func realtimeToolAnswer(probe RealtimeProbe, ev *realtimeEvents, calls *genai.Re
 	}
 	_, err = ev.await(probe, func(e *genai.RealtimeEvent) bool {
 		collect(e)
-		return e.Kind == genai.RealtimeEventTurnDone && !stale(e)
+		return e.Kind == genai.RealtimeEventTurnDone
 	}, realtimeAbort("tool result answer was interrupted", genai.RealtimeEventInterrupted))
 	if err != nil {
 		return err

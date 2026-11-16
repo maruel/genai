@@ -686,18 +686,12 @@ type CompletionResponse struct {
 
 // ToResult converts the completion response to a genai.Result.
 func (c *CompletionResponse) ToResult() (genai.Result, error) {
-	out := genai.Result{
-		Replies: []genai.Reply{{Text: c.Content}},
-		Usage: genai.Usage{
-			// tokens_evaluated is the whole prompt and tokens_predicted the
-			// generated tokens. tokens_cached is the slot's KV cache size after
-			// generation, not a cache hit count; timings.cache_n is.
-			InputTokens:       c.TokensEvaluated,
-			InputCachedTokens: c.Timings.CacheN,
-			OutputTokens:      c.TokensPredicted,
-			FinishReason:      c.StopType.ToFinishReason(),
-		},
-	}
+	out := genai.Result{Replies: []genai.Reply{{Text: c.Content}}}
+	// timings carries the same counts as tokens_evaluated and
+	// tokens_predicted, with the cache hits. tokens_cached is the slot's KV
+	// cache size after generation, not a cache hit count.
+	c.Timings.To(&out.Usage)
+	out.Usage.FinishReason = c.StopType.ToFinishReason()
 	return out, nil
 }
 

@@ -522,6 +522,8 @@ func ToGenaiLogprobs(logprobs []Logprob) [][]genai.Logprob {
 // ChatResponse is somewhat documented at https://github.com/ollama/ollama/blob/main/docs/api.md#response-10
 // https://pkg.go.dev/github.com/ollama/ollama/api#ChatResponse
 type ChatResponse struct {
+	Metrics
+
 	Model      string     `json:"model"`
 	CreatedAt  time.Time  `json:"created_at"`
 	Message    Message    `json:"message"`
@@ -533,7 +535,24 @@ type ChatResponse struct {
 	RemoteModel string `json:"remote_model,omitzero"`
 	RemoteHost  string `json:"remote_host,omitzero"`
 
-	// https://pkg.go.dev/github.com/ollama/ollama/api#Metrics
+	PeakMemory uint64 `json:"peak_memory,omitzero"`
+}
+
+// ToResult converts the ChatResponse to a genai.Result.
+func (c *ChatResponse) ToResult() (genai.Result, error) {
+	out := genai.Result{Logprobs: ToGenaiLogprobs(c.Logprobs)}
+	c.To(&out.Usage)
+	out.Usage.FinishReason = c.DoneReason.ToFinishReason()
+	err := c.Message.To(&out.Message)
+	if out.Usage.FinishReason == genai.FinishedStop && slices.ContainsFunc(out.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
+		// Lie for the benefit of everyone.
+		out.Usage.FinishReason = genai.FinishedToolCalls
+	}
+	return out, err
+}
+
+// Metrics is https://pkg.go.dev/github.com/ollama/ollama/api#Metrics.
+type Metrics struct {
 	TotalDuration         time.Duration `json:"total_duration"`
 	LoadDuration          time.Duration `json:"load_duration"`
 	PromptEvalCount       int64         `json:"prompt_eval_count"`
@@ -541,26 +560,16 @@ type ChatResponse struct {
 	PromptEvalCachedCount int64         `json:"prompt_eval_cached_count,omitzero"`
 	EvalCount             int64         `json:"eval_count"`
 	EvalDuration          time.Duration `json:"eval_duration"`
-	PeakMemory            uint64        `json:"peak_memory,omitzero"`
 }
 
-// ToResult converts the ChatResponse to a genai.Result.
-func (c *ChatResponse) ToResult() (genai.Result, error) {
-	out := genai.Result{
-		// TODO: llama-server supports caching and we should report it.
-		Usage: genai.Usage{
-			InputTokens:  c.PromptEvalCount,
-			OutputTokens: c.EvalCount,
-			FinishReason: c.DoneReason.ToFinishReason(),
-		},
-		Logprobs: ToGenaiLogprobs(c.Logprobs),
-	}
-	err := c.Message.To(&out.Message)
-	if out.Usage.FinishReason == genai.FinishedStop && slices.ContainsFunc(out.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
-		// Lie for the benefit of everyone.
-		out.Usage.FinishReason = genai.FinishedToolCalls
-	}
-	return out, err
+// To copies the token counts into out, leaving the other fields intact.
+//
+// prompt_eval_count includes prompt_eval_cached_count: ollama's
+// Metrics.Summary computes the uncached tokens as their difference.
+func (m *Metrics) To(out *genai.Usage) {
+	out.InputTokens = m.PromptEvalCount
+	out.InputCachedTokens = m.PromptEvalCachedCount
+	out.OutputTokens = m.EvalCount
 }
 
 // DoneReason is not documented.

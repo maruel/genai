@@ -7,7 +7,7 @@
 // Type and field names mirror the Go types in the agy binary, recovered from
 // its runtime type descriptors with internal/extracttypes: package `steps` for
 // stdout events and package `printmode` for stdin messages. The JSON tags are
-// copied verbatim. These DTOs match agy 1.3.2, including the AGY_ERROR
+// copied verbatim. These DTOs match agy 1.5.9, including the AGY_ERROR
 // diagnostics emitted on stderr by printmode.
 //
 // Enum values are untyped strings upstream; the constants below hold the
@@ -30,10 +30,21 @@ type AgentError struct {
 	CodeKind   string `json:"code_kind,omitzero"`
 	Retryable  bool   `json:"retryable"`
 	ErrorID    string `json:"error_id,omitzero"`
+	Reason     string `json:"reason,omitzero"`
+	// Tasks lists background tasks the failed turn left running.
+	Tasks []AbandonedTask `json:"tasks,omitzero"`
 }
 
 // Error implements error.
 func (e *AgentError) Error() string { return "agy error: " + e.ShortError }
+
+// AbandonedTask is a background task still running when a turn failed.
+type AbandonedTask struct {
+	ID             string `json:"id,omitzero"`
+	Description    string `json:"description,omitzero"`
+	ElapsedSeconds int64  `json:"elapsed_seconds,omitzero"`
+	LogURI         string `json:"log_uri,omitzero"`
+}
 
 // EventType is the `event` discriminator of every stream-json line, on both
 // stdin and stdout.
@@ -97,7 +108,7 @@ type rawStreamInputUserMessage struct {
 	Content json.RawMessage `json:"content"`
 }
 
-// StreamInputContentBlock is one content block. agy 1.2.14 rejects any type
+// StreamInputContentBlock is one content block. agy 1.5.9 rejects any type
 // other than "text".
 type StreamInputContentBlock struct {
 	Type string `json:"type"`
@@ -139,14 +150,17 @@ type ExpandedCommand struct {
 // StepState is the lifecycle state of a step.
 //
 // It projects localharness StepUpdate.State without its "STATE_" prefix. The
-// proto also declares STATE_WAITING_FOR_USER and STATE_ERROR; agy 1.2.14 has
-// not been observed emitting them.
+// proto also declares STATE_WAITING_FOR_USER; agy 1.5.9 has not been observed
+// emitting it.
 type StepState string
 
-// Step states observed in agy 1.2.14.
+// Step states observed in agy 1.5.9. StepDone and StepError are terminal: a
+// failed tool step goes from StepActive to StepError, with ToolInfo.Error set,
+// and is never followed by StepDone.
 const (
 	StepActive StepState = "ACTIVE"
 	StepDone   StepState = "DONE"
+	StepError  StepState = "ERROR"
 )
 
 // StepType is the step discriminator.
@@ -155,9 +169,11 @@ const (
 // finish, error, ...); agy collapses tool actions into StepTool with ToolName.
 type StepType string
 
-// Step types observed in agy 1.2.14.
+// Step types observed in agy 1.5.9. StepErrorMessage precedes a failed
+// result and carries no payload.
 const (
 	StepAgentResponse StepType = "agent_response"
+	StepErrorMessage  StepType = "error_message"
 	StepFinish        StepType = "finish"
 	StepSystemMessage StepType = "system_message"
 	StepTool          StepType = "tool"
@@ -241,7 +257,7 @@ func (u *JSONUsage) Add(u2 *JSONUsage) {
 // a result is unknown.
 type ResultStatus string
 
-// Result statuses observed in agy 1.2.14.
+// Result statuses observed in agy 1.5.9.
 const (
 	StatusError   ResultStatus = "ERROR"
 	StatusSuccess ResultStatus = "SUCCESS"
@@ -263,6 +279,9 @@ type JSONOutput struct {
 	Usage            JSONUsage          `json:"usage"`
 	Command          JSONCommand        `json:"command,omitzero"`
 	DeniedActions    []JSONDeniedAction `json:"denied_actions,omitzero"`
+	// FinishedReason says why a turn ended early; it is omitted when the turn
+	// finished normally.
+	FinishedReason FinishedReason `json:"finished_reason,omitzero"`
 }
 
 // AsError returns the turn failure, if any.
@@ -276,6 +295,19 @@ func (r *JSONOutput) AsError() error {
 		return fmt.Errorf("agy returned status %q: %s", r.Status, r.Error)
 	}
 }
+
+// FinishedReason is why a turn ended early, as listed in `agy changelog`.
+type FinishedReason string
+
+// Finished reasons.
+const (
+	// FinishedError is any failure other than a timeout or interruption.
+	FinishedError FinishedReason = "error"
+	// FinishedInterrupted is a canceled run, such as Ctrl+C.
+	FinishedInterrupted FinishedReason = "interrupted"
+	// FinishedPrintTimeout means --print-timeout expired; the response is partial.
+	FinishedPrintTimeout FinishedReason = "print_timeout"
+)
 
 // JSONDeniedAction is a tool action that print mode denied.
 type JSONDeniedAction struct {

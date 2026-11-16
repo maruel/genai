@@ -22,7 +22,7 @@ background.
 
 ## Keeping DTOs in sync
 
-`dto.go` matches agy 1.3.2. To check a new release:
+`dto.go` matches agy 1.5.9. To check a new release:
 
 1. Read `agy changelog` for print-mode and stream-json entries.
 2. Dump the upstream structs and compare them with `dto.go`:

@@ -26,6 +26,7 @@ import (
 	"time"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal/ghrelease"
 	"github.com/maruel/genai/providers/llamacpp"
 )
@@ -34,11 +35,14 @@ import (
 // Stable releases point to the nightly build containing their binaries.
 const Version = "v1.0.0"
 
+var _ genai.Server = (*Server)(nil)
+
 // Server is a llama-server instance.
 type Server struct {
 	url  string
-	done <-chan error
 	cmd  *exec.Cmd
+	done chan struct{}
+	err  error // Written before done closes.
 }
 
 // New starts llama-server and waits until it is healthy.
@@ -112,28 +116,16 @@ func New(ctx context.Context, exe string, cfg *Config) (*Server, error) {
 	if err := cmd.Start(); err != nil {
 		return nil, err
 	}
-	done := make(chan error, 1)
+	srv := &Server{url: u, cmd: cmd, done: make(chan struct{})}
 	go func() {
 		err2 := cmd.Wait()
-		// CommandContext reports its context even when the one shutdown signal
-		// produced a successful exit. That is expected termination, not cleanup failure.
-		if ctx.Err() != nil && errors.Is(err2, ctx.Err()) && cmd.ProcessState != nil && cmd.ProcessState.Success() {
-			err2 = nil
-		}
-		if er, ok := errors.AsType[*exec.ExitError](err2); ok {
-			s, ok := er.Sys().(syscall.WaitStatus)
-			if ok && shutdownRequested.Load() && s.Signaled() && s.Signal() == os.Interrupt {
-				// The owner requested this interrupt. Other signals remain failures,
-				// including crashes or external termination during shutdown.
-				err2 = nil
-			}
-			// TODO: on Windows, figure out how to differentiate between normal quitting and an error.
-		}
-		done <- err2
-		close(done)
+		// llama-server shuts down gracefully and returns 0 on the first SIGINT
+		// or SIGTERM; a second one forces exit(1), which is reported. Before its
+		// handler is installed, SIGINT terminates it.
+		srv.err = base.ServerExit(err2, cmd.ProcessState, shutdownRequested.Load(), os.Interrupt)
+		close(srv.done)
 	}()
 
-	srv := &Server{url: u, done: done, cmd: cmd}
 	// Wait for the server to be ready.
 	c, err := llamacpp.New(ctx, genai.ProviderOptionRemote(u))
 	if err != nil {
@@ -145,8 +137,8 @@ func New(ctx context.Context, exe string, cfg *Config) (*Server, error) {
 			break
 		}
 		select {
-		case err := <-done:
-			return nil, fmt.Errorf("starting llm server failed while querying for health: %w", err)
+		case <-srv.done:
+			return nil, fmt.Errorf("starting llm server failed while querying for health: %w", srv.err)
 		case <-ctx.Done():
 			return nil, errors.Join(ctx.Err(), srv.Close())
 		case <-time.After(20 * time.Millisecond):
@@ -159,24 +151,34 @@ func New(ctx context.Context, exe string, cfg *Config) (*Server, error) {
 	return srv, nil
 }
 
-// Close stops the server and waits for it to exit.
+// Close implements genai.Server.
 func (s *Server) Close() error {
 	err := s.cmd.Cancel()
 	if errors.Is(err, os.ErrProcessDone) {
 		err = nil
 	}
-	return errors.Join(err, <-s.done)
+	<-s.done
+	return errors.Join(err, s.err)
 }
 
-// URL returns the URL to the server.
+// URL implements genai.Server.
 func (s *Server) URL() string {
 	return s.url
 }
 
-// Done is a channel to listen to the server's termination. No need to call
-// Close() if it is set.
-func (s *Server) Done() <-chan error {
+// Done implements genai.Server.
+func (s *Server) Done() <-chan struct{} {
 	return s.done
+}
+
+// Err implements genai.Server.
+func (s *Server) Err() error {
+	select {
+	case <-s.done:
+		return s.err
+	default:
+		return nil
+	}
 }
 
 // Config configures a managed llama-server process.

@@ -1426,6 +1426,31 @@ type ProviderPing interface {
 	Ping(ctx context.Context) error
 }
 
+// Server is a local process that serves a provider's API, such as llamacppsrv.Server, and that its owner
+// stops with Close.
+//
+// The process can exit on its own at any time. Like context.Context, Done is closed when the process exits,
+// and Err then reports the exit result; Err returns nil while Done is open. Any number of goroutines may
+// observe Done and Err.
+//
+// A stop requested by Close or by cancelling the context that started the process reports nil when the
+// process exits successfully or is terminated by the signal the implementation sends to stop it. On
+// Windows the stop terminates the process, so a requested stop always reports nil. Any other exit is an
+// error: a failure status or another signal after a requested stop, such as a crash during shutdown, and
+// any exit nobody requested, even a successful one.
+//
+// Close stops the process if it is still running, waits for it to exit and returns its exit result, joined
+// with any failure to request the stop. Observing Done does not consume that result. Close is idempotent.
+type Server interface {
+	io.Closer
+	// URL is the base URL of the served API.
+	URL() string
+	// Done is closed when the process exits.
+	Done() <-chan struct{}
+	// Err is the process exit result once Done is closed.
+	Err() error
+}
+
 // ScoreboardVariant is a named scoreboard for a specific backend or region of a provider.
 type ScoreboardVariant struct {
 	// Name is the display name for this variant, e.g. "Intl", "US".

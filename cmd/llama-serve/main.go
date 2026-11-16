@@ -95,8 +95,8 @@ func mainImpl() error {
 	case <-sigChan:
 		log.Println("Received signal, shutting down...")
 		cancel()
-	case err := <-server.Done():
-		if err != nil {
+	case <-server.Done():
+		if err := server.Err(); err != nil {
 			return err
 		}
 		log.Println("Server exited")

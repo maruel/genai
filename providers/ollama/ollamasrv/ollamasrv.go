@@ -19,10 +19,11 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
-	"syscall"
+	"sync/atomic"
 	"time"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal/ghrelease"
 	"github.com/maruel/genai/providers/ollama"
 )
@@ -36,11 +37,14 @@ const Version = "v0.40.14"
 // When updating the value above, regenerate the recordings with:
 // RECORD=failure_only go test ./providers/ollama/...
 
+var _ genai.Server = (*Server)(nil)
+
 // Server is an "ollama serve" instance.
 type Server struct {
 	url  string
-	done <-chan error
 	cmd  *exec.Cmd
+	done chan struct{}
+	err  error // Written before done closes.
 }
 
 // New creates a new instance of the ollama serve server and ensures the server is healthy.
@@ -108,7 +112,12 @@ func New(ctx context.Context, exe string, logOutput io.Writer, hostPort string, 
 		cmd.Env = append(cmd.Env, "DYLD_LIBRARY_PATH="+root+":"+os.Getenv("DYLD_LIBRARY_PATH"))
 	}
 	cmd.Env = append(cmd.Env, env...)
+	// Close and context cancellation request the stop. "ollama serve" closes
+	// its listener, unloads its runners and returns 0 on SIGINT or SIGTERM;
+	// before its handler is installed, SIGINT terminates it.
+	var requested atomic.Bool
 	cmd.Cancel = func() error {
+		requested.Store(true)
 		if runtime.GOOS == "windows" {
 			return cmd.Process.Kill()
 		}
@@ -117,31 +126,16 @@ func New(ctx context.Context, exe string, logOutput io.Writer, hostPort string, 
 	if err = cmd.Start(); err != nil {
 		return nil, fmt.Errorf("failed to start ollama: %w", err)
 	}
-	done := make(chan error)
+	srv := &Server{url: u, cmd: cmd, done: make(chan struct{})}
 	go func() {
-		err2 := cmd.Wait()
-		if er, ok := errors.AsType[*exec.ExitError](err2); ok {
-			s, ok := er.Sys().(syscall.WaitStatus)
-			if ok && s.Signaled() {
-				// It was simply killed.
-				err2 = nil
-			}
-			if runtime.GOOS == "windows" {
-				// We need to figure out how to differentiate between normal quitting
-				// and an error.
-				err2 = nil
-			}
-		}
-		done <- err2
-		close(done)
+		srv.err = base.ServerExit(cmd.Wait(), cmd.ProcessState, requested.Load(), os.Interrupt)
+		close(srv.done)
 	}()
 
 	// Wait for the server to be ready.
 	c, err := ollama.New(ctx, genai.ProviderOptionRemote(u))
 	if err != nil {
-		_ = cmd.Cancel()
-		<-done //nolint:errcheck // Wait for process cleanup while returning the client setup error.
-		return nil, fmt.Errorf("failed to create ollama client: %w", err)
+		return nil, errors.Join(fmt.Errorf("failed to create ollama client: %w", err), srv.Close())
 	}
 	// Loop until the server is healthy, process exits or the context is canceled.
 	for ctx.Err() == nil {
@@ -149,35 +143,45 @@ func New(ctx context.Context, exe string, logOutput io.Writer, hostPort string, 
 			break
 		}
 		select {
-		case err := <-done:
-			return nil, fmt.Errorf("starting ollama server failed while querying for health: %w", err)
+		case <-srv.done:
+			return nil, fmt.Errorf("starting ollama server failed while querying for health: %w", srv.err)
 		case <-ctx.Done():
-			_ = cmd.Cancel()
-			<-done //nolint:errcheck // Wait for process cleanup while returning the context error.
-			return nil, ctx.Err()
+			return nil, errors.Join(ctx.Err(), srv.Close())
 		case <-time.After(20 * time.Millisecond):
 		}
 	}
 
-	return &Server{url: u, done: done, cmd: cmd}, nil
+	return srv, nil
 }
 
-// Close stops the Ollama server and waits for it to exit.
+// Close implements genai.Server.
 func (s *Server) Close() error {
-	_ = s.cmd.Cancel()
-	err := <-s.done
-	return err
+	err := s.cmd.Cancel()
+	if errors.Is(err, os.ErrProcessDone) {
+		err = nil
+	}
+	<-s.done
+	return errors.Join(err, s.err)
 }
 
-// URL returns the URL to the server.
+// URL implements genai.Server.
 func (s *Server) URL() string {
 	return s.url
 }
 
-// Done is a channel to listen to the server's termination. No need to call
-// Close() if it is set.
-func (s *Server) Done() <-chan error {
+// Done implements genai.Server.
+func (s *Server) Done() <-chan struct{} {
 	return s.done
+}
+
+// Err implements genai.Server.
+func (s *Server) Err() error {
+	select {
+	case <-s.done:
+		return s.err
+	default:
+		return nil
+	}
 }
 
 // DownloadRelease downloads a specific release from GitHub into the specified

@@ -18,10 +18,13 @@ import (
 	"iter"
 	"math"
 	"net/http"
+	"os"
 	"reflect"
+	"runtime"
 	"strconv"
 	"strings"
 	"sync"
+	"syscall"
 	"time"
 	"unsafe"
 
@@ -855,4 +858,29 @@ func MimeByExt(ext string) string {
 }
 
 func yieldNothing[T any](yield func(T) bool) {
+}
+
+// ServerExit applies the genai.Server exit rule to a process that exec.Cmd.Wait returned err for. requested reports
+// whether Close or the context requested the stop, and stop is the signal the implementation sends for it.
+//
+// ps is exec.Cmd.ProcessState after Wait. Wait leaves it nil only when waiting for the process failed
+// (os.Process.Wait returned an error), so there is no exit status to classify and err, that failure, is
+// returned as is.
+func ServerExit(err error, ps *os.ProcessState, requested bool, stop os.Signal) error {
+	if ps == nil {
+		return err
+	}
+	if !requested {
+		if err == nil {
+			return fmt.Errorf("unexpected exit: %s", ps)
+		}
+		return err
+	}
+	if ps.Success() || runtime.GOOS == "windows" {
+		return nil
+	}
+	if ws, ok := ps.Sys().(syscall.WaitStatus); ok && ws.Signaled() && ws.Signal() == stop {
+		return nil
+	}
+	return err
 }

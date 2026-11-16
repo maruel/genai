@@ -83,9 +83,18 @@ type InputUserMsg struct {
 	InlinePastes   []string             `json:"inline_pastes,omitempty"`
 }
 
+// Role is the role of a message body.
+type Role string
+
+// Role values.
+const (
+	RoleAssistant Role = "assistant"
+	RoleUser      Role = "user"
+)
+
 // InputUserContent is the message body within an InputUserMsg.
 type InputUserContent struct {
-	Role    string              `json:"role"` // always "user"
+	Role    Role                `json:"role"` // RoleUser
 	Content []InputContentBlock `json:"content"`
 }
 
@@ -1803,7 +1812,7 @@ type ContextSkill struct {
 type AssistantMessageBody struct {
 	ID           string                       `json:"id"`
 	Type         string                       `json:"type,omitempty"`
-	Role         string                       `json:"role"`
+	Role         Role                         `json:"role"`
 	Model        string                       `json:"model"`
 	Content      []OutputContentBlock         `json:"content"`
 	Usage        MsgUsage                     `json:"usage"`
@@ -2058,7 +2067,7 @@ type OutputUserMsg struct {
 	UUID            string               `json:"uuid"`
 	SessionID       string               `json:"session_id,omitempty"`
 	Timestamp       string               `json:"timestamp,omitempty"`
-	Message         json.RawMessage      `json:"message"`
+	Message         OutputUserMessage    `json:"message"`
 	ParentToolUseID string               `json:"parent_tool_use_id"`
 	ToolUseResult   json.RawMessage      `json:"tool_use_result,omitempty"`
 	AgentID         string               `json:"agent_id,omitempty"`
@@ -2076,18 +2085,6 @@ type OutputUserMsg struct {
 
 	// Runtime CLI metadata not declared by SDK 0.3.310.
 	ToolResultMeta []ToolResultMetadata `json:"tool_result_meta,omitempty"`
-}
-
-// DecodeMessage decodes the raw user message body into its concrete wire shape.
-func (m *OutputUserMsg) DecodeMessage() (OutputUserMessage, error) {
-	var out OutputUserMessage
-	if len(m.Message) == 0 {
-		return out, nil
-	}
-	if err := json.Unmarshal(m.Message, &out); err != nil {
-		return OutputUserMessage{}, err
-	}
-	return out, nil
 }
 
 // DecodeToolUseResult decodes the top-level tool_use_result summary.
@@ -2980,87 +2977,54 @@ type OutputElicitationCompleteMsg struct {
 
 // ---------- output helper types ----------
 
-// OutputUserMessageKind identifies the concrete shape of an OutputUserMessage.
-type OutputUserMessageKind string
-
-// OutputUserMessageKind values.
-const (
-	// OutputUserMessageText is a user message with content encoded as a string.
-	OutputUserMessageText OutputUserMessageKind = "text"
-	// OutputUserMessageBlock is a user message with content encoded as blocks.
-	OutputUserMessageBlock OutputUserMessageKind = "block"
-	// OutputUserMessageToolResult is a top-level standard tool result body.
-	OutputUserMessageToolResult OutputUserMessageKind = "tool_result"
-)
-
-// OutputUserMessage is a typed union for OutputUserMsg.Message.
+// OutputUserMessage is the body of an OutputUserMsg.
+//
+// A body with RoleUser is a prompt or carries inline tool results; its content
+// is text or blocks. A role-less body is the result of the tool named by
+// OutputUserMsg.ParentToolUseID.
 type OutputUserMessage struct {
-	Kind       OutputUserMessageKind
-	Role       string
-	Text       string
-	Content    []OutputUserContentBlock
-	ToolResult OutputToolResult
+	Role       Role
+	Content    UserMessageContent // Set when Role is RoleUser.
+	ToolResult OutputToolResult   // Set when Role is not RoleUser.
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (m *OutputUserMessage) UnmarshalJSON(data []byte) error {
-	data = bytes.TrimSpace(data)
 	*m = OutputUserMessage{}
-	if len(data) == 0 || string(data) == "null" {
+	if string(bytes.TrimSpace(data)) == "null" {
 		return nil
 	}
-	var p struct {
-		Role    string          `json:"role"`
-		Content json.RawMessage `json:"content"`
-	}
+	var p outputUserBody
 	if err := json.Unmarshal(data, &p); err != nil {
 		return err
 	}
 	if len(p.Content) == 0 {
 		return errors.New("user message content is required")
 	}
-	if p.Role == "user" {
-		m.Role = p.Role
-		content := bytes.TrimSpace(p.Content)
-		if len(content) == 0 || string(content) == "null" {
-			return errors.New("user message content is required")
-		}
-		if content[0] == '"' {
-			var text string
-			if err := json.Unmarshal(content, &text); err != nil {
-				return err
-			}
-			m.Kind = OutputUserMessageText
-			m.Text = text
-			return nil
-		}
-		var blocks []OutputUserContentBlock
-		if err := json.Unmarshal(content, &blocks); err != nil {
-			return err
-		}
-		m.Kind = OutputUserMessageBlock
-		m.Content = blocks
-		return nil
+	if p.Role != RoleUser {
+		return json.Unmarshal(data, &m.ToolResult)
 	}
-	var res OutputToolResult
-	if err := json.Unmarshal(data, &res); err != nil {
-		return err
-	}
-	m.Kind = OutputUserMessageToolResult
-	m.ToolResult = res
-	return nil
+	m.Role = p.Role
+	return json.Unmarshal(p.Content, &m.Content)
 }
 
-// OutputUserText is a plain-text user message body.
-type OutputUserText struct {
-	Role    string `json:"role"`
-	Content string `json:"content"`
+// MarshalJSON implements json.Marshaler.
+func (m OutputUserMessage) MarshalJSON() ([]byte, error) { //nolint:gocritic // hugeParam: a value receiver marshals non-addressable OutputUserMsg values too.
+	if m.Role != RoleUser {
+		return json.Marshal(m.ToolResult)
+	}
+	content, err := json.Marshal(m.Content)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(outputUserBody{Role: m.Role, Content: content})
 }
 
-// OutputUserBlock is a block-style user message body.
-type OutputUserBlock struct {
-	Role    string                   `json:"role"`
-	Content []OutputUserContentBlock `json:"content"`
+// outputUserBody holds the role and raw content of an OutputUserMessage; the
+// role selects the type the content decodes into.
+type outputUserBody struct {
+	Role    Role            `json:"role"`
+	Content json.RawMessage `json:"content"`
 }
 
 // OutputUserContentBlock is a single content block in a user message.

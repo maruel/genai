@@ -205,17 +205,11 @@ func TestOutputMessages(t *testing.T) {
 		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
 			t.Fatal(err)
 		}
-		msg, err := got.DecodeMessage()
-		if err != nil {
-			t.Fatal(err)
+		blocks := got.Message.Content.Blocks
+		if got.Message.Role != RoleUser || len(blocks) != 1 {
+			t.Fatalf("Message = %+v, want one user content block", got.Message)
 		}
-		if msg.Kind != OutputUserMessageBlock {
-			t.Fatalf("Kind = %q, want %q", msg.Kind, OutputUserMessageBlock)
-		}
-		if len(msg.Content) != 1 {
-			t.Fatalf("len(Content) = %d, want 1", len(msg.Content))
-		}
-		block := msg.Content[0]
+		block := blocks[0]
 		if block.ToolUseID != "toolu_ask" || !block.IsError || block.Content.Text != "Answer questions?" {
 			t.Fatalf("tool result block = %+v, want errored AskUserQuestion result", block)
 		}
@@ -227,18 +221,33 @@ func TestOutputMessages(t *testing.T) {
 			t.Errorf("ToolUseResult.Text = %q, want error summary", res.Text)
 		}
 	})
+	t.Run("user_text_round_trip", func(t *testing.T) {
+		// Claude Code resumes a compacted session with a string summary.
+		const data = `{"role":"user","content":"This session is being continued."}`
+		var got OutputUserMessage
+		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
+			t.Fatal(err)
+		}
+		if got.Role != RoleUser || got.Content.Text != "This session is being continued." || got.Content.Blocks != nil {
+			t.Fatalf("Message = %+v, want the text summary", got)
+		}
+		out, err := json.Marshal(got)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if string(out) != data {
+			t.Errorf("round trip = %s, want %s", out, data)
+		}
+	})
 	t.Run("user_top_level_tool_result", func(t *testing.T) {
 		const data = `{"type":"user","message":{"content":[{"type":"text","text":"file not found"}],"is_error":true},"parent_tool_use_id":"toolu_read"}`
 		var got OutputUserMsg
 		if err := internal.UnmarshalJSON([]byte(data), &got); err != nil {
 			t.Fatal(err)
 		}
-		msg, err := got.DecodeMessage()
-		if err != nil {
-			t.Fatal(err)
-		}
-		if msg.Kind != OutputUserMessageToolResult {
-			t.Fatalf("Kind = %q, want %q", msg.Kind, OutputUserMessageToolResult)
+		msg := got.Message
+		if msg.Role != "" {
+			t.Fatalf("Role = %q, want a role-less tool result", msg.Role)
 		}
 		if !msg.ToolResult.IsError || len(msg.ToolResult.Content.Blocks) != 1 || msg.ToolResult.Content.Blocks[0].Text != "file not found" {
 			t.Fatalf("ToolResult = %+v, want error block content", msg.ToolResult)

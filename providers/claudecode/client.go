@@ -916,7 +916,7 @@ func writeUserMsg(w io.Writer, msg *genai.Message) error {
 	}
 	m := InputUserMsg{
 		Type:    InputUser,
-		Message: InputUserContent{Role: "user", Content: blocks},
+		Message: InputUserContent{Role: RoleUser, Content: blocks},
 	}
 	data, err := json.Marshal(m)
 	if err != nil {

@@ -450,15 +450,8 @@ Do not answer the question yourself.`)
 				if err := json.Unmarshal(line, &m); err != nil {
 					t.Fatalf("parse user: %v", err)
 				}
-				msg, err := m.DecodeMessage()
-				if err != nil {
-					t.Fatalf("decode user message: %v", err)
-				}
-				if msg.Kind != OutputUserMessageBlock {
-					continue
-				}
-				for i := range msg.Content {
-					b := &msg.Content[i]
+				for i := range m.Message.Content.Blocks {
+					b := &m.Message.Content.Blocks[i]
 					if b.Type == "tool_result" && b.ToolUseID == toolUseID {
 						if b.IsError {
 							t.Fatalf("tool_result for %s is an error: %q", toolUseID, b.Content.Text)

@@ -1013,8 +1013,8 @@ func buildResult(res *OutputResultMsg, asstBlocks []OutputContentBlock, summarie
 			usage = res.ModelUsage
 		}
 		if len(usage) == 1 {
-			for _, m := range usage {
-				r.Usage.ContextWindow = m.ContextWindow
+			for k := range usage {
+				r.Usage.ContextWindow = usage[k].ContextWindow
 			}
 		}
 	}

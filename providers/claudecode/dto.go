@@ -133,6 +133,7 @@ const (
 	ControlRenameSession       ControlSubtype = "rename_session"
 	ControlSetColor            ControlSubtype = "set_color"
 	ControlListPermissionRules ControlSubtype = "list_permission_rules"
+	ControlSetHasSubscribers   ControlSubtype = "set_has_subscribers"
 )
 
 // ControlReqInitialize initializes the SDK session.
@@ -298,6 +299,7 @@ type ControlReqMcpCall struct {
 	InputFiles        []base.Unknown             `json:"input_files,omitempty"`
 	OutputFiles       []base.Unknown             `json:"output_files,omitempty"`
 	ResultNotForModel bool                       `json:"result_not_for_model,omitempty"`
+	CheckPermissions  bool                       `json:"check_permissions,omitempty"`
 }
 
 // ControlReqFileSuggestions requests file-path completions.
@@ -371,6 +373,9 @@ type ControlReqReloadPlugins struct {
 	Subtype           ControlSubtype `json:"subtype"` // ControlReloadPlugins
 	HoldOnCacheImpact bool           `json:"hold_on_cache_impact,omitempty"`
 	AddPlugins        []PluginConfig `json:"add_plugins,omitempty"`
+	// RefuseIfBusy fails the request with error_code reload_plugins_busy
+	// instead of reloading under a running turn.
+	RefuseIfBusy bool `json:"refuse_if_busy,omitempty"`
 }
 
 // PluginConfig identifies a local plugin to load into the session.
@@ -492,6 +497,14 @@ type ControlReqSetColor struct {
 // ControlReqListPermissionRules requests effective permission rules.
 type ControlReqListPermissionRules struct {
 	Subtype ControlSubtype `json:"subtype"`
+}
+
+// ControlReqSetHasSubscribers tells Claude Code whether anybody watches the
+// stream-json output the host relays.
+type ControlReqSetHasSubscribers struct {
+	Subtype ControlSubtype `json:"subtype"` // ControlSetHasSubscribers
+	// HasSubscribers is nil when the host does not know, which counts as true.
+	HasSubscribers *bool `json:"has_subscribers"`
 }
 
 // JSONSchema is an open JSON Schema object.
@@ -746,6 +759,9 @@ const (
 	OutputPromptSuggestion OutputType = "prompt_suggestion"
 	// OutputConversationReset announces a replacement conversation ID.
 	OutputConversationReset OutputType = "conversation_reset"
+	// OutputCommandLifecycle reports the fate of a queued command. The
+	// runtime CLI emits it; SDK 0.3.325 does not declare it.
+	OutputCommandLifecycle OutputType = "command_lifecycle"
 
 	// Control protocol types.
 
@@ -833,6 +849,15 @@ const (
 	SystemMirrorError SystemSubtype = "mirror_error"
 	// SystemInformational reports informational text from the agent loop.
 	SystemInformational SystemSubtype = "informational"
+	// SystemSessionWritesLost reports transcript or global config writes lost
+	// to a full disk or quota.
+	SystemSessionWritesLost SystemSubtype = "session_writes_lost"
+	// SystemDevIntent reports the kind of app development the session shows.
+	// The runtime CLI emits it; SDK 0.3.325 does not declare it.
+	SystemDevIntent SystemSubtype = "dev_intent"
+	// SystemCodeChangePublished reports a pull request or change the session
+	// acted on. The runtime CLI emits it; SDK 0.3.325 does not declare it.
+	SystemCodeChangePublished SystemSubtype = "code_change_published"
 )
 
 // ---------- envelope probe ----------
@@ -905,6 +930,37 @@ type OutputInitMsg struct {
 	// Runtime CLI init metadata not declared by SDK 0.3.287.
 	PerTurnEffortActive bool   `json:"per_turn_effort_active,omitempty"`
 	ViewMode            string `json:"view_mode,omitempty"`
+	// Runtime CLI init metadata not declared by SDK 0.3.325.
+
+	// OriginalCwd anchors file permission checks. Unlike Cwd it does not
+	// follow the shell.
+	OriginalCwd           string               `json:"original_cwd,omitempty"`
+	AdditionalDirectories []string             `json:"additional_directories,omitempty"`
+	ScratchpadPath        string               `json:"scratchpad_path,omitempty"`
+	SyncedSkillsPath      string               `json:"synced_skills_path,omitempty"`
+	PowerShellPath        string               `json:"powershell_path,omitempty"`
+	WorkerEpoch           int                  `json:"worker_epoch,omitempty"`
+	UltrathinkAvailable   bool                 `json:"ultrathink_available,omitempty"`
+	UltrathinkTypedRaises bool                 `json:"ultrathink_typed_raises,omitempty"`
+	FlagRestateNoop       bool                 `json:"flag_restate_noop,omitempty"`
+	MCPServerErrors       []InitMCPServerError `json:"mcp_server_errors,omitempty"`
+	ClientThinking        *InitClientThinking  `json:"client_thinking,omitzero"`
+}
+
+// InitMCPServerError is an MCP server configuration error in system/init.
+type InitMCPServerError struct {
+	Name    string `json:"name"`
+	Type    string `json:"type"`
+	Message string `json:"message"`
+}
+
+// InitClientThinking is the thinking configuration the host requested.
+type InitClientThinking struct {
+	// MaxThinkingTokens is nil when the host set no budget.
+	MaxThinkingTokens *int64 `json:"max_thinking_tokens"`
+	// ThinkingDisplay is "summarized", "omitted" or "highlights"; nil keeps
+	// the default.
+	ThinkingDisplay *string `json:"thinking_display"`
 }
 
 // InitMCPServer is an MCP server entry in the system/init message.
@@ -924,10 +980,22 @@ type InitPlugin struct {
 
 // InitPluginErr is a plugin load error in the system/init message.
 type InitPluginErr struct {
-	Plugin  string `json:"plugin"`
-	Type    string `json:"type"`
-	Message string `json:"message"`
+	Plugin      string          `json:"plugin"`
+	Type        string          `json:"type"`
+	Message     string          `json:"message"`
+	Path        string          `json:"path,omitempty"`
+	ManagedLock InitManagedLock `json:"managed_lock,omitzero"`
 }
+
+// InitManagedLock identifies the managed setting that pins a plugin.
+type InitManagedLock struct {
+	PluginEnabled bool   `json:"plugin_enabled"`
+	Name          string `json:"name"`
+	Marketplace   string `json:"marketplace,omitempty"`
+}
+
+// IsZero reports whether no managed lock was supplied.
+func (m InitManagedLock) IsZero() bool { return m.Name == "" }
 
 // InitMemPaths holds absolute directory paths for memory stores.
 type InitMemPaths struct {
@@ -975,6 +1043,9 @@ type OutputSystemMsg struct {
 	SkipTranscript bool              `json:"skip_transcript,omitempty"`
 	Ambient        bool              `json:"ambient,omitempty"`
 	ResourceLinks  []MCPResourceLink `json:"resource_links,omitempty"`
+	// OwnedBySubagent reports a task_started task launched by a subagent.
+	// Runtime CLI field not declared by SDK 0.3.325.
+	OwnedBySubagent bool `json:"owned_by_subagent,omitempty"`
 
 	// api_retry fields.
 	Attempt     int             `json:"attempt,omitempty"`
@@ -1005,6 +1076,8 @@ type OutputSystemMsg struct {
 	CompactMetadata     CompactMetadataWire `json:"compact_metadata,omitzero"`
 	CompactResult       string              `json:"compact_result,omitempty"`
 	CompactError        string              `json:"compact_error,omitempty"`
+	CompactOutputChars  int64               `json:"compact_output_chars,omitzero"`
+	LogicalParentUUID   string              `json:"logical_parent_uuid,omitempty"`
 	NoResponse          RetryNoResponse     `json:"no_response,omitzero"`
 	Prompt              json.RawMessage     `json:"prompt,omitempty"`
 	Reason              string              `json:"reason,omitempty"`
@@ -1024,10 +1097,17 @@ type OutputSystemMsg struct {
 	Mode                string              `json:"mode,omitempty"`
 	Memories            []MemoryRecallEntry `json:"memories,omitempty"`
 
-	// vcs_state_changed fields.
+	// vcs_state_changed and dev_intent fields. Kind holds a VCSStateKind or a
+	// DevIntentKind depending on Subtype; dev_intent puts its DevIntentTrigger
+	// in Trigger.
 	VCSKind VCSStateKind `json:"kind,omitempty"`
 	Branch  string       `json:"branch,omitempty"`
 	Cwd     string       `json:"cwd,omitempty"`
+
+	// session_writes_lost fields.
+	ErrorCode            WritesLostErrorCode `json:"error_code,omitempty"`
+	Lost                 []WritesLostKind    `json:"lost,omitempty"`
+	TranscriptSessionIDs []string            `json:"transcript_session_ids,omitempty"`
 
 	// thinking_tokens fields.
 	EstimatedTokens      int64 `json:"estimated_tokens,omitzero"`
@@ -1044,6 +1124,112 @@ type OutputVCSStateChangedMsg struct {
 	UUID      string        `json:"uuid"`
 	SessionID string        `json:"session_id"`
 }
+
+// OutputDevIntentMsg reports the kind of app development a session shows.
+// The runtime CLI emits it; SDK 0.3.325 does not declare it.
+type OutputDevIntentMsg struct {
+	Type      OutputType       `json:"type"`    // OutputSystem
+	Subtype   SystemSubtype    `json:"subtype"` // SystemDevIntent
+	Kind      DevIntentKind    `json:"kind"`
+	Trigger   DevIntentTrigger `json:"trigger,omitempty"`
+	UUID      string           `json:"uuid"`
+	SessionID string           `json:"session_id"`
+}
+
+// DevIntentKind is the kind of development a dev_intent message reports.
+type DevIntentKind string
+
+// Dev intent kinds.
+const (
+	DevIntentAndroidApp DevIntentKind = "android_app"
+	DevIntentIOSApp     DevIntentKind = "ios_app"
+)
+
+// DevIntentTrigger is the evidence behind a dev_intent message.
+type DevIntentTrigger string
+
+// Dev intent triggers.
+const (
+	DevIntentAndroidCommand  DevIntentTrigger = "android_command"
+	DevIntentAndroidImport   DevIntentTrigger = "android_import"
+	DevIntentAndroidManifest DevIntentTrigger = "android_manifest"
+	DevIntentGradlePlugin    DevIntentTrigger = "gradle_plugin"
+	DevIntentIOSCommand      DevIntentTrigger = "ios_command"
+	DevIntentJavaEdit        DevIntentTrigger = "java_edit"
+	DevIntentKotlinEdit      DevIntentTrigger = "kotlin_edit"
+	DevIntentProjectScan     DevIntentTrigger = "project_scan"
+	DevIntentSwiftEdit       DevIntentTrigger = "swift_edit"
+	DevIntentUIKitImport     DevIntentTrigger = "uikit_import"
+	DevIntentXcodeProject    DevIntentTrigger = "xcode_project"
+)
+
+// OutputCodeChangePublishedMsg reports a pull request, merge request or
+// review change the session acted on. The runtime CLI emits it; SDK 0.3.325
+// does not declare it.
+type OutputCodeChangePublishedMsg struct {
+	Type    OutputType    `json:"type"`    // OutputSystem
+	Subtype SystemSubtype `json:"subtype"` // SystemCodeChangePublished
+	// Provider is the forge derived from URL, e.g. "github", "gitlab" or
+	// "gerrit".
+	Provider   string           `json:"provider"`
+	URL        string           `json:"url"`
+	Repo       string           `json:"repo"`
+	Identifier string           `json:"identifier"`
+	Action     CodeChangeAction `json:"action,omitempty"`
+	Branch     string           `json:"branch,omitempty"`
+	UUID       string           `json:"uuid"`
+	SessionID  string           `json:"session_id"`
+}
+
+// CodeChangeAction is what the session did to a published code change.
+type CodeChangeAction string
+
+// Code change actions.
+const (
+	CodeChangeAutoMergeDisabled CodeChangeAction = "auto-merge-disabled"
+	CodeChangeAutoMergeEnabled  CodeChangeAction = "auto-merge-enabled"
+	CodeChangeCheckedOut        CodeChangeAction = "checked-out"
+	CodeChangeClosed            CodeChangeAction = "closed"
+	CodeChangeCommented         CodeChangeAction = "commented"
+	CodeChangeCreated           CodeChangeAction = "created"
+	CodeChangeDraft             CodeChangeAction = "draft"
+	CodeChangeEdited            CodeChangeAction = "edited"
+	CodeChangeMerged            CodeChangeAction = "merged"
+	CodeChangePushed            CodeChangeAction = "pushed"
+	CodeChangeReady             CodeChangeAction = "ready"
+	CodeChangeReopened          CodeChangeAction = "reopened"
+	CodeChangeStarted           CodeChangeAction = "started"
+)
+
+// OutputSessionWritesLostMsg reports transcript or global config writes the
+// CLI could not save. Sent at most once, as the CLI exits with status 0.
+type OutputSessionWritesLostMsg struct {
+	Type                 OutputType          `json:"type"`    // OutputSystem
+	Subtype              SystemSubtype       `json:"subtype"` // SystemSessionWritesLost
+	ErrorCode            WritesLostErrorCode `json:"error_code"`
+	Lost                 []WritesLostKind    `json:"lost"`
+	TranscriptSessionIDs []string            `json:"transcript_session_ids,omitempty"`
+	UUID                 string              `json:"uuid"`
+	SessionID            string              `json:"session_id"`
+}
+
+// WritesLostErrorCode is why session writes failed.
+type WritesLostErrorCode string
+
+// Session writes lost error codes.
+const (
+	WritesLostEDQUOT WritesLostErrorCode = "EDQUOT"
+	WritesLostENOSPC WritesLostErrorCode = "ENOSPC"
+)
+
+// WritesLostKind is what a session_writes_lost message did not save.
+type WritesLostKind string
+
+// Session writes lost kinds.
+const (
+	WritesLostGlobalConfig WritesLostKind = "global_config"
+	WritesLostTranscript   WritesLostKind = "transcript"
+)
 
 // VCSStateKind identifies the version-control state change.
 type VCSStateKind string
@@ -1078,12 +1264,27 @@ const (
 
 // CompactMetadataWire is the compact_metadata object on compact_boundary system messages.
 type CompactMetadataWire struct {
-	Trigger           string                   `json:"trigger"`
-	PreTokens         int                      `json:"pre_tokens"`
-	PostTokens        int                      `json:"post_tokens,omitempty"`
-	Duration          base.DurationMS          `json:"duration_ms,omitempty"`
-	PreservedSegment  CompactPreservedSegment  `json:"preserved_segment,omitzero"`
-	PreservedMessages CompactPreservedMessages `json:"preserved_messages,omitzero"`
+	Trigger    string `json:"trigger"`
+	PreTokens  int    `json:"pre_tokens"`
+	PostTokens int    `json:"post_tokens,omitempty"`
+	// CumulativeDroppedTokens totals the context tokens every compaction so
+	// far removed. Runtime CLI field not declared by SDK 0.3.325.
+	CumulativeDroppedTokens int             `json:"cumulative_dropped_tokens,omitempty"`
+	Duration                base.DurationMS `json:"duration_ms,omitempty"`
+	// Runtime CLI fields not declared by SDK 0.3.325.
+	UserContext                    string                       `json:"user_context,omitempty"`
+	MessagesSummarized             int                          `json:"messages_summarized,omitempty"`
+	Precomputed                    bool                         `json:"precomputed,omitempty"`
+	PreCompactDiscoveredTools      []string                     `json:"pre_compact_discovered_tools,omitempty"`
+	PreCompactArtifactReadVersions []CompactArtifactReadVersion `json:"pre_compact_artifact_read_versions,omitempty"`
+	PreservedSegment               CompactPreservedSegment      `json:"preserved_segment,omitzero"`
+	PreservedMessages              CompactPreservedMessages     `json:"preserved_messages,omitzero"`
+}
+
+// CompactArtifactReadVersion is an artifact version read before compaction.
+type CompactArtifactReadVersion struct {
+	Slug string `json:"slug"`
+	Ver  string `json:"ver"`
 }
 
 // CompactPreservedSegment identifies a preserved linked transcript segment.
@@ -1100,6 +1301,7 @@ func (c CompactPreservedSegment) IsZero() bool { return c.HeadUUID == "" }
 type CompactPreservedMessages struct {
 	AnchorUUID string   `json:"anchor_uuid"`
 	UUIDs      []string `json:"uuids"`
+	AllUUIDs   []string `json:"all_uuids,omitempty"`
 }
 
 // IsZero reports whether no preserved messages were supplied.
@@ -1156,6 +1358,8 @@ type CommandWire struct {
 	Description  string   `json:"description"`
 	ArgumentHint string   `json:"argumentHint"`
 	Aliases      []string `json:"aliases,omitempty"`
+	Builtin      bool     `json:"builtin,omitempty"`
+	Plugin       string   `json:"plugin,omitempty"`
 }
 
 // ---------- assistant ----------
@@ -1257,6 +1461,13 @@ type ExtraUsageReport struct {
 type ToolUseMetadata struct {
 	ID          string `json:"id"`
 	DisplayName string `json:"display_name"`
+	// Runtime CLI fields not declared by SDK 0.3.325.
+	ServerDisplayName string `json:"server_display_name,omitempty"`
+	IconURL           string `json:"icon_url,omitempty"`
+	ServerID          string `json:"server_id,omitempty"`
+	ServerIDStamp     string `json:"server_id_stamp,omitempty"`
+	ToolName          string `json:"tool_name,omitempty"`
+	ArtifactPublish   bool   `json:"artifact_publish,omitempty"`
 }
 
 // AssistantMessageError classifies a synthetic assistant API error.
@@ -1757,6 +1968,12 @@ type OutputResultMsg struct {
 	SubagentStats   SubagentStats   `json:"subagent_stats,omitzero"`
 	QueuedTurnCount int             `json:"queued_turn_count,omitempty"`
 	ResultIndex     int             `json:"result_index,omitempty"`
+	// CredentialExpiresAt is when the claude.ai sign-in ends, as an ISO 8601
+	// instant.
+	CredentialExpiresAt string `json:"credential_expires_at,omitempty"`
+	// InvalidConfigFile names the config file that did not parse when
+	// StartupFailureReason is config_file_invalid.
+	InvalidConfigFile InvalidConfigFile `json:"invalid_config_file,omitzero"`
 }
 
 // AsError returns the Claude Code error represented by m, if any.
@@ -1770,6 +1987,17 @@ func (m *OutputResultMsg) AsError() error {
 	}
 	return errors.New("claude error (" + string(m.Subtype) + "): " + errMsg)
 }
+
+// InvalidConfigFile describes a config file that is not valid JSON.
+type InvalidConfigFile struct {
+	Path           string `json:"path"`
+	IsGlobal       bool   `json:"is_global"`
+	BackupSearched bool   `json:"backup_searched"`
+	BackupPath     string `json:"backup_path,omitempty"`
+}
+
+// IsZero reports whether no invalid config file was supplied.
+func (i InvalidConfigFile) IsZero() bool { return i.Path == "" }
 
 // PostQueueReason identifies what delayed a hosted stream or text post.
 type PostQueueReason string
@@ -1845,7 +2073,11 @@ type MessageOrigin struct {
 	VerifiedPeerPID int               `json:"verifiedPeerPid,omitempty"`
 	Subkind         string            `json:"subkind,omitempty"`
 	FireReason      string            `json:"fireReason,omitempty"`
-	RunID           string            `json:"runId,omitempty"`
+	// Producer is "session-task" for a task-notification a session task sent.
+	Producer string `json:"producer,omitempty"`
+	RunID    string `json:"runId,omitempty"`
+	// TaskKind is "mcp-task" for a task-notification from an MCP task.
+	TaskKind string `json:"taskKind,omitempty"`
 }
 
 // IsZero reports whether o carries no origin metadata.
@@ -1888,18 +2120,23 @@ type SubagentRefusedStats struct {
 
 // ModelUsageEntry holds per-model usage metadata in a result message.
 type ModelUsageEntry struct {
-	InputTokens              int64   `json:"inputTokens"`
-	OutputTokens             int64   `json:"outputTokens"`
-	ThinkingTokens           int64   `json:"thinkingTokens"`
-	CacheReadInputTokens     int64   `json:"cacheReadInputTokens"`
-	CacheCreationInputTokens int64   `json:"cacheCreationInputTokens"`
-	WebSearchRequests        int64   `json:"webSearchRequests"`
-	CostUSD                  float64 `json:"costUSD"`
-	ContextWindow            int64   `json:"contextWindow"`
-	MaxOutputTokens          int64   `json:"maxOutputTokens"`
-	CanonicalModel           string  `json:"canonicalModel,omitempty"`
-	Provider                 string  `json:"provider,omitempty"`
-	CostBasis                string  `json:"costBasis,omitempty"`
+	InputTokens              int64 `json:"inputTokens"`
+	OutputTokens             int64 `json:"outputTokens"`
+	ThinkingTokens           int64 `json:"thinkingTokens"`
+	CacheReadInputTokens     int64 `json:"cacheReadInputTokens"`
+	CacheCreationInputTokens int64 `json:"cacheCreationInputTokens"`
+	// CacheCreationEphemeral5mInputTokens and
+	// CacheCreationEphemeral1hInputTokens split CacheCreationInputTokens by
+	// cache lifetime. Their sum can be lower when a response omits it.
+	CacheCreationEphemeral5mInputTokens int64   `json:"cacheCreationEphemeral5mInputTokens,omitzero"`
+	CacheCreationEphemeral1hInputTokens int64   `json:"cacheCreationEphemeral1hInputTokens,omitzero"`
+	WebSearchRequests                   int64   `json:"webSearchRequests"`
+	CostUSD                             float64 `json:"costUSD"`
+	ContextWindow                       int64   `json:"contextWindow"`
+	MaxOutputTokens                     int64   `json:"maxOutputTokens"`
+	CanonicalModel                      string  `json:"canonicalModel,omitempty"`
+	Provider                            string  `json:"provider,omitempty"`
+	CostBasis                           string  `json:"costBasis,omitempty"`
 }
 
 // DeferredToolUse is a tool call deferred from a previous turn in the result message.
@@ -2209,8 +2446,10 @@ const (
 
 // RateLimitPeriod reports utilization and reset time for one quota window.
 type RateLimitPeriod struct {
-	Utilization float64 `json:"utilization"`
-	ResetsAt    float64 `json:"resetsAt,omitempty"`
+	Utilization        float64         `json:"utilization"`
+	ResetsAt           float64         `json:"resetsAt,omitempty"`
+	Status             RateLimitStatus `json:"status,omitempty"`
+	SurpassedThreshold float64         `json:"surpassedThreshold,omitempty"`
 }
 
 // RateLimitInfo is the nested rate limit info inside a rate_limit_event.
@@ -2225,6 +2464,7 @@ type RateLimitInfo struct {
 	OverageDisabledReason           OverageDisabledReason             `json:"overageDisabledReason,omitempty"`
 	IsUsingOverage                  bool                              `json:"isUsingOverage,omitempty"`
 	OverageInUse                    bool                              `json:"overageInUse,omitempty"`
+	OverageEnabled                  bool                              `json:"overageEnabled,omitempty"`
 	SurpassedThreshold              float64                           `json:"surpassedThreshold,omitempty"`
 	LimitScope                      string                            `json:"limitScope,omitempty"`
 	UnifiedWindows                  map[RateLimitType]RateLimitPeriod `json:"unifiedWindows,omitempty"`
@@ -2303,6 +2543,44 @@ type OutputConversationResetMsg struct {
 	UUID              string     `json:"uuid"`
 	SessionID         string     `json:"session_id"`
 }
+
+// OutputCommandLifecycleMsg reports the fate of a queued command: "queued",
+// then "started", then one terminal state. The runtime CLI emits it; SDK
+// 0.3.325 does not declare it.
+type OutputCommandLifecycleMsg struct {
+	Type OutputType `json:"type"` // OutputCommandLifecycle
+	// CommandUUID is the client-supplied uuid of the inbound message.
+	CommandUUID  string                `json:"command_uuid"`
+	State        CommandLifecycleState `json:"state"`
+	WakeupSource WakeupSource          `json:"wakeup_source,omitempty"`
+	// ScheduledFor is when a loop_wakeup fire was set for.
+	ScheduledFor base.TimeMS `json:"scheduled_for,omitzero"`
+	RanAhead     bool        `json:"ran_ahead,omitempty"`
+	UUID         string      `json:"uuid"`
+	SessionID    string      `json:"session_id"`
+}
+
+// CommandLifecycleState is the state of a queued command.
+type CommandLifecycleState string
+
+// Command lifecycle states.
+const (
+	CommandLifecycleCancelled CommandLifecycleState = "cancelled"
+	CommandLifecycleCompleted CommandLifecycleState = "completed"
+	CommandLifecycleDiscarded CommandLifecycleState = "discarded"
+	CommandLifecycleQueued    CommandLifecycleState = "queued"
+	CommandLifecycleRefused   CommandLifecycleState = "refused"
+	CommandLifecycleStarted   CommandLifecycleState = "started"
+)
+
+// WakeupSource identifies the scheduler fire that started a command.
+type WakeupSource string
+
+// Wakeup sources.
+const (
+	WakeupLoop     WakeupSource = "loop_wakeup"
+	WakeupSchedule WakeupSource = "schedule_wakeup"
+)
 
 // ---------- control_cancel_request ----------
 

@@ -24,8 +24,8 @@ RECORD=failure_only go test ./providers/opencode/
 
 ## Keeping DTOs in sync
 
-The wire types live in [`acp/dto.go`](../../acp/dto.go), pinned there to OpenCode `1.19.4`, commit
-`148842ef7cb1bc34192b3fff57d0f9721ab9c801`, and `@agentclientprotocol/sdk` `0.21.0`, commit
+The wire types live in [`acp/dto.go`](../../acp/dto.go), pinned there to OpenCode `1.19.5`, commit
+`810c0eba1a7348036f8bdf61e6632d0c36c6876c`, and `@agentclientprotocol/sdk` `0.21.0`, commit
 `74372b59f8f56eb30e72f2538df2671a0adb376f`. The shared DTO also serves providers that group
 `session/new` configuration values; keep grouped and flat `ConfigOptionValue` options working.
 

@@ -13,7 +13,9 @@
 // Turn lineage, MCP app UI, sub-agent settings, attachment and prediction events,
 // and gateway OAuth notifications follow upstream commit
 // 0ada5d8806cdad498230d5b1b2924091e04c8feb. ThreadItemTimes follows tag
-// rust-v0.167.0.
+// rust-v0.167.0. Attached threads, completed-item token counts, agent message
+// moderation, thread settings environments and model/list providers follow tag
+// rust-v0.169.0 (d32063f96c2dff1dc96af839b3952abb6acfeda4).
 
 package codex
 
@@ -1077,17 +1079,20 @@ type ThreadStartedNotification struct {
 
 // Thread describes a thread in thread/started params.
 type Thread struct {
-	ID             string              `json:"id"`
-	Environments   []ThreadEnvironment `json:"environments,omitzero"`
-	SessionID      string              `json:"sessionId,omitzero"`
-	ForkedFromID   string              `json:"forkedFromId,omitzero"`
-	ParentThreadID string              `json:"parentThreadId,omitzero"`
-	ProjectID      string              `json:"projectId,omitzero"`
-	CLIVersion     string              `json:"cliVersion,omitzero"`
-	CreatedAt      base.TimeS          `json:"createdAt,omitzero"`
-	CWD            string              `json:"cwd,omitzero"`
-	Ephemeral      bool                `json:"ephemeral,omitzero"`
-	GitInfo        *GitInfo            `json:"gitInfo,omitzero"`
+	ID           string              `json:"id"`
+	Environments []ThreadEnvironment `json:"environments,omitzero"`
+	SessionID    string              `json:"sessionId,omitzero"`
+	ForkedFromID string              `json:"forkedFromId,omitzero"`
+	// AttachedToThreadID is the parent that owns this persisted attached
+	// thread, independent of fork or spawn lineage.
+	AttachedToThreadID string     `json:"attachedToThreadId,omitzero"`
+	ParentThreadID     string     `json:"parentThreadId,omitzero"`
+	ProjectID          string     `json:"projectId,omitzero"`
+	CLIVersion         string     `json:"cliVersion,omitzero"`
+	CreatedAt          base.TimeS `json:"createdAt,omitzero"`
+	CWD                string     `json:"cwd,omitzero"`
+	Ephemeral          bool       `json:"ephemeral,omitzero"`
+	GitInfo            *GitInfo   `json:"gitInfo,omitzero"`
 	// Model is the current configured model or the latest persisted model. It is empty when unavailable.
 	Model         string `json:"model,omitzero"`
 	ModelProvider string `json:"modelProvider,omitzero"`
@@ -1220,6 +1225,9 @@ type ItemCompletedNotification struct {
 	ThreadID string `json:"threadId"`
 	// TurnID is the turn containing the item.
 	TurnID string `json:"turnId"`
+	// ContentTokenCount is the native content token count of a completed
+	// assistant message, including a sampled footer. Nil when unavailable.
+	ContentTokenCount *int64 `json:"contentTokenCount,omitzero"`
 	// CompletedAt is the Unix timestamp in milliseconds when the item completed.
 	CompletedAt base.TimeMS `json:"completedAtMs"`
 }
@@ -1312,6 +1320,21 @@ type AgentMessageItem struct {
 	MemoryCitation *MemoryCitation          `json:"memoryCitation,omitzero"`
 	Delivery       AgentMessageDelivery     `json:"delivery,omitzero"`
 	Questions      []AsyncUserInputQuestion `json:"questions,omitzero"`
+	Moderation     *AgentMessageModeration  `json:"moderation,omitzero"`
+}
+
+// AgentMessageModeration reports whether moderation acted on an agent message.
+type AgentMessageModeration struct {
+	Moderated bool                 `json:"moderated"`
+	Display   *AgentMessageDisplay `json:"display,omitzero"`
+}
+
+// AgentMessageDisplay describes how a client presents a moderated message.
+type AgentMessageDisplay struct {
+	Action               string `json:"action"`
+	BlockType            string `json:"blockType,omitzero"`
+	CyberTrustedAccess   *bool  `json:"cyberTrustedAccess,omitzero"`
+	CheckTrustedContacts *bool  `json:"checkTrustedContacts,omitzero"`
 }
 
 // AgentMessageDelivery describes asynchronous message delivery.
@@ -1939,6 +1962,9 @@ type ModelReroutedNotification struct {
 
 // ModelListParams holds pagination options for model/list.
 type ModelListParams struct {
+	// ModelProvider lists models for this configured provider instead of the
+	// app-server default.
+	ModelProvider string `json:"modelProvider,omitzero"`
 	Cursor        string `json:"cursor,omitzero"`
 	Limit         int    `json:"limit,omitzero"`
 	IncludeHidden bool   `json:"includeHidden,omitzero"`
@@ -2329,7 +2355,10 @@ type ThreadGoal struct {
 
 // ThreadSettings contains the active settings for a thread.
 type ThreadSettings struct {
-	Cwd                     string                   `json:"cwd"`
+	Cwd string `json:"cwd"`
+	// Environments lists the environments for future turns, primary first.
+	// Nil means the server does not expose the selection; empty means none.
+	Environments            []ThreadEnvironment      `json:"environments,omitzero"`
 	ApprovalPolicy          json.RawMessage          `json:"approvalPolicy"`
 	ApprovalsReviewer       ApprovalsReviewer        `json:"approvalsReviewer"`
 	SandboxPolicy           json.RawMessage          `json:"sandboxPolicy"`

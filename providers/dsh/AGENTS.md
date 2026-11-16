@@ -31,8 +31,8 @@ untested. Model discovery requires network access to the configured provider cat
 
 ## Keeping DTOs in sync
 
-The wire contract is pinned to DeepSeek Harness `dsh-v0.2.1-rc.5`, commit
-`b830ec950faba0a46dda564be3e2d854afed94f1`, and `@agentclientprotocol/sdk` `1.4.0`, commit
+The wire contract is pinned to DeepSeek Harness `dsh-v0.2.2-rc.3`, commit
+`38a6a5c965aa99ab525161efb7cc5cf1fe62fced`, and `@agentclientprotocol/sdk` `1.4.0`, commit
 `e6463f444093ed7c5f1cc937c3f32afb5853e906`. To check a new release:
 
 1. Clone https://github.com/deepseek-ai/deepseek-harness at the release tag.

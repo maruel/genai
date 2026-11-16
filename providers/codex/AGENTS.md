@@ -36,6 +36,8 @@ against these files to find new fields, item types, or notification methods.
 The DTOs were last synced against `openai/codex` release `rust-v0.154.0`, commit
 `6b9826e3aa83b1a5947db50f4332cb9c65f1b340`.
 Model access-program metadata, disabled plugin IDs, and resume collaboration mode follow release `rust-v0.159.3`.
+Server-to-client payloads were diffed against release `rust-v0.169.0`, commit
+`d32063f96c2dff1dc96af839b3952abb6acfeda4`.
 
 ## References
 

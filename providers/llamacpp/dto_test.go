@@ -51,6 +51,19 @@ func TestEmbeddingInput(t *testing.T) {
 }
 
 func TestMessage(t *testing.T) {
+	t.Run("reasoning prefill", func(t *testing.T) {
+		var m llamacpp.Message
+		if err := m.From(&genai.Message{Replies: []genai.Reply{{Reasoning: "\n"}}}); err != nil {
+			t.Fatal(err)
+		}
+		got, err := json.Marshal(&m)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if want := `{"role":"assistant","content":[],"reasoning_content":"\n"}`; string(got) != want {
+			t.Fatalf("got %s, want %s", got, want)
+		}
+	})
 	t.Run("error", func(t *testing.T) {
 		var got llamacpp.Message
 		if err := got.From(&genai.Message{Replies: []genai.Reply{{Reasoning: "check", Opaque: map[string]any{"foreign": true}}}}); err == nil {

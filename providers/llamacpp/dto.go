@@ -947,6 +947,13 @@ func (m *Message) From(in *genai.Message) error {
 			}
 			m.Content = append(m.Content, c)
 		}
+		if m.Content == nil && m.ToolCalls == nil && m.ReasoningContent != "" {
+			// llama-server rejects an assistant message without content or tool
+			// calls. As the final message, empty content and nonempty reasoning
+			// continue the reasoning block (common_chat_templates_apply_jinja() in
+			// https://github.com/ggml-org/llama.cpp/blob/v1.0.0/common/chat.cpp).
+			m.Content = Contents{}
+		}
 	}
 	if len(in.ToolCallResults) != 0 {
 		// Process only the first tool call result in this method.

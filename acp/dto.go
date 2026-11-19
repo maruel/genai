@@ -15,6 +15,8 @@
 //	  ships @agentclientprotocol/sdk 0.21.0, commit 74372b59f8f56eb30e72f2538df2671a0adb376f.
 //	DeepSeek Harness dsh-v0.2.2-rc.3, commit 38a6a5c965aa99ab525161efb7cc5cf1fe62fced,
 //	  ships @agentclientprotocol/sdk 1.4.0, commit e6463f444093ed7c5f1cc937c3f32afb5853e906.
+//	Antigravity CLI agy 1.5.9 (closed source), checked against its recorded
+//	  initialize, session/new, session/resume, and session/update records.
 //
 // Sources: https://github.com/anomalyco/opencode
 //          https://github.com/deepseek-ai/deepseek-harness
@@ -629,16 +631,20 @@ type ToolCallLocation struct {
 
 // ToolCallUpdate is the initial tool call announcement.
 type ToolCallUpdate struct {
-	SessionUpdate UpdateType         `json:"sessionUpdate"`
-	ToolCallID    string             `json:"toolCallId"`
-	Title         string             `json:"title,omitzero"`
-	Kind          ToolKind           `json:"kind,omitzero"`
-	Status        ToolStatus         `json:"status,omitzero"`
-	Locations     []ToolCallLocation `json:"locations,omitzero"`
-	RawInput      json.RawMessage    `json:"rawInput,omitzero"`
-	RawOutput     json.RawMessage    `json:"rawOutput,omitzero"`
-	Content       []ToolCallContent  `json:"content,omitzero"`
-	Meta          json.RawMessage    `json:"_meta,omitzero"`
+	SessionUpdate UpdateType `json:"sessionUpdate"`
+	ToolCallID    string     `json:"toolCallId"`
+	// Name and Args are agy 1.5.9 extensions: its native tool name, and a
+	// copy of RawInput.
+	Name      string             `json:"name,omitzero"`
+	Args      json.RawMessage    `json:"args,omitzero"`
+	Title     string             `json:"title,omitzero"`
+	Kind      ToolKind           `json:"kind,omitzero"`
+	Status    ToolStatus         `json:"status,omitzero"`
+	Locations []ToolCallLocation `json:"locations,omitzero"`
+	RawInput  json.RawMessage    `json:"rawInput,omitzero"`
+	RawOutput json.RawMessage    `json:"rawOutput,omitzero"`
+	Content   []ToolCallContent  `json:"content,omitzero"`
+	Meta      json.RawMessage    `json:"_meta,omitzero"`
 }
 
 // EditInput is the rawInput shape for edit and replace tool calls.
@@ -668,16 +674,20 @@ type ToolCallContent struct {
 
 // ToolCallUpdateUpdate is a tool call progress/completion update.
 type ToolCallUpdateUpdate struct {
-	SessionUpdate UpdateType         `json:"sessionUpdate"`
-	ToolCallID    string             `json:"toolCallId"`
-	Title         string             `json:"title,omitzero"`
-	Kind          ToolKind           `json:"kind,omitzero"`
-	Status        ToolStatus         `json:"status,omitzero"`
-	Locations     []ToolCallLocation `json:"locations,omitzero"`
-	RawInput      json.RawMessage    `json:"rawInput,omitzero"`
-	RawOutput     json.RawMessage    `json:"rawOutput,omitzero"`
-	Content       []ToolCallContent  `json:"content,omitzero"`
-	Meta          json.RawMessage    `json:"_meta,omitzero"`
+	SessionUpdate UpdateType `json:"sessionUpdate"`
+	ToolCallID    string     `json:"toolCallId"`
+	// Name and Args are agy 1.5.9 extensions: its native tool name, and a
+	// copy of RawInput.
+	Name      string             `json:"name,omitzero"`
+	Args      json.RawMessage    `json:"args,omitzero"`
+	Title     string             `json:"title,omitzero"`
+	Kind      ToolKind           `json:"kind,omitzero"`
+	Status    ToolStatus         `json:"status,omitzero"`
+	Locations []ToolCallLocation `json:"locations,omitzero"`
+	RawInput  json.RawMessage    `json:"rawInput,omitzero"`
+	RawOutput json.RawMessage    `json:"rawOutput,omitzero"`
+	Content   []ToolCallContent  `json:"content,omitzero"`
+	Meta      json.RawMessage    `json:"_meta,omitzero"`
 }
 
 // PlanEntry is a single entry in a plan update.
@@ -827,7 +837,11 @@ type AgentCapabilities struct {
 	PromptCapabilities  PromptCapabilities  `json:"promptCapabilities,omitzero"`
 	Providers           base.Unknown        `json:"providers,omitzero"`
 	SessionCapabilities SessionCapabilities `json:"sessionCapabilities,omitzero"`
-	Meta                json.RawMessage     `json:"_meta,omitzero"`
+	// LoadSessionSnake and SessionCapabilitiesSnake repeat LoadSession and
+	// SessionCapabilities; agy 1.5.9 sends both spellings.
+	LoadSessionSnake         bool                `json:"load_session,omitzero"`
+	SessionCapabilitiesSnake SessionCapabilities `json:"session_capabilities,omitzero"`
+	Meta                     json.RawMessage     `json:"_meta,omitzero"`
 }
 
 // MCPCapabilities describes the optional MCP transports supported by the agent.
@@ -843,8 +857,10 @@ type SessionCapabilities struct {
 	Close                 MarkerCapabilities `json:"close,omitzero"`
 	Fork                  MarkerCapabilities `json:"fork,omitzero"`
 	List                  MarkerCapabilities `json:"list,omitzero"`
-	Resume                MarkerCapabilities `json:"resume,omitzero"`
-	Meta                  json.RawMessage    `json:"_meta,omitzero"`
+	// Load is sent by agy 1.5.9 beside AgentCapabilities.LoadSession.
+	Load   MarkerCapabilities `json:"load,omitzero"`
+	Resume MarkerCapabilities `json:"resume,omitzero"`
+	Meta   json.RawMessage    `json:"_meta,omitzero"`
 }
 
 // MarkerCapabilities advertises support through an otherwise empty capability object.
@@ -906,7 +922,11 @@ type SessionStateResult struct {
 type SessionLoadResult struct{ SessionStateResult }
 
 // SessionResumeResult is returned by session/resume.
-type SessionResumeResult struct{ SessionStateResult }
+type SessionResumeResult struct {
+	// SessionID echoes the resumed session; agy 1.5.9 sends it, dsh omits it.
+	SessionID          string `json:"sessionId,omitzero"`
+	SessionStateResult        //nolint:embeddedstructfieldcheck // Preserve the JSON field order.
+}
 
 // SessionForkResult is returned by session/fork.
 type SessionForkResult struct {

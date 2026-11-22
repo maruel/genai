@@ -822,6 +822,11 @@ type Health struct {
 	Requests int64 `json:"requests,omitzero"`
 }
 
+// PricingUnit describes the unit of a pricing metric, e.g. "megapixel" for image tokens.
+type PricingUnit struct {
+	Unit string `json:"unit,omitzero"`
+}
+
 // ImageModel is the provider-specific image model metadata.
 type ImageModel struct {
 	AddedDate           int64               `json:"added_date,omitzero"`
@@ -846,6 +851,7 @@ type ImageModel struct {
 	PricingAdjustments  []PricingAdjustment `json:"pricing_adjustments,omitzero"`
 	PricingDefaultLabel string              `json:"pricing_default_label,omitzero"`
 	PricingDimensions   []PricingDimension  `json:"pricing_dimensions,omitzero"`
+	PricingUnits        map[string]PricingUnit `json:"pricing_units,omitzero"`
 	PricingVariants     []PricingVariant    `json:"pricing_variants,omitzero"`
 	Title               string              `json:"title"`
 	VideoCapabilities   []string            `json:"video_capabilities,omitzero"`
@@ -957,6 +963,7 @@ type TextModel struct {
 	PricingDefaultLabel string              `json:"pricing_default_label,omitzero"`
 	PricingDimensions   []PricingDimension  `json:"pricing_dimensions,omitzero"`
 	PricingVariants     []PricingVariant    `json:"pricing_variants,omitzero"`
+	PricingUnits        map[string]PricingUnit `json:"pricing_units,omitzero"`
 	Pricing             struct {
 		AudioInputPrice           base.Float64 `json:"audio_input_price,omitzero"`
 		AudioOutputPrice          base.Float64 `json:"audio_output_price,omitzero"`

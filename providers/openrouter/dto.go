@@ -932,9 +932,19 @@ type ModelBenchmarks struct {
 
 // ModelArtificialAnalysisBenchmark contains Artificial Analysis scores.
 type ModelArtificialAnalysisBenchmark struct {
-	IntelligenceIndex float64 `json:"intelligence_index,omitzero"`
-	CodingIndex       float64 `json:"coding_index,omitzero"`
-	AgenticIndex      float64 `json:"agentic_index,omitzero"`
+	IntelligenceIndex           float64 `json:"intelligence_index,omitzero"`
+	CodingIndex                 float64 `json:"coding_index,omitzero"`
+	AgenticIndex                float64 `json:"agentic_index,omitzero"`
+	LegalIndex                  float64 `json:"legal_index,omitzero"`
+	HealthcareAndMedicalIndex   float64 `json:"healthcare_and_medical_index,omitzero"`
+	EngineeringIndex            float64 `json:"engineering_index,omitzero"`
+	CyberIndex                  float64 `json:"cyber_index,omitzero"`
+	DecisionIndex               float64 `json:"decision_index,omitzero"`
+	FinanceAndAccountingIndex   float64 `json:"finance_and_accounting_index,omitzero"`
+	StrategyAndOpsIndex         float64 `json:"strategy_and_ops_index,omitzero"`
+	EconomicsIndex              float64 `json:"economics_index,omitzero"`
+	OpennessIndex               float64 `json:"openness_index,omitzero"`
+	MultilingualIndex           float64 `json:"multilingual_index,omitzero"`
 }
 
 // ModelDesignArenaBenchmark contains Design Arena scores.

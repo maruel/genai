@@ -36,6 +36,17 @@ background.
 Enum values (`state`, `step_type`, `status`) are untyped strings upstream; the type descriptors do not list
 them.
 
+## Sign-in storage
+
+The package documentation's sign-in storage section comes from disassembling agy 1.5.14. Its pclntab
+keeps function names; GoReSym cannot locate the table, but `debug/gosym` reads it at the `f1ff ffff 0000 0108`
+magic, and the code starts 0x80 bytes after the table's text start. In
+`third_party/jetski/language_server/code_assist_client`, `keyring_detector_{ssh,container,dbus,termux,wsl}.go`
+choose file storage, and `(*compositeTokenStorage).saveTokenWithExistingFileState` calls `purgeTokenStorage`
+on the file storage, `(*cliFileTokenStorage).RemoveToken` and then `os.Remove`, after `writeKeyring` succeeds.
+Recheck both on a new release. Outside the detector, agy reads the SSH variables only for interactive
+sign-in, the clipboard, and terminal detection.
+
 ## localharness alternative
 
 The SDK does not run agy. Its wheel bundles a separate Go binary, `localharness`, that authenticates with

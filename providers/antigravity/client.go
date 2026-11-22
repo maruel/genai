@@ -24,6 +24,17 @@
 // each subprocess in a fresh empty temporary directory, removed after the
 // call, to contain workspace writes.
 //
+// # Sign-in storage
+//
+// agy keeps its Google sign-in in the OS keyring unless it detects an SSH
+// session, a container, a missing D-Bus session bus, Termux, or WSL; then it
+// uses the file ~/.gemini/antigravity-cli/antigravity-oauth-token. After each
+// keyring save, such as an hourly token refresh, agy deletes that file. That
+// signs out every agy process that can only read the file, such as containers
+// that mount the host's ~/.gemini. The provider therefore sets SSH_CONNECTION,
+// unless it is already set, so agy uses the file.
+// ProviderOption.KeyringTokenStorage keeps agy's own choice.
+//
 // # Session / multi-turn
 //
 // Each GenSync or GenStream call launches a fresh subprocess. agy persists
@@ -136,6 +147,10 @@ type ProviderOption struct {
 	Mode Mode
 	// Sandbox runs terminal commands with restrictions (--sandbox).
 	Sandbox bool
+	// KeyringTokenStorage lets agy keep its sign-in in the OS keyring. By
+	// default the provider makes agy use the token file instead; see the
+	// package documentation.
+	KeyringTokenStorage bool
 
 	_ struct{}
 }
@@ -194,6 +209,11 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 			return nil, fmt.Errorf("unsupported provider option %T", opt)
 		}
 	}
+	if !c.opts.KeyringTokenStorage && os.Getenv("SSH_CONNECTION") == "" {
+		// agy then detects an SSH session and stores its sign-in in the token
+		// file rather than the OS keyring.
+		c.env = []string{"SSH_CONNECTION=127.0.0.1 0 127.0.0.1 0"}
+	}
 	if marker != "" {
 		models, err := c.listModels(ctx)
 		if err != nil {
@@ -214,6 +234,9 @@ type Client struct {
 	bare           bool
 	model          string
 	opts           ProviderOption
+	// env holds "KEY=value" entries added to every agy process's inherited
+	// environment.
+	env []string
 
 	binOnce sync.Once
 	binErr  error
@@ -252,7 +275,9 @@ func (c *Client) Ping(ctx context.Context) error {
 	if err := c.ensureBin(); err != nil {
 		return err
 	}
-	out, err := exec.CommandContext(ctx, c.bin, "--version").Output()
+	cmd := exec.CommandContext(ctx, c.bin, "--version")
+	cmd.Env = append(os.Environ(), c.env...)
+	out, err := cmd.Output()
 	if err != nil {
 		return fmt.Errorf("agy --version: %w", err)
 	}
@@ -432,7 +457,7 @@ func (c *Client) start(ctx context.Context, args []string, agent []byte) (io.Wri
 			return nil, nil, nil, errors.Join(err, os.RemoveAll(dir))
 		}
 	}
-	s := genai.Starter((&cmdExecutor{bin: c.bin, dir: dir}).start)
+	s := genai.Starter((&cmdExecutor{bin: c.bin, dir: dir, env: c.env}).start)
 	if c.starterWrapper != nil {
 		s = c.starterWrapper(s)
 	}
@@ -769,11 +794,14 @@ func buildResult(r *JSONOutput, text string, u *JSONUsage) genai.Result {
 type cmdExecutor struct {
 	bin string
 	dir string
+	// env holds "KEY=value" entries added to the inherited environment.
+	env []string
 }
 
 func (e *cmdExecutor) start(ctx context.Context, args []string) (io.WriteCloser, io.ReadCloser, func() error, error) {
 	cmd := exec.CommandContext(ctx, e.bin, args...)
 	cmd.Dir = e.dir
+	cmd.Env = append(os.Environ(), e.env...)
 	var diagnostics agentErrorWriter
 	cmd.Stderr = &diagnostics
 	// A background descendant can retain the stderr pipe after agy exits or

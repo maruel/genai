@@ -822,36 +822,42 @@ type Health struct {
 	Requests int64 `json:"requests,omitzero"`
 }
 
+// PricingUnit describes the unit of a pricing metric, e.g. "megapixel" for image tokens.
+type PricingUnit struct {
+	Unit string `json:"unit,omitzero"`
+}
+
 // ImageModel is the provider-specific image model metadata.
 type ImageModel struct {
-	AddedDate           int64               `json:"added_date,omitzero"`
-	Aliases             Strings             `json:"aliases"`
-	Alpha               bool                `json:"alpha,omitzero"`
-	Brand               string              `json:"brand"`
-	Publisher           string              `json:"publisher"`
-	BrandURL            string              `json:"brand_url,omitzero"`
-	BrandIconURL        string              `json:"brand_icon_url,omitzero"`
-	Capabilities        []string            `json:"capabilities,omitzero"`
-	Category            string              `json:"category"`
-	Community           bool                `json:"community,omitzero"`
-	Description         string              `json:"description"`
-	FlatRate            bool                `json:"flat_rate,omitzero"`
-	InputModalities     []string            `json:"input_modalities"`
-	MaxReferenceImages  int64               `json:"max_reference_images,omitzero"`
-	Name                string              `json:"name"`
-	OutputModalities    []string            `json:"output_modalities"`
-	PendingChange       *PendingChange      `json:"pending_change,omitzero"`
-	PaidOnly            bool                `json:"paid_only"`
-	PerUserRPM          base.Float64        `json:"per_user_rpm,omitzero"`
-	PricingAdjustments  []PricingAdjustment `json:"pricing_adjustments,omitzero"`
-	PricingDefaultLabel string              `json:"pricing_default_label,omitzero"`
-	PricingDimensions   []PricingDimension  `json:"pricing_dimensions,omitzero"`
-	PricingVariants     []PricingVariant    `json:"pricing_variants,omitzero"`
-	Title               string              `json:"title"`
-	VideoCapabilities   []string            `json:"video_capabilities,omitzero"`
-	RequiredSafety      []string            `json:"required_safety,omitzero"`
-	SupportedEndpoints  []string            `json:"supported_endpoints,omitzero"`
-	Health              Health              `json:"health,omitzero"`
+	AddedDate           int64                  `json:"added_date,omitzero"`
+	Aliases             Strings                `json:"aliases"`
+	Alpha               bool                   `json:"alpha,omitzero"`
+	Brand               string                 `json:"brand"`
+	Publisher           string                 `json:"publisher"`
+	BrandURL            string                 `json:"brand_url,omitzero"`
+	BrandIconURL        string                 `json:"brand_icon_url,omitzero"`
+	Capabilities        []string               `json:"capabilities,omitzero"`
+	Category            string                 `json:"category"`
+	Community           bool                   `json:"community,omitzero"`
+	Description         string                 `json:"description"`
+	FlatRate            bool                   `json:"flat_rate,omitzero"`
+	InputModalities     []string               `json:"input_modalities"`
+	MaxReferenceImages  int64                  `json:"max_reference_images,omitzero"`
+	Name                string                 `json:"name"`
+	OutputModalities    []string               `json:"output_modalities"`
+	PendingChange       *PendingChange         `json:"pending_change,omitzero"`
+	PaidOnly            bool                   `json:"paid_only"`
+	PerUserRPM          base.Float64           `json:"per_user_rpm,omitzero"`
+	PricingAdjustments  []PricingAdjustment    `json:"pricing_adjustments,omitzero"`
+	PricingDefaultLabel string                 `json:"pricing_default_label,omitzero"`
+	PricingDimensions   []PricingDimension     `json:"pricing_dimensions,omitzero"`
+	PricingUnits        map[string]PricingUnit `json:"pricing_units,omitzero"`
+	PricingVariants     []PricingVariant       `json:"pricing_variants,omitzero"`
+	Title               string                 `json:"title"`
+	VideoCapabilities   []string               `json:"video_capabilities,omitzero"`
+	RequiredSafety      []string               `json:"required_safety,omitzero"`
+	SupportedEndpoints  []string               `json:"supported_endpoints,omitzero"`
+	Health              Health                 `json:"health,omitzero"`
 	// Video generation duration limits. Only set on video models.
 	MaxDuration     base.DurationS `json:"max_duration,omitzero"`
 	MinDuration     base.DurationS `json:"min_duration,omitzero"`
@@ -927,36 +933,37 @@ func (r *ImageModelsResponse) ToModels() []genai.Model {
 
 // TextModel is the provider-specific text model metadata.
 type TextModel struct {
-	AddedDate           int64               `json:"added_date,omitzero"`
-	Agent               bool                `json:"agent,omitzero"`
-	Aliases             Strings             `json:"aliases"`
-	Alpha               bool                `json:"alpha,omitzero"`
-	Audio               bool                `json:"audio"`
-	BaseModel           string              `json:"base_model,omitzero"`
-	Brand               string              `json:"brand"`
-	BrandURL            string              `json:"brand_url,omitzero"`
-	BrandIconURL        string              `json:"brand_icon_url,omitzero"`
-	Capabilities        []string            `json:"capabilities,omitzero"`
-	Category            string              `json:"category"`
-	Community           bool                `json:"community"`
-	ContextLength       int64               `json:"context_length,omitzero"`
-	ContextWindow       int64               `json:"context_window,omitzero"`
-	Description         string              `json:"description"`
-	InputModalities     []string            `json:"input_modalities"` // "text", "image", "audio"
-	IsSpecialized       bool                `json:"is_specialized,omitzero"`
-	MaxCompletionTokens int64               `json:"max_completion_tokens,omitzero"`
-	MaxInputChars       int64               `json:"maxInputChars"`
-	MaxReferenceImages  int64               `json:"max_reference_images,omitzero"`
-	Name                string              `json:"name"`
-	OriginalName        string              `json:"original_name"`
-	OutputModalities    []string            `json:"output_modalities"` // "text", "image", "audio"
-	PendingChange       *PendingChange      `json:"pending_change,omitzero"`
-	PaidOnly            bool                `json:"paid_only"`
-	PerUserRPM          base.Float64        `json:"per_user_rpm,omitzero"`
-	PricingAdjustments  []PricingAdjustment `json:"pricing_adjustments,omitzero"`
-	PricingDefaultLabel string              `json:"pricing_default_label,omitzero"`
-	PricingDimensions   []PricingDimension  `json:"pricing_dimensions,omitzero"`
-	PricingVariants     []PricingVariant    `json:"pricing_variants,omitzero"`
+	AddedDate           int64                  `json:"added_date,omitzero"`
+	Agent               bool                   `json:"agent,omitzero"`
+	Aliases             Strings                `json:"aliases"`
+	Alpha               bool                   `json:"alpha,omitzero"`
+	Audio               bool                   `json:"audio"`
+	BaseModel           string                 `json:"base_model,omitzero"`
+	Brand               string                 `json:"brand"`
+	BrandURL            string                 `json:"brand_url,omitzero"`
+	BrandIconURL        string                 `json:"brand_icon_url,omitzero"`
+	Capabilities        []string               `json:"capabilities,omitzero"`
+	Category            string                 `json:"category"`
+	Community           bool                   `json:"community"`
+	ContextLength       int64                  `json:"context_length,omitzero"`
+	ContextWindow       int64                  `json:"context_window,omitzero"`
+	Description         string                 `json:"description"`
+	InputModalities     []string               `json:"input_modalities"` // "text", "image", "audio"
+	IsSpecialized       bool                   `json:"is_specialized,omitzero"`
+	MaxCompletionTokens int64                  `json:"max_completion_tokens,omitzero"`
+	MaxInputChars       int64                  `json:"maxInputChars"`
+	MaxReferenceImages  int64                  `json:"max_reference_images,omitzero"`
+	Name                string                 `json:"name"`
+	OriginalName        string                 `json:"original_name"`
+	OutputModalities    []string               `json:"output_modalities"` // "text", "image", "audio"
+	PendingChange       *PendingChange         `json:"pending_change,omitzero"`
+	PaidOnly            bool                   `json:"paid_only"`
+	PerUserRPM          base.Float64           `json:"per_user_rpm,omitzero"`
+	PricingAdjustments  []PricingAdjustment    `json:"pricing_adjustments,omitzero"`
+	PricingDefaultLabel string                 `json:"pricing_default_label,omitzero"`
+	PricingDimensions   []PricingDimension     `json:"pricing_dimensions,omitzero"`
+	PricingUnits        map[string]PricingUnit `json:"pricing_units,omitzero"`
+	PricingVariants     []PricingVariant       `json:"pricing_variants,omitzero"`
 	Pricing             struct {
 		AudioInputPrice           base.Float64 `json:"audio_input_price,omitzero"`
 		AudioOutputPrice          base.Float64 `json:"audio_output_price,omitzero"`

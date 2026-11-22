@@ -95,6 +95,7 @@
 | black-forest-labs/flux.1-kontext-pro                                      | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | black-forest-labs/flux.1-schnell                                          | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | black-forest-labs/flux.1.1-pro                                            | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| black-forest-labs/flux.2-flex                                             | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | chickytutor                                                               | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | chigwell/DeepSeek-V4-Flash-0731                                           | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | chigwell/claude-fable-5                                                   | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -171,6 +172,7 @@
 | community/AkshayCoder48/perplexity-search                                 | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | community/AkshayCoder48/poolside-laguna-s-2.1:free                        | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | community/AkshayCoder48/qwen                                              | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| community/Bakhshi7889/step-5-preview                                      | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | community/Catniti/agnes-3.0-flash                                         | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | community/Catniti/agnes-image-2.5-flash                                   | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | community/Catniti/catniti-ai-agent                                        | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -193,7 +195,9 @@
 | community/Catniti/minimax-m2.7                                            | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | community/Catniti/muse-glimmer-30b                                        | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | community/Catniti/nemotron-3.5-lightning                                  | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| community/Catniti/north-mini-code                                         | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | community/Catniti/qwen3.7-flash                                           | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| community/Catniti/qwen3.8-27b                                             | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | community/CloudCompile/agnes-image-2.0-flash                              | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | community/CloudCompile/auto                                               | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | community/CloudCompile/flux-2-klein-4b                                    | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -217,6 +221,7 @@
 | community/JustScriptzz/kimi-k2-7-code                                     | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | community/JustScriptzz/kimi-k3                                            | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | community/JustScriptzz/moondream-3.1                                      | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| community/JustScriptzz/muse-spark                                         | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | community/Lorodn4x/deepseek-v4-flash                                      | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | community/Lorodn4x/deepseek-v4-pro-0813                                   | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | community/Lorodn4x/minimax-m3                                             | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -269,11 +274,14 @@
 | community/Saauf/grok-4.20-fast                                            | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | community/Saauf/laguna-xs-2.1                                             | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | community/Saauf/llama3.1-8B:ultrafast                                     | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| community/Saauf/minimax-m3.1-flash                                        | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | community/Saauf/mistral-large-4                                           | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | community/Saauf/muse-glimmer-30b                                          | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| community/Saauf/nemotron-3-nano-omni                                      | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | community/Saauf/nemotron-3-ultra                                          | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | community/Saauf/nemotron-3.5-bolt                                         | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | community/Saauf/nemotron-3.5-lightning                                    | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| community/Saauf/nemotron-3.5-super-vl                                     | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | community/Saauf/step-5-preview                                            | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | community/Spit-fires/muse-glimmer                                         | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | community/Takax62/minimax-m3-429b-vml                                     | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -307,6 +315,14 @@
 | community/iotserver24/route-r3ap3r                                        | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | community/iotserver24/supercharge                                         | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | community/kreggscode/jev-test-triage                                      | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| community/mhmdrizki803-boop/towers-aurora-copy                            | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| community/mhmdrizki803-boop/towers-byte-foundry                           | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| community/mhmdrizki803-boop/towers-echo-support                           | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| community/mhmdrizki803-boop/towers-hexa-research                          | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| community/mhmdrizki803-boop/towers-ledger-owls                            | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| community/mhmdrizki803-boop/towers-nova-outreach                          | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| community/mhmdrizki803-boop/towers-pixel-bloom                            | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| community/mhmdrizki803-boop/towers-signal-reports                         | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | community/mikl-shortcuts/ministral-3                                      | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | community/morriszdweck/glm-5.3-flash-free                                 | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | community/morriszdweck/osaii-api-fast                                     | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -336,10 +352,16 @@
 | community/scriptsnsenses-sys/diffusiongema-26B-free                       | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | community/scriptsnsenses-sys/flux-2-dev-free                              | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | community/scriptsnsenses-sys/glm-5.3-flash-free                           | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| community/scriptsnsenses-sys/gpt-6-luna:free                              | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| community/scriptsnsenses-sys/lucid-origin:free                            | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | community/scriptsnsenses-sys/minimax-m3.1-flash-free                      | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | community/scriptsnsenses-sys/muse-spark-1.2-contributor-free              | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| community/scriptsnsenses-sys/phoenix-1.0:free                             | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | community/scriptsnsenses-sys/sdxl-lightning-free                          | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | community/sharktide/3D-agent                                              | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| community/sharktide/FLUX.2-pro:azure                                      | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| community/sharktide/azure-gpt-5.4-nano                                    | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| community/sharktide/azure-nemotron-3-ultra:data-zone                      | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | community/sharktide/inferenceport-ai-codestral-2508                       | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | community/sharktide/inferenceport-ai-command-r-plus                       | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | community/sharktide/inferenceport-ai-gemini-2.5-flash                     | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -363,6 +385,7 @@
 | community/tomdacatto/ezra                                                 | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | community/tomdacatto/gotcha-scout                                         | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | community/tomdacatto/gpt-image-2.5-flare                                  | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| community/tomdacatto/grok-imagine-2-quest                                 | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | community/tomdacatto/llama-3.1-8B                                         | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | community/tomdacatto/muse-spark-1.3-contributor                           | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | community/tomdacatto/nano-banana-pro                                      | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -421,6 +444,7 @@
 | deepseek/deepseek-v4-flash-vision-exp                                     | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | deepseek/deepseek-v4-pro                                                  | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | deepseek/deepseek-v4.1-flash                                              | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| deepseek/deepseek-v4.1-flash-1017                                         | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | dirtberry                                                                 | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | dirtberry-pro                                                             | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | dreamshaper                                                               | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -481,7 +505,10 @@
 | meta/muse-spark-open                                                      | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | microsoft/mai-image-2.6                                                   | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | microsoft/mai-image-2.6-flash                                             | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| microsoft/mai-image-2.7                                                   | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| microsoft/mai-image-2.7-flash                                             | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | microsoft/microsoft-decision-1                                            | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| microsoft/microsoft-decision-1.1                                          | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | midijourney                                                               | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | midijourney-large                                                         | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | mikl-shortcuts/ministral-3                                                | ?       | ?      | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |

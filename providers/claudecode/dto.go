@@ -1183,6 +1183,12 @@ type OutputInitMsg struct {
 
 	AnalyticsDisabled       bool `json:"analytics_disabled,omitempty"`
 	ProductFeedbackDisabled bool `json:"product_feedback_disabled,omitempty"`
+
+	// ServedByAnthropic reports whether model requests go directly to
+	// Anthropic's API. Nil means the CLI could not determine the route.
+	// Runtime CLI field not declared by SDK 0.3.330.
+	ServedByAnthropic *bool `json:"served_by_anthropic,omitzero"`
+
 	// Runtime CLI init metadata not declared by SDK 0.3.287.
 	PerTurnEffortActive bool   `json:"per_turn_effort_active,omitempty"`
 	ViewMode            string `json:"view_mode,omitempty"`
@@ -1299,6 +1305,9 @@ type OutputSystemMsg struct {
 	SkipTranscript bool              `json:"skip_transcript,omitempty"`
 	Ambient        bool              `json:"ambient,omitempty"`
 	ResourceLinks  []MCPResourceLink `json:"resource_links,omitempty"`
+	// SummaryIsReport marks a task summary delivered as the subagent's report.
+	// Runtime CLI field not declared by SDK 0.3.330.
+	SummaryIsReport bool `json:"summary_is_report,omitzero"`
 	// OwnedBySubagent reports a task_started task launched by a subagent.
 	// Runtime CLI field not declared by SDK 0.3.325.
 	OwnedBySubagent bool `json:"owned_by_subagent,omitempty"`
@@ -2193,6 +2202,10 @@ type OutputResultMsg struct {
 	UserMessageUUIDs            []string        `json:"user_message_uuids,omitempty"`
 	ResumeReason                string          `json:"resume_reason,omitempty"`
 	LocalCommand                string          `json:"local_command,omitempty"`
+	// BegunMessageIDs lists API message IDs in the order their responses began
+	// streaming for this turn. An empty list means none began.
+	// Runtime CLI field not declared by SDK 0.3.330.
+	BegunMessageIDs []string `json:"begun_message_ids,omitzero"`
 
 	FastModeState             string                     `json:"fast_mode_state,omitempty"`
 	FastModeDisabledReason    FastModeDisabledReason     `json:"fast_mode_disabled_reason,omitempty"`

@@ -1,7 +1,7 @@
 # Pi Coding Agent Provider
 
-Last analyzed release: **v1.5.2**, commit
-[`b4afdddf44e059c67ccf5097e5317d913521b470`](https://github.com/earendil-works/pi/commit/b4afdddf44e059c67ccf5097e5317d913521b470).
+Last analyzed release: **v1.6.0**, commit
+[`faac585884ae2c013a6b1400f3e9e77f10b34bac`](https://github.com/earendil-works/pi/commit/faac585884ae2c013a6b1400f3e9e77f10b34bac).
 
 When updating wire types, clone a released tag from
 https://github.com/earendil-works/pi and compare:

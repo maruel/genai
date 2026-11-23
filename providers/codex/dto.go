@@ -21,6 +21,8 @@
 //	rust-v0.167.0: ThreadItemTimes.
 //	rust-v0.169.0, commit d32063f96c2dff1dc96af839b3952abb6acfeda4: every
 //	  protocol change since rust-v0.167.0 that affects these types.
+//	rust-v0.171.0, commit ccf9be8cc458bd6b8336fe84d68d8893f2691a5e:
+//	  account update reason, MCP registration scope, and moderated display modes.
 
 package codex
 
@@ -1529,11 +1531,90 @@ type AgentMessageModeration struct {
 
 // AgentMessageDisplay describes how a client presents a moderated message.
 type AgentMessageDisplay struct {
-	Action               string `json:"action"`
+	// Mode selects the versioned display format emitted since Codex 0.171.0.
+	Mode    AgentMessageDisplayMode `json:"mode,omitzero"`
+	Version uint8                   `json:"version,omitzero"`
+	// Annotation and TrustedContacts belong to the show mode.
+	Annotation      *AnswerAnnotation `json:"annotation,omitzero"`
+	TrustedContacts TrustedContacts   `json:"trustedContacts,omitzero"`
+	// Replacement belongs to the hide mode.
+	Replacement *AnswerReplacement `json:"replacement,omitzero"`
+	// Reason belongs to the block mode.
+	Reason *BlockReason `json:"reason,omitzero"`
+
+	// Action and its options are the display format before Codex 0.171.0.
+	Action               string `json:"action,omitzero"`
 	BlockType            string `json:"blockType,omitzero"`
 	CyberTrustedAccess   *bool  `json:"cyberTrustedAccess,omitzero"`
 	CheckTrustedContacts *bool  `json:"checkTrustedContacts,omitzero"`
 }
+
+// AgentMessageDisplayMode identifies a versioned display instruction.
+type AgentMessageDisplayMode string
+
+// Agent message display modes.
+const (
+	AgentMessageDisplayBlock AgentMessageDisplayMode = "block"
+	AgentMessageDisplayHide  AgentMessageDisplayMode = "hide"
+	AgentMessageDisplayShow  AgentMessageDisplayMode = "show"
+)
+
+// AnswerAnnotation describes an annotation accompanying a shown answer.
+type AnswerAnnotation struct {
+	Kind    AnswerAnnotationKind `json:"kind"`
+	Subject HelplineSubject      `json:"subject"`
+}
+
+// AnswerAnnotationKind identifies the annotation.
+type AnswerAnnotationKind string
+
+// AnswerAnnotationWellbeingHelpline identifies a wellbeing helpline annotation.
+const AnswerAnnotationWellbeingHelpline AnswerAnnotationKind = "wellbeingHelpline"
+
+// HelplineSubject identifies what the helpline annotation applies to.
+type HelplineSubject string
+
+// Helpline subjects.
+const (
+	HelplineSubjectAnswer HelplineSubject = "answer"
+	HelplineSubjectPrompt HelplineSubject = "prompt"
+)
+
+// TrustedContacts determines whether the client checks trusted contacts.
+type TrustedContacts string
+
+// Trusted contacts instructions.
+const (
+	TrustedContactsCheck TrustedContacts = "check"
+	TrustedContactsSkip  TrustedContacts = "skip"
+)
+
+// AnswerReplacement describes what the client presents in place of a hidden answer.
+type AnswerReplacement struct {
+	Kind AnswerReplacementKind `json:"kind"`
+}
+
+// AnswerReplacementKind identifies the replacement.
+type AnswerReplacementKind string
+
+// AnswerReplacementWellbeingPromptHelpline identifies a prompt helpline replacement.
+const AnswerReplacementWellbeingPromptHelpline AnswerReplacementKind = "wellbeingPromptHelpline"
+
+// BlockReason describes why the client blocks the answer.
+type BlockReason struct {
+	Kind           BlockReasonKind `json:"kind"`
+	ProtectionType *string         `json:"protectionType,omitzero"`
+	TrustedAccess  *bool           `json:"trustedAccess,omitzero"`
+}
+
+// BlockReasonKind identifies the type of block.
+type BlockReasonKind string
+
+// Block reason kinds.
+const (
+	BlockReasonCyber      BlockReasonKind = "cyber"
+	BlockReasonProtection BlockReasonKind = "protection"
+)
 
 // AgentMessageDelivery describes asynchronous message delivery.
 type AgentMessageDelivery string
@@ -1626,6 +1707,8 @@ type McpToolCallItem struct {
 	Result            *McpToolCallResult    `json:"result,omitzero"`
 	Error             *McpToolCallError     `json:"error,omitzero"`
 	Duration          base.DurationMS       `json:"durationMs,omitzero"`
+	// EnvironmentID identifies the registration scope of the MCP server.
+	EnvironmentID *string `json:"environmentId,omitzero"`
 }
 
 // McpAppUi captures the tool descriptor's UI resource and preferred presentation.
@@ -2296,9 +2379,19 @@ type RemoteControlStatusChangedNotification struct {
 
 // AccountUpdatedNotification holds params for account/updated.
 type AccountUpdatedNotification struct {
-	AuthMode AuthMode `json:"authMode,omitzero"`
-	PlanType PlanType `json:"planType,omitzero"`
+	AuthMode AuthMode            `json:"authMode,omitzero"`
+	PlanType PlanType            `json:"planType,omitzero"`
+	Reason   AccountUpdateReason `json:"reason,omitzero"`
 }
+
+// AccountUpdateReason identifies why the server emitted an account update.
+type AccountUpdateReason string
+
+// Account update reasons.
+const (
+	AccountUpdateReasonUnknown               AccountUpdateReason = "unknown"
+	AccountUpdateReasonWorkspaceRoutingReady AccountUpdateReason = "workspaceRoutingReady"
+)
 
 // GatewayOAuthStatus describes provider gateway authentication readiness.
 type GatewayOAuthStatus string
@@ -2634,6 +2727,8 @@ type McpServerStatusUpdatedNotification struct {
 	Status        McpServerStartupState `json:"status"`
 	Error         string                `json:"error,omitzero"`
 	FailureReason string                `json:"failureReason,omitzero"`
+	// EnvironmentID identifies the registration scope of the MCP server.
+	EnvironmentID *string `json:"environmentId,omitzero"`
 }
 
 // SkillsChangedNotification holds params for skills/changed notifications.

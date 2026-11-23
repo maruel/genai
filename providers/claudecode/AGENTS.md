@@ -8,8 +8,8 @@ Source code:
 - https://github.com/anthropics/claude-code
 
 Current wire baseline:
-- Claude Code CLI 2.1.325
-- `@anthropic-ai/claude-agent-sdk` 0.3.325
+- Claude Code CLI 2.1.330
+- `@anthropic-ai/claude-agent-sdk` 0.3.330
 
 Claude Code headless:
 - https://code.claude.com/docs/en/headless: headless mode overview
